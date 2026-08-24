@@ -1,4 +1,3 @@
-import React from "react";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it, vi } from "vitest";
@@ -34,6 +33,22 @@ describe("회원가입 요청", () => {
     expect(signup).toHaveBeenCalledWith(formData);
   });
 
+  it("전화번호를 하이픈 형식으로 표시하고 API에는 숫자만 전달한다", () => {
+    render(
+      <MemoryRouter>
+        <SignupForm />
+      </MemoryRouter>,
+    );
+
+    const telInput = screen.getByLabelText("전화번호");
+    fireEvent.change(telInput, { target: { value: "01012345678" } });
+
+    expect(telInput).toHaveValue("010-1234-5678");
+
+    mutationOptions.mutationFn({ tel: telInput.value });
+    expect(signup).toHaveBeenLastCalledWith({ tel: "01012345678" });
+  });
+
   const renderPasswordInput = () => {
     const { container } = render(
       <MemoryRouter>
@@ -54,7 +69,7 @@ describe("회원가입 요청", () => {
     await waitFor(() =>
       expect(
         screen.queryByText(
-          "비밀번호는 영문, 숫자, 특수기호 조합 8자리 이상 20자리 이하로 입력해주세요.",
+          "영문, 숫자, 특수기호 조합 8자리 이상 20자리 이하로 입력해주세요.",
         ),
       ).not.toBeInTheDocument(),
     );
@@ -70,7 +85,7 @@ describe("회원가입 요청", () => {
 
     expect(
       await screen.findByText(
-        "비밀번호는 영문, 숫자, 특수기호 조합 8자리 이상 20자리 이하로 입력해주세요.",
+        "영문, 숫자, 특수기호 조합 8자리 이상 20자리 이하로 입력해주세요.",
       ),
     ).toBeInTheDocument();
   });

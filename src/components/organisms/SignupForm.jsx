@@ -5,13 +5,26 @@ import { useMutation } from "@tanstack/react-query";
 import { signup, checkEmail } from "../../apis/user";
 import { useNavigate, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import Close from "/close.svg";
 
 const PATTERNS = {
   username: /^(?=.*[a-z0-9가-힣])[a-z0-9가-힣]{2,20}$/,
   email: /\S+@\S+\.\S+/,
   password: /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,20}$/,
-  tel: /^[0-9]{10,11}$/,
+  tel: /^\d{3}-\d{3,4}-\d{4}$/,
+};
+
+const formatPhoneNumber = (value) => {
+  const digits = value.replace(/\D/g, "").slice(0, 11);
+
+  if (digits.length <= 3) return digits;
+  if (digits.length <= 7) return `${digits.slice(0, 3)}-${digits.slice(3)}`;
+  if (digits.length <= 10) {
+    return `${digits.slice(0, 3)}-${digits.slice(3, 6)}-${digits.slice(6)}`;
+  }
+
+  return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7)}`;
 };
 
 const MESSAGES = {
@@ -25,8 +38,7 @@ const MESSAGES = {
   },
   password: {
     required: "비밀번호를 입력해주세요.",
-    pattern:
-      "비밀번호는 영문, 숫자, 특수기호 조합 8자리 이상 20자리 이하로 입력해주세요.",
+    pattern: "영문, 숫자, 특수기호 조합 8자리 이상 20자리 이하로 입력해주세요.",
   },
   passwordConfirm: {
     required: "비밀번호를 입력해주세요.",
@@ -38,6 +50,20 @@ const MESSAGES = {
   },
 };
 
+const ValidationMessage = ({ message }) => (
+  <small
+    className="block min-h-10 text-red-500"
+    role={message ? "alert" : undefined}
+    aria-live="polite"
+  >
+    {message || "\u00a0"}
+  </small>
+);
+
+ValidationMessage.propTypes = {
+  message: PropTypes.string,
+};
+
 const SignupForm = () => {
   const [emailChecked, setEmailChecked] = useState(false);
   const [emailCheckMessage, setEmailCheckMessage] = useState("");
@@ -45,7 +71,8 @@ const SignupForm = () => {
   const [isCheckingEmail, setIsCheckingEmail] = useState(false);
 
   const mutation = useMutation({
-    mutationFn: (data) => signup(data),
+    mutationFn: (data) =>
+      signup(data.tel ? { ...data, tel: data.tel.replace(/\D/g, "") } : data),
   });
 
   const navigate = useNavigate();
@@ -59,6 +86,13 @@ const SignupForm = () => {
   } = useForm({ mode: "onChange" });
 
   const email = watch("email");
+  const telField = register("tel", {
+    required: MESSAGES.tel.required,
+    pattern: {
+      value: PATTERNS.tel,
+      message: MESSAGES.tel.pattern,
+    },
+  });
 
   const onCheckEmail = async () => {
     setEmailCheckMessage("");
@@ -109,7 +143,7 @@ const SignupForm = () => {
   };
 
   return (
-    <div className="relative flex flex-col justify-center h-screen p-4">
+    <div className="relative flex flex-col justify-center min-h-screen p-4 py-20">
       <Button
         className="absolute left-4 top-4"
         onClick={() => {
@@ -125,10 +159,14 @@ const SignupForm = () => {
           className="flex flex-col gap-4"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-2">
+            <label htmlFor="signup-username" className="text-sm text-gray-600">
+              이름
+            </label>
             <TextInput
+              id="signup-username"
               type="text"
-              placeholder="이름"
+              placeholder="2~20자 한글 또는 영문"
               className="w-full"
               {...register("username", {
                 required: MESSAGES.username.required,
@@ -139,100 +177,104 @@ const SignupForm = () => {
               })}
             />
           </div>
-          {errors.username && (
-            <small className="text-red-500" role="alert">
-              {errors.username.message}
-            </small>
-          )}
+          <ValidationMessage message={errors.username?.message} />
 
-          <div className="flex justify-between gap-2">
+          <div className="flex flex-col gap-2">
+            <label htmlFor="signup-email" className="text-sm text-gray-600">
+              이메일
+            </label>
+            <div className="flex justify-between gap-2">
+              <TextInput
+                id="signup-email"
+                type="email"
+                placeholder="example@email.com"
+                className="w-full"
+                {...register("email", {
+                  required: MESSAGES.email.required,
+                  pattern: {
+                    value: PATTERNS.email,
+                    message: MESSAGES.email.pattern,
+                  },
+                })}
+              />
+
+              <Button
+                type="button"
+                variant="small"
+                onClick={onCheckEmail}
+                disabled={
+                  isSubmitting || isCheckingEmail || !email || errors.email
+                }
+              >
+                중복체크
+              </Button>
+            </div>
+          </div>
+
+          <ValidationMessage
+            message={errors.email?.message || emailCheckMessage}
+          />
+
+          <div className="flex flex-col gap-2">
+            <label htmlFor="signup-password" className="text-sm text-gray-600">
+              비밀번호
+            </label>
             <TextInput
-              type="email"
-              placeholder="이메일"
-              className="w-full"
-              {...register("email", {
-                required: MESSAGES.email.required,
+              id="signup-password"
+              type="password"
+              placeholder="영문, 숫자, 특수기호 조합 8~20자"
+              {...register("password", {
+                required: MESSAGES.password.required,
                 pattern: {
-                  value: PATTERNS.email,
-                  message: MESSAGES.email.pattern,
+                  value: PATTERNS.password,
+                  message: MESSAGES.password.pattern,
                 },
               })}
             />
-
-            <Button
-              type="button"
-              variant="small"
-              onClick={onCheckEmail}
-              disabled={
-                isSubmitting || isCheckingEmail || !email || errors.email
-              }
-            >
-              중복체크
-            </Button>
           </div>
-
-          {errors.email && (
-            <small className="text-red-500" role="alert">
-              {errors.email.message}
-            </small>
-          )}
-          {emailCheckMessage && (
-            <small className="text-red-500" role="alert">
-              {emailCheckMessage}
-            </small>
-          )}
-
-          <TextInput
-            type="password"
-            placeholder="비밀번호"
-            {...register("password", {
-              required: MESSAGES.password.required,
-              pattern: {
-                value: PATTERNS.password,
-                message: MESSAGES.password.pattern,
-              },
-            })}
-          />
-          {errors.password && (
-            <small className="text-red-500" role="alert">
-              {errors.password.message}
-            </small>
-          )}
-          <TextInput
-            type="password"
-            placeholder="비밀번호 확인"
-            {...register("passwordConfirm", {
-              required: MESSAGES.passwordConfirm.required,
-              validate: {
-                check: (value) => {
-                  if (getValues("password") !== value) {
-                    return MESSAGES.passwordConfirm.mismatch;
-                  }
+          <ValidationMessage message={errors.password?.message} />
+          <div className="flex flex-col gap-2">
+            <label
+              htmlFor="signup-password-confirm"
+              className="text-sm text-gray-600"
+            >
+              비밀번호 확인
+            </label>
+            <TextInput
+              id="signup-password-confirm"
+              type="password"
+              placeholder="비밀번호를 다시 입력해주세요"
+              {...register("passwordConfirm", {
+                required: MESSAGES.passwordConfirm.required,
+                validate: {
+                  check: (value) => {
+                    if (getValues("password") !== value) {
+                      return MESSAGES.passwordConfirm.mismatch;
+                    }
+                  },
                 },
-              },
-            })}
-          />
-          {errors.passwordConfirm && (
-            <small className="text-red-500" role="alert">
-              {errors.passwordConfirm.message}
-            </small>
-          )}
-          <TextInput
-            type="tel"
-            placeholder="전화번호"
-            {...register("tel", {
-              required: MESSAGES.tel.required,
-              pattern: {
-                value: PATTERNS.tel,
-                message: MESSAGES.tel.pattern,
-              },
-            })}
-          />
-          {errors.tel && (
-            <small className="text-red-500" role="alert">
-              {errors.tel.message}
-            </small>
-          )}
+              })}
+            />
+          </div>
+          <ValidationMessage message={errors.passwordConfirm?.message} />
+          <div className="flex flex-col gap-2">
+            <label htmlFor="signup-tel" className="text-sm text-gray-600">
+              전화번호
+            </label>
+            <TextInput
+              id="signup-tel"
+              type="tel"
+              placeholder="숫자만 입력해주세요"
+              inputMode="numeric"
+              maxLength={13}
+              {...telField}
+              onChange={(event) => {
+                event.target.value = formatPhoneNumber(event.target.value);
+                telField.onChange(event);
+              }}
+            />
+          </div>
+          <ValidationMessage message={errors.tel?.message} />
           <Button
             type="submit"
             disabled={isSubmitting || mutation.isPending}
@@ -254,7 +296,7 @@ const SignupForm = () => {
 
           <Link
             to="/login"
-            className="w-full p-4 font-semibold text-center text-gray-700 bg-white h-14 rounded-xl active:filter active:brightness-75"
+            className="w-full p-4 font-semibold text-center text-gray-700 border border-slate-200 bg-[aliceblue] h-14 rounded-xl active:filter active:brightness-75"
           >
             로그인
           </Link>

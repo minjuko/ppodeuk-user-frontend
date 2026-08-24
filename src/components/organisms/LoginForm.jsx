@@ -7,9 +7,24 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { loginThunk } from "../../store/authSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
+import PropTypes from "prop-types";
 import Close from "/close.svg";
 import { showDemoUi } from "../../demo/mode";
 import { DEMO_CREDENTIALS } from "../../mocks/demoData";
+
+const ValidationMessage = ({ message }) => (
+  <small
+    className="block min-h-10 text-red-500"
+    role={message ? "alert" : undefined}
+    aria-live="polite"
+  >
+    {message || "\u00a0"}
+  </small>
+);
+
+ValidationMessage.propTypes = {
+  message: PropTypes.string,
+};
 
 const LoginForm = () => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -96,11 +111,7 @@ const LoginForm = () => {
               },
             })}
           />
-          {errors.email && (
-            <small className="text-red-500" role="alert">
-              {errors.email.message}
-            </small>
-          )}
+          <ValidationMessage message={errors.email?.message} />
           <TextInput
             type="password"
             placeholder="비밀번호"
@@ -116,56 +127,50 @@ const LoginForm = () => {
               },
             })}
           />
-          {errors.password && (
-            <small className="text-red-500" role="alert">
-              {errors.password.message}
-            </small>
-          )}
-          <Button
-            type="submit"
-            disabled={isSubmitting}
-            variant="long"
-            className="rounded-lg"
-          >
-            로그인
-          </Button>
-          {__DEMO_BUILD__ && showDemoUi && (
-            <div className="grid gap-2 p-3 text-sm border border-yellow-300 rounded-lg bg-yellow-50">
-              <div>
-                <strong>Portfolio Demo</strong>
-                <br />
-                실제 계정이나 결제 정보가 필요하지 않습니다.
+          <ValidationMessage message={errors.password?.message} />
+          <ValidationMessage message={errorMessage} />
+          <div className="flex flex-col gap-2">
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              variant="long"
+              className="rounded-lg"
+            >
+              로그인
+            </Button>
+            {__DEMO_BUILD__ && showDemoUi && (
+              <div className="grid gap-2 p-3 text-sm border border-yellow-300 rounded-lg bg-yellow-50">
+                <div>
+                  <strong>Portfolio Demo</strong>
+                  <br />
+                  실제 계정이나 결제 정보가 필요하지 않습니다.
+                </div>
+                <Button
+                  variant="long"
+                  className="rounded-lg"
+                  onClick={() => {
+                    setValue("email", DEMO_CREDENTIALS.email, {
+                      shouldValidate: true,
+                    });
+                    setValue("password", DEMO_CREDENTIALS.password, {
+                      shouldValidate: true,
+                    });
+                  }}
+                >
+                  데모 계정 입력
+                </Button>
+                <small>
+                  {DEMO_CREDENTIALS.email} / {DEMO_CREDENTIALS.password}
+                </small>
               </div>
-              <Button
-                variant="long"
-                className="rounded-lg"
-                onClick={() => {
-                  setValue("email", DEMO_CREDENTIALS.email, {
-                    shouldValidate: true,
-                  });
-                  setValue("password", DEMO_CREDENTIALS.password, {
-                    shouldValidate: true,
-                  });
-                }}
-              >
-                데모 계정 입력
-              </Button>
-              <small>
-                {DEMO_CREDENTIALS.email} / {DEMO_CREDENTIALS.password}
-              </small>
-            </div>
-          )}
-          {errorMessage && (
-            <small className="text-red-500" role="alert">
-              {errorMessage}
-            </small>
-          )}
-          <Link
-            to="/signup"
-            className="w-full p-4 font-semibold text-center text-gray-700 bg-white h-14 rounded-xl active:filter active:brightness-75"
-          >
-            회원가입
-          </Link>
+            )}
+            <Link
+              to="/signup"
+              className="w-full p-4 font-semibold text-center text-gray-700 border border-slate-200 bg-[aliceblue] h-14 rounded-xl active:filter active:brightness-75"
+            >
+              회원가입
+            </Link>
+          </div>
         </form>
       </div>
     </div>

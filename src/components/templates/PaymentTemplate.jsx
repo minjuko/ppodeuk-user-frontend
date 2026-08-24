@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useMutation } from "@tanstack/react-query";
 import { calculatePayment } from "../../apis/carwashes";
@@ -160,7 +160,7 @@ const PaymentTemplate = () => {
   );
   return (
     <div>
-      <div className="p-4 grid-4">
+      <div className="grid gap-6 p-4">
         <h1 className="text-2xl font-bold">결제하기</h1>
         <div className="p-4 bg-gray-100 rounded-xl grid-4">
           <div>
