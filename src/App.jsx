@@ -1,4 +1,3 @@
-/* global __DEMO_BUILD__ */
 import { lazy, Suspense } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { MainLayout } from "./layouts/MainLayout";

@@ -11,7 +11,7 @@ export const loginThunk = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
-  }
+  },
 );
 
 export const getUserInfoThunk = createAsyncThunk(
@@ -23,7 +23,7 @@ export const getUserInfoThunk = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
-  }
+  },
 );
 
 const authSlice = createSlice({

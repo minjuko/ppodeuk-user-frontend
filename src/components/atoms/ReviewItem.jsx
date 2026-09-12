@@ -1,4 +1,3 @@
-import React from "react";
 import ProfileImg from "/StoreInfo/Profile.svg";
 import Image from "./Image";
 import Star from "./Star";

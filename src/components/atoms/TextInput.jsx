@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import { forwardRef } from "react";
 
 const TextInput = forwardRef(({ className, ...props }, ref) => {
   return (
@@ -9,5 +9,7 @@ const TextInput = forwardRef(({ className, ...props }, ref) => {
     ></input>
   );
 });
+
+TextInput.displayName = "TextInput";
 
 export default TextInput;

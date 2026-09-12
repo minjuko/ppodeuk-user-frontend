@@ -1,4 +1,3 @@
-import React from "react";
 import TimeImage from "/StoreInfo/Time.svg";
 import Image from "../atoms/Image";
 import BayList from "../organisms/BayList";

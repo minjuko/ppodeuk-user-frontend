@@ -1,4 +1,3 @@
-/* global __DEMO_BUILD__ */
 import TextInput from "../atoms/TextInput";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";

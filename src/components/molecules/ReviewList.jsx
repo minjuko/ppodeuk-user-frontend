@@ -1,4 +1,3 @@
-import React from "react";
 import ReviewItem from "../atoms/ReviewItem";
 
 const ReviewList = ({ reviews }) => {

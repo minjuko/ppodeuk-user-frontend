@@ -1,4 +1,3 @@
-import React from "react";
 import LocationIcon from "/location_blue.svg";
 
 const DistanceFromHere = ({ distance, className }) => {

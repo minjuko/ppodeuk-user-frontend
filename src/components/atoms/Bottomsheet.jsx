@@ -1,5 +1,3 @@
-import React from "react";
-
 export const Bottomsheet = ({ className, children }) => {
   return (
     <div

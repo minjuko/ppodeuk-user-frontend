@@ -1,4 +1,3 @@
-import React from "react";
 import { Suspense } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import ScheduleTemplate from "../components/templates/ScheduleTemplate";

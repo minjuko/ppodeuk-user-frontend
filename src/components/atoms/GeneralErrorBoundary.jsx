@@ -13,7 +13,7 @@ export class GeneralErrorBoundary extends React.Component {
     return { error };
   }
 
-  componentDidCatch(error, errorInfo) {}
+  componentDidCatch() {}
 
   render() {
     if (this.state.error) {
@@ -40,7 +40,7 @@ export class GeneralErrorBoundary extends React.Component {
         <div className="flex items-center h-screen flex-cols">
           <div className="flex flex-col items-center gap-8">
             <img src={Warning} alt="에러 아이콘" className="block w-12" />
-            <p className="px-8 text-center">{errordetail}</p>
+            <p className="px-8 text-center">{errordetail || contents}</p>
           </div>
           <Button
             variant="long"

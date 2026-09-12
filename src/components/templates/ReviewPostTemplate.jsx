@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { StarPicker } from "../atoms/StarPicker";
 import { BadgeSet } from "../molecules/BadgeSet";

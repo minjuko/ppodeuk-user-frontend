@@ -1,4 +1,3 @@
-import React from "react";
 import { Suspense } from "react";
 import { useNavigate } from "react-router-dom";
 import { GeneralErrorBoundary } from "../components/atoms/GeneralErrorBoundary.jsx";

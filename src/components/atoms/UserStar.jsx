@@ -1,4 +1,4 @@
-import React, { useId } from "react";
+import { useId } from "react";
 
 const UserStar = ({ averageStar }) => {
   const uniqueId = useId();
@@ -28,7 +28,8 @@ const UserStar = ({ averageStar }) => {
             width="14"
             height="14"
             viewBox="0 0 14 13"
-            fill="#F4F4F4">
+            fill="#F4F4F4"
+          >
             <clipPath id={`clip-${uniqueId}-${item}`}>
               <rect width={ratesResArr[idx]} height="13" />
             </clipPath>

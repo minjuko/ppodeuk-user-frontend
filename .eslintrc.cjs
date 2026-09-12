@@ -9,11 +9,23 @@ module.exports = {
     "plugin:storybook/recommended",
     "plugin:prettier/recommended",
   ],
-  ignorePatterns: ["dist", ".eslintrc.cjs"],
+  ignorePatterns: [
+    "dist",
+    "dist-demo",
+    "dev-dist",
+    "storybook-static",
+    ".tmp-live-*",
+    ".eslintrc.cjs",
+  ],
   parserOptions: { ecmaVersion: "latest", sourceType: "module" },
   settings: { react: { version: "18.2" } },
   plugins: ["react-refresh"],
   rules: {
+    // This JavaScript codebase does not use runtime PropTypes. API contracts are
+    // covered by component tests and backend response normalization instead.
+    "react/prop-types": "off",
+    // Existing CSF exports intentionally retain their public camelCase names.
+    "storybook/prefer-pascal-case": "off",
     "react-refresh/only-export-components": [
       "warn",
       { allowConstantExport: true },
@@ -24,5 +36,9 @@ module.exports = {
         endOfLine: "auto",
       },
     ],
+  },
+  globals: {
+    // Replaced at build time by Vite's `define` option.
+    __DEMO_BUILD__: "readonly",
   },
 };

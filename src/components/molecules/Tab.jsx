@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import TabInfo from "../atoms/TabInfo";
 import TabReview from "../atoms/TabReview";
 

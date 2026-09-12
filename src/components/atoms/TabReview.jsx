@@ -1,4 +1,3 @@
-import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { carwashesReviews } from "../../apis/carwashes";
 import ReviewList from "../molecules/ReviewList";

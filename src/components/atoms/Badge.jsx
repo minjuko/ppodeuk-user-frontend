@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 const getType = (type) => {
   switch (type) {
@@ -26,7 +26,8 @@ export const Badge = ({ id, label, onClick, className }) => {
       <label
         className={`${
           isChecked ? getType("onclicked") : getType("unclicked")
-        } ${className}`}>
+        } ${className}`}
+      >
         <input
           type="checkbox"
           checked={isChecked}

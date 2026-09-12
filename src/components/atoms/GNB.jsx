@@ -1,4 +1,3 @@
-import React from "react";
 import Home from "/GNB/home.svg";
 import HomeActive from "/GNB/homeActive.svg";
 import Reservation from "/GNB/reservation.svg";

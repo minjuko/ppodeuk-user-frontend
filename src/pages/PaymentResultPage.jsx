@@ -1,4 +1,3 @@
-import React from "react";
 import { Suspense } from "react";
 import PaymentResultTemplate from "../components/templates/PaymentResultTemplate.jsx";
 import { GeneralErrorBoundary } from "../components/atoms/GeneralErrorBoundary.jsx";

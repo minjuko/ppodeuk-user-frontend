@@ -1,4 +1,3 @@
-import React from "react";
 import BayItem from "../molecules/BayItem";
 
 const BayList = ({ bays, openingHours, selectedDate, onClick }) => {

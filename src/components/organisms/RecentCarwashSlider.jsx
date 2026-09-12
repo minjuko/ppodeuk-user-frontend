@@ -1,4 +1,3 @@
-import React from "react";
 import { RecentCarwashItem } from "../molecules/RecentCarwashItem";
 
 export const RecentCarwashSlider = ({ recentList }) => {

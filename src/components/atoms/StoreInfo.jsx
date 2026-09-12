@@ -1,4 +1,3 @@
-import React from "react";
 import Image from "./Image";
 import TimeImage from "/StoreInfo/Time.svg";
 import MapImage from "/StoreInfo/Map.svg";
@@ -10,7 +9,7 @@ const StoreInfo = ({ weekhour, weekendhour, tel, address }) => {
     tel = tel.replace(/[^0-9]/g, "");
     return tel.replace(
       /(^02.{0}|^01.{1}|[0-9]{3})([0-9]+)([0-9]{4})/,
-      "$1-$2-$3"
+      "$1-$2-$3",
     );
   };
 

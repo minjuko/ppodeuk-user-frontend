@@ -1,5 +1,3 @@
-import React from "react";
-
 const getSelected = (selected) => {
   switch (selected) {
     case "selected":

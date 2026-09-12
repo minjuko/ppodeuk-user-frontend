@@ -1,4 +1,3 @@
-import Star from "../atoms/Star";
 import DistanceFromHere from "../atoms/DistanceFromHere";
 import UserStar from "../atoms/UserStar";
 import { useDispatch } from "react-redux";

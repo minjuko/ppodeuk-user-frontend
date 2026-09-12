@@ -1,4 +1,3 @@
-import React from "react";
 import UserStar from "../atoms/UserStar";
 import DistanceFromHere from "../atoms/DistanceFromHere";
 import { useNavigate } from "react-router-dom";

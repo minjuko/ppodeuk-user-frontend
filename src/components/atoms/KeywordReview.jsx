@@ -1,5 +1,3 @@
-import React from "react";
-
 const KeywordReview = ({ keyword, reviewCount, totalReviews }) => {
   const fillPercentage = (reviewCount / totalReviews) * 100;
 

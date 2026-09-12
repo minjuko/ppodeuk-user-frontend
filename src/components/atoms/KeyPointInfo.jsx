@@ -1,5 +1,3 @@
-import React from "react";
-
 const KeyPointInfo = ({ selectedPoints }) => {
   const keypointToText = {
     8: { text: "하부세차", icon: "/CarwashDetail/underside.svg" },

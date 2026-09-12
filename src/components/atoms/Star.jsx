@@ -1,4 +1,3 @@
-import React from "react";
 import StarImg from "/StarPicker/checkedstar.svg";
 
 const Star = ({ starCount, reviewCount }) => {

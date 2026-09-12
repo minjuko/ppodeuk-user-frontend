@@ -10,7 +10,7 @@ export const BadgeSet = ({ keywords, onSelectKeyword }) => {
       updatedSelectedKeywords = [...selectedKeywords, id];
     } else {
       updatedSelectedKeywords = selectedKeywords.filter(
-        (itemId) => itemId !== id
+        (itemId) => itemId !== id,
       );
     }
     setSelectedKeywords(updatedSelectedKeywords);

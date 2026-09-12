@@ -12,7 +12,14 @@ describe("Screenshot Mode boundary", () => {
     ["Live", "false", "true", false, false, false],
   ])(
     "%s mode keeps the expected Demo UI boundary",
-    async (_, demoMode, screenshotMode, expectedDemo, expectedScreenshot, expectedUi) => {
+    async (
+      _,
+      demoMode,
+      screenshotMode,
+      expectedDemo,
+      expectedScreenshot,
+      expectedUi,
+    ) => {
       const { resolveDemoMode } = await import("./mode");
 
       expect(resolveDemoMode({ demoMode, screenshotMode })).toEqual({

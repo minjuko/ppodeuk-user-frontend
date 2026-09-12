@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import TimeImage from "/StoreInfo/Time.svg";
 import Image from "../atoms/Image";
 import CustomModal from "../atoms/CustomModal";
@@ -18,7 +18,7 @@ import {
 
 const ScheduleTemplate = ({ carwashId, bayId }) => {
   const location = useLocation();
-  const [date, setDate] = useState(() => {
+  const [date] = useState(() => {
     const selectedDate = location.state?.selectedDate;
     return selectedDate ? new Date(selectedDate) : new Date();
   });
