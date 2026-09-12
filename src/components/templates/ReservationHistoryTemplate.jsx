@@ -4,13 +4,11 @@ import { reservationsCurrentstatus } from "../../apis/reservations";
 import { Button } from "../atoms/Button";
 import { useNavigate } from "react-router-dom";
 import LogoIcon from "/bdbd_icon.svg";
-import dayjs from "dayjs";
 
 const ReservationHistoryTemplate = () => {
-  const selectedAt = dayjs(Date.now()).format("YYYY-MM-DDTHH:mm:ss");
   const { data } = useSuspenseQuery({
-    queryKey: ["getHistory", selectedAt],
-    queryFn: () => reservationsCurrentstatus(selectedAt),
+    queryKey: ["getHistory"],
+    queryFn: reservationsCurrentstatus,
   });
 
   const navigate = useNavigate();

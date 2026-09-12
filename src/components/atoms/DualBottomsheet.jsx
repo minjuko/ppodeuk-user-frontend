@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useSpring, animated, config } from "@react-spring/web";
-import { useDrag } from "react-use-gesture";
+import { useDrag } from "@use-gesture/react";
 
 const EXPANDED_Y = 40;
 const COLLAPSED_Y = 350;
@@ -14,31 +14,31 @@ const DualBottomsheet = ({ className, children }) => {
   }));
 
   const bind = useDrag(
-    ({ movement: [, my], down, tap, first, last }) => {
+    ({ offset: [, yOffset], down, tap, first, last }) => {
       if (tap) {
         return;
       }
 
       if (first) {
-        set({ y: my });
+        set({ y: yOffset });
       } else if (last) {
         const closeThreshold = EXPANDED_Y + 5;
         const openThreshold = COLLAPSED_Y - 5;
 
-        if (expanded == true && my > closeThreshold) {
+        if (expanded == true && yOffset > closeThreshold) {
           set({ y: COLLAPSED_Y, config: { duration: 250 } });
           setExpanded(false);
         }
-        if (expanded == false && my < openThreshold) {
+        if (expanded == false && yOffset < openThreshold) {
           set({ y: EXPANDED_Y, config: { duration: 250 } });
           setExpanded(true);
         }
       } else {
-        set({ y: my, immediate: down, config: { duration: 0 } });
+        set({ y: yOffset, immediate: down, config: { duration: 0 } });
       }
     },
     {
-      initial: () => [0, y.get()],
+      from: () => [0, y.get()],
       bounds: { left: 0, right: 0, top: EXPANDED_Y, bottom: COLLAPSED_Y },
       rubberband: true,
     },

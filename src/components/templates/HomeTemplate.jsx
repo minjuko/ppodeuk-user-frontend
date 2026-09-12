@@ -12,7 +12,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../store/authSlice";
 import { resetStore } from "../../store/action";
 import LogoIcon from "/bdbd_icon.svg";
-import dayjs from "dayjs";
 
 const HomeTemplate = () => {
   const navigate = useNavigate();
@@ -22,8 +21,6 @@ const HomeTemplate = () => {
     latitude: 35.14,
     longitude: 126.9,
   });
-  const selectedAt = dayjs(Date.now()).format("YYYY-MM-DDTHH:mm:ss");
-
   const { isLoggedIn, userName } = useSelector((state) => state.auth);
 
   useEffect(() => {
@@ -45,8 +42,8 @@ const HomeTemplate = () => {
           carwashesRecommended(location.latitude, location.longitude),
       },
       {
-        queryKey: ["recent", selectedAt],
-        queryFn: () => reservationsRecent(selectedAt),
+        queryKey: ["recent"],
+        queryFn: reservationsRecent,
         enabled: isLoggedIn,
       },
     ],

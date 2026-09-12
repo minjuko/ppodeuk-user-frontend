@@ -5,7 +5,7 @@ import DualBottomsheet from "./DualBottomsheet";
 const gesture = vi.hoisted(() => ({ handler: null }));
 const setSpring = vi.fn();
 
-vi.mock("react-use-gesture", () => ({
+vi.mock("@use-gesture/react", () => ({
   useDrag: (handler) => {
     gesture.handler = handler;
     return () => ({});
@@ -30,7 +30,7 @@ describe("예약 검색 bottom sheet", () => {
     render(<DualBottomsheet>content</DualBottomsheet>);
     expect(() =>
       gesture.handler({
-        movement: [0, 200],
+        offset: [0, 200],
         down: true,
         tap: false,
         first: false,
