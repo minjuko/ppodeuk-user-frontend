@@ -52,6 +52,6 @@ PaymentWaiting, PaymentResult, store와 reservation item tests로 direct access,
 | Store | 6 | reservation/payment state lifecycle |
 | Signup | 5 | Backend password contract, async mutation |
 | UI/runtime regression | 16 | picker reset, payment callback/result, empty/error/null, keyboard |
-| **합계** | **61** | **16 test files** |
+| **합계** | **74** | **18 test files** |
 
-실행 명령은 `npm test`이며, README 작성 시점에 16 files / 61 tests가 통과했습니다.
+실행 명령은 `npm test`이며, 최종 검증 결과 18 files / 74 tests가 통과했습니다.

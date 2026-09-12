@@ -11,7 +11,7 @@ export default {
 
 export const defaultStar = {
   args: {
-    starcount: "0.0",
-    reviewcount: "0.0",
+    starCount: "0.0",
+    reviewCount: 0,
   },
 };

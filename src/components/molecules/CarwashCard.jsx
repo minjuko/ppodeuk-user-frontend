@@ -18,7 +18,7 @@ export const CarwashCard = ({ id, image, name, address, rate, distance }) => {
 
   return (
     <div
-      className="relative overflow-hidden shadow-xl h-60 rounded-xl"
+      className="relative overflow-hidden shadow-xl h-64 rounded-xl"
       onClick={handleClick}
       onKeyDown={(event) => {
         if (event.key === "Enter" || event.key === " ") handleClick();
@@ -26,11 +26,11 @@ export const CarwashCard = ({ id, image, name, address, rate, distance }) => {
       role="button"
       tabIndex={0}
     >
-      <div className="relative h-36 overflow-hidden bg-slate-100">
+      <div className="relative h-40 overflow-hidden bg-slate-100">
         <img
           src={imageUrl}
           alt={name}
-          className="absolute inset-0 w-full h-full object-contain"
+          className="absolute inset-0 w-full h-full object-cover object-top"
         />
       </div>
       <div className="absolute bottom-0 z-10 w-full h-24 p-4 bg-white">

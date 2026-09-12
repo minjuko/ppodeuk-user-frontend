@@ -1,8 +1,7 @@
-import React from "react";
-import { v4 as uuidv4 } from "uuid";
+import React, { useId } from "react";
 
 const UserStar = ({ averageStar }) => {
-  const uniqueId = uuidv4();
+  const uniqueId = useId();
   const STAR_IDX_ARR = ["1", "2", "3", "4", "5"];
 
   const calculateStarRates = () => {

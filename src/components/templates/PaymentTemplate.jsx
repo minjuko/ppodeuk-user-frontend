@@ -61,7 +61,12 @@ const PaymentTemplate = () => {
 
       dispatch(saveTid(response.tid));
 
-      setRedirectLink(nextRedirectUrl);
+      // 로컬 백엔드 콜백 URL이 다른 프론트 포트로 설정되어 있어도
+      // 현재 결제를 시작한 사용자 앱으로 돌아오도록 origin을 보정합니다.
+      const callbackUrl = new URL(nextRedirectUrl, window.location.origin);
+      setRedirectLink(
+        `${window.location.origin}${callbackUrl.pathname}${callbackUrl.search}`,
+      );
     },
     onError: (error) => {
       dispatch(clearPayment());

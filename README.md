@@ -6,7 +6,7 @@
 
 ![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-4-646CFF?logo=vite&logoColor=white)
-![Tests](https://img.shields.io/badge/Tests-73%20passed-2EA44F)
+![Tests](https://img.shields.io/badge/Tests-74%20passed-2EA44F)
 ![Demo](https://img.shields.io/badge/Portfolio%20Demo-Preparing-lightgrey)
 
 <p align="center">
@@ -20,7 +20,7 @@
 |---|---|
 | 프로젝트 | 뽀득뽀득 |
 | 형태 | Kakao Tech Campus, 6인 팀 프로젝트 |
-| 기간 | 2023.09.25–2023.11.11 |
+| 기간 | 2023.09.14–2023.12.02 |
 | 서비스 | 셀프세차장 탐색·예약·결제·리뷰 서비스 |
 | Frontend | React 기반 USER / OWNER 모바일 웹 |
 | Backend | Spring Boot, MariaDB |
@@ -168,18 +168,17 @@ Route-level lazy loading과 공통 `Suspense` fallback을 적용하고 loading/e
 
 | Metric | Before | After | Reduction |
 |---|---:|---:|---:|
-| Main JavaScript | 528.08 kB | 302.68 kB | **42.68%** |
-| gzip | 177.45 kB | 98.78 kB | **44.33%** |
+| Main JavaScript | 528.08 kB | 343.12 kB | **35.02%** |
+| gzip | 177.45 kB | 113.08 kB | **36.28%** |
 
 ## Testing & Performance
 
 | 검증 | 결과 |
 |---|---:|
-| Frontend tests | **73 / 73 passed** |
+| Frontend tests | **74 / 74 passed** |
 | Test files | **18 / 18 passed** |
 | Reservation rule regression | **24 / 24 passed** |
-| Live production source build | Passed |
-| Demo production build | Passed |
+| Production build | Passed (722 modules transformed) |
 
 Backend local integration regression 19개는 Frontend 수치와 분리해 검증했습니다. 전체 테스트 범위와 구현 근거는 [Refactoring Notes](docs/refactoring.md)를 참고하세요.
 
@@ -196,9 +195,7 @@ Backend local integration regression 19개는 Frontend 수치와 분리해 검�
 
 Backend나 실제 결제 서비스 없이도 로그인 → 탐색 → 예약 → 결제 → 예약 취소 → 리뷰 등록 흐름을 확인할 수 있는 Stateful MSW 기반 Demo를 제공합니다. Demo state는 브라우저를 새로고침하면 초기 seed로 돌아갑니다.
 
-**Demo URL:** 배포 후 추가 예정
-
-<!-- TODO: Add Vercel Portfolio Demo URL -->
+Demo는 배포하지 않으며 아래 명령으로 로컬에서 확인할 수 있습니다.
 
 ```bash
 npm ci
@@ -227,10 +224,12 @@ USER 저장소 URL은 현재 `origin` remote에서 확인했습니다. OWNER와 
 
 ## Team & Credits
 
-Kakao Tech Campus 1기 3단계에서 **Frontend 3명, Backend 3명**이 2023.09.25부터 2023.11.11까지 함께 개발했습니다.
+Kakao Tech Campus 1기 3단계에서 **Frontend 3명, Backend 3명**(총 6명)이 2023.09.14부터 2023.12.02까지 함께 개발했습니다. 이 저장소의 개인 담당은 USER Frontend와 예약 흐름 중심입니다.
 
 | Frontend | Backend |
 |---|---|
 | [노주영](https://github.com/juyeongnoh) · [김좌훈](https://github.com/catnofat) · [고민주](https://github.com/minjuko) | [김명지](https://github.com/Starlight258) · [김철호](https://github.com/Cheoroo) · [이유진](https://github.com/2Using) |
 
 팀 전체 서비스 기능과 이 README의 개인 기여 범위는 구분해 작성했습니다. 2023년 프로젝트 종료 당시 README는 [README-2023-original.md](docs/archive/README-2023-original.md)에 보존되어 있습니다.
+
+상세 기술 문서: [ERD 설계서](https://www.notion.so/ERD-984ec51ccd7e435f8331857a325d1516?pvs=4) · [API 명세서](https://www.notion.so/API-67efa4eea535426b89649a8c311b80a0?pvs=4)

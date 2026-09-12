@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useSpring, animated, config } from "react-spring";
+import { useSpring, animated, config } from "@react-spring/web";
 import { useDrag } from "react-use-gesture";
 
 const EXPANDED_Y = 40;

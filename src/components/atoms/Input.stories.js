@@ -1,8 +1,8 @@
-import { Input } from "./Input";
+import TextInput from "./TextInput";
 
 export default {
   title: "Atoms/Input",
-  component: Input,
+  component: TextInput,
   parameters: {
     layout: "centered",
   },

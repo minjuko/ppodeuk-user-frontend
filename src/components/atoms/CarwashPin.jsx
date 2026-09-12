@@ -23,6 +23,7 @@ export const CarwashPin = ({ picurl = "", selected, alt }) => {
           <img
             className="absolute top-0 left-0 w-12 h-12 rounded"
             src={picurl}
+            alt={alt || "세차장"}
           />
         </div>
       </div>
@@ -34,6 +35,7 @@ export const CarwashPin = ({ picurl = "", selected, alt }) => {
               ? "src/assets/images/pin_selected.png"
               : "src/assets/images/pin_unselected.png"
           }`}
+          alt="지도 핀"
         />
       </div>
     </div>

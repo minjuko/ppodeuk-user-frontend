@@ -11,7 +11,7 @@ vi.mock("react-use-gesture", () => ({
     return () => ({});
   },
 }));
-vi.mock("react-spring", () => ({
+vi.mock("@react-spring/web", () => ({
   animated: { div: "div" },
   config: { stiff: {} },
   useSpring: () => [
