@@ -1,13 +1,14 @@
 # 뽀득뽀득
 
-> 위치 기반 셀프세차장 탐색부터 Bay 예약, 결제, 리뷰까지 연결한 모바일 웹 기반 셀프세차장 예약 서비스
+> 셀프세차장 탐색부터 예약·결제·리뷰까지 제공하는 모바일 웹 서비스
 
-뽀득뽀득은 6명이 함께 개발한 팀 프로젝트입니다. React 기반 USER Frontend에서 세차장 탐색 → 예약 → 결제 → 예약 관리 → 리뷰로 이어지는 사용자 흐름을 제공합니다. 저는 Bay와 이용 시간을 선택하는 예약 흐름을 중심으로 구현에 참여했으며, 이후 포트폴리오 정리 과정에서 예약·결제 안정성, regression test, Stateful MSW Demo 환경을 보강했습니다.
+뽀득뽀득은 6명이 함께 개발한 팀 프로젝트입니다. React 기반 USER Frontend에서 세차장 탐색 → 예약 → 결제 → 예약 관리 → 리뷰로 이어지는 사용자 흐름을 제공합니다. 저는 Bay와 이용 시간을 선택하는 예약 흐름을 중심으로 구현에 참여했으며, 이후 포트폴리오 정리 과정에서 예약·결제 안정성, 회귀 테스트, Stateful MSW Demo 환경을 보강했습니다.
 
 ![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-4-646CFF?logo=vite&logoColor=white)
 ![Tests](https://img.shields.io/badge/Tests-74%20passed-2EA44F)
-![Demo](https://img.shields.io/badge/Portfolio%20Demo-Preparing-lightgrey)
+![Demo](https://img.shields.io/badge/Local%20Demo-Available-2EA44F)
+[![CI](https://github.com/minjuko/Team10_FE_USER/actions/workflows/ci.yml/badge.svg)](https://github.com/minjuko/Team10_FE_USER/actions/workflows/ci.yml)
 
 <p align="center">
   <img src="./docs/assets/readme/user/reservation/reservation_flow.png" alt="Bay 선택부터 예약 시간, 결제, 예약 완료까지의 사용자 흐름" width="92%">
@@ -19,7 +20,7 @@
 | 항목 | 내용 |
 |---|---|
 | 프로젝트 | 뽀득뽀득 |
-| 형태 | Kakao Tech Campus, 6인 팀 프로젝트 |
+| 형태 | 카카오 테크 캠퍼스 1기, 6인 팀 프로젝트 |
 | 기간 | 2023.09.14–2023.12.02 |
 | 서비스 | 셀프세차장 탐색·예약·결제·리뷰 서비스 |
 | Frontend | React 기반 USER / OWNER 모바일 웹 |
@@ -82,7 +83,7 @@ flowchart LR
   API --> DB[(MariaDB)]
   USER -. location .-> MAP[Kakao Maps]
   API -. payment .-> PAY[KakaoPay]
-  API -. files .-> STORE[Object Storage]
+  API -. files .-> STORE[AWS S3]
 ```
 
 Portfolio Demo는 동일한 API service와 Axios 경계를 유지한 채 Spring Boot 대신 Stateful MSW를 사용합니다. 기존 Backend fork를 이용한 local integration과 인증·결제 경계는 [Architecture Notes](docs/architecture.md)와 [Local Full-stack Reproduction](docs/local-reproduction.md)에 정리했습니다.
@@ -99,7 +100,7 @@ Portfolio Demo는 동일한 API service와 Axios 경계를 유지한 채 Spring 
 | Test / Demo | Vitest, React Testing Library, MSW |
 | Build | Vite PWA Plugin, route-level lazy loading |
 | Backend / Data | Spring Boot, MariaDB |
-| External | KakaoPay, Object Storage |
+| External | KakaoPay, AWS S3 |
 
 ## My Contribution
 
@@ -123,7 +124,7 @@ OWNER Frontend에서는 세차장 등록 화면의 초기 구조와 일부 입�
 
 ### Backend — Portfolio Maintenance
 
-2023년 Backend 원 개발 담당자는 아닙니다. 포트폴리오 정리 과정에서 기존 Spring Boot Backend fork를 Java 17·MariaDB local 환경에서 다시 실행할 수 있도록 복구하고 USER Frontend와의 integration을 검증했습니다. Local profile과 seed, JWT/CORS 연결, local-only 결제 흐름을 정리하고 cross-day 예약 datetime 경계 오류를 보완해 관련 regression test를 추가했습니다.
+2023년 Backend 원 개발 담당자는 아닙니다. 포트폴리오 정리 과정에서 기존 Spring Boot Backend fork를 Java 17·MariaDB local 환경에서 다시 실행할 수 있도록 복구하고 USER Frontend와의 integration을 검증했습니다. Local profile과 seed, JWT/CORS 연결, local-only 결제 흐름을 정리하고 cross-day 예약 datetime 경계 오류를 보완해 관련 회귀 테스트를 추가했습니다.
 
 ## Engineering Challenges
 
@@ -134,7 +135,7 @@ OWNER Frontend에서는 세차장 등록 화면의 초기 구조와 일부 입�
 | Problem | 30분 단위 예약에서 영업 시작·종료, 현재 시각, duration, 기존 예약이 함께 작용해 잘못된 slot이나 이전 선택이 남을 수 있었습니다. |
 | Cause | 시간 계산이 picker 표시와 Redux state 변경에 섞여 있어 overlap, 인접 예약, 날짜 변경과 cross-day 경계를 일관되게 검증하기 어려웠습니다. |
 | Improvement | 시간 규칙을 pure function으로 분리하고 날짜 변경 시 시작 시간, 시작 시간 변경 시 duration을 reset했습니다. Frontend에서 실제 datetime을 구성하고 Backend의 중복 `+1 day` 보정을 제거해 자정 경계를 한 번만 처리했습니다. |
-| Verification | 영업시간, 30분 slot, duration, overlap·인접 예약과 cross-day를 포함한 **24개 reservation regression test**로 검증했습니다. |
+| Verification | 영업시간, 30분 slot, duration, overlap·인접 예약과 cross-day를 포함한 **24개 reservation 회귀 테스트**로 검증했습니다. |
 
 세부 규칙과 matrix는 [Refactoring Notes](docs/refactoring.md#reservation-business-rules)에서 확인할 수 있습니다.
 
@@ -145,7 +146,7 @@ OWNER Frontend에서는 세차장 등록 화면의 초기 구조와 일부 입�
 | Problem | 오래된 `tid`, callback 직접 접근·새로고침, 실패 후 retry가 중복 approve나 잘못된 완료 상태로 이어질 수 있었습니다. |
 | Cause | 외부 결제 페이지 이동 전후의 state, approve mutation, 완료 후 예약 state 초기화 책임이 분산돼 있었습니다. |
 | Improvement | callback token과 state를 검증하고 잘못된 접근에서는 stale `tid`를 제거했습니다. 진행 중 중복 요청을 차단하고 실패 후 retry를 분리했으며, 완료가 확인된 뒤 예약 state와 query cache를 동기화했습니다. |
-| Verification | callback 누락, direct access, duplicate approve 방지, 결과 fallback, Redux reset과 cache invalidation을 regression test로 확인했습니다. |
+| Verification | callback 누락, direct access, duplicate approve 방지, 결과 fallback, Redux reset과 cache invalidation을 회귀 테스트로 확인했습니다. |
 
 이는 기존 결제 연동을 사용하는 Frontend lifecycle 안정화 작업이며 KakaoPay Backend 구현을 의미하지 않습니다.
 
@@ -177,10 +178,10 @@ Route-level lazy loading과 공통 `Suspense` fallback을 적용하고 loading/e
 |---|---:|
 | Frontend tests | **74 / 74 passed** |
 | Test files | **18 / 18 passed** |
-| Reservation rule regression | **24 / 24 passed** |
-| Production build | Passed (722 modules transformed) |
+| Reservation rule 회귀 테스트 | **24 / 24 passed** |
+| Production build | Passed (728 modules transformed) |
 
-Backend local integration regression 19개는 Frontend 수치와 분리해 검증했습니다. 전체 테스트 범위와 구현 근거는 [Refactoring Notes](docs/refactoring.md)를 참고하세요.
+Backend local integration 회귀 테스트 19개는 Frontend 수치와 분리해 검증했습니다. 전체 테스트 범위와 구현 근거는 [Refactoring Notes](docs/refactoring.md)를 참고하세요.
 
 ### Live / Demo Boundary
 
@@ -219,12 +220,12 @@ USER 저장소 URL은 현재 `origin` remote에서 확인했습니다. OWNER와 
 - Demo state는 영구 저장하지 않으며 브라우저 새로고침 시 초기화됩니다.
 - Demo payment는 실제 KakaoPay 결제가 아닌 lifecycle 재현용 local flow입니다.
 - Production 환경의 동시 예약 race condition은 별도의 서버 측 동시성 제어가 필요합니다.
-- OWNER의 일부 mutation과 외부 Object Storage 연동은 Portfolio Demo 범위 밖입니다.
+- OWNER의 일부 mutation과 외부 AWS S3 연동은 Portfolio Demo 범위 밖입니다.
 - 실제 Kakao Map과 외부 서비스 동작은 각 서비스의 환경 설정과 사용 가능 상태에 영향을 받습니다.
 
 ## Team & Credits
 
-Kakao Tech Campus 1기 3단계에서 **Frontend 3명, Backend 3명**(총 6명)이 2023.09.14부터 2023.12.02까지 함께 개발했습니다. 이 저장소의 개인 담당은 USER Frontend와 예약 흐름 중심입니다.
+카카오 테크 캠퍼스 1기 3단계에서 **Frontend 3명, Backend 3명**(총 6명)이 2023.09.14부터 2023.12.02까지 함께 개발했습니다. 이 저장소의 개인 담당은 USER Frontend와 예약 흐름 중심입니다.
 
 | Frontend | Backend |
 |---|---|
