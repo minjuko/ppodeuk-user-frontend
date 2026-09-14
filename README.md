@@ -8,7 +8,7 @@
 ![Vite](https://img.shields.io/badge/Vite-4-646CFF?logo=vite&logoColor=white)
 ![Tests](https://img.shields.io/badge/Tests-74%20passed-2EA44F)
 ![Demo](https://img.shields.io/badge/Local%20Demo-Available-2EA44F)
-[![CI](https://github.com/minjuko/Team10_FE_USER/actions/workflows/ci.yml/badge.svg)](https://github.com/minjuko/Team10_FE_USER/actions/workflows/ci.yml)
+[![CI](https://github.com/minjuko/ppodeuk-user-frontend/actions/workflows/ci.yml/badge.svg)](https://github.com/minjuko/ppodeuk-user-frontend/actions/workflows/ci.yml)
 
 <p align="center">
   <img src="./docs/assets/readme/user/reservation/reservation_flow.png" alt="Bay 선택부터 예약 시간, 결제, 예약 완료까지의 사용자 흐름" width="92%">
@@ -209,9 +209,9 @@ Production Demo build는 `npm run build:demo`로 생성할 수 있습니다.
 
 | Repository | 역할 | 개인 기여 경계 |
 |---|---|---|
-| **[Team10_FE_USER](https://github.com/minjuko/Team10_FE_USER)** | **Main USER Frontend** | 예약 흐름 중심 구현 및 포트폴리오 안정화 |
-| [Team10_FE_OWNER](https://github.com/minjuko/Team10_FE_OWNER) | Supporting OWNER Frontend | 등록 화면과 일부 입력 UI 초기 구현 |
-| [Team10_BE](https://github.com/minjuko/Team10_BE) | Spring Boot Backend | 원 개발 담당 아님; local reproduction·integration 보완 |
+| **[ppodeuk-user-frontend](https://github.com/minjuko/ppodeuk-user-frontend)** | **Main USER Frontend** | 예약 흐름 중심 구현 및 포트폴리오 안정화 |
+| [ppodeuk-owner-frontend](https://github.com/minjuko/ppodeuk-owner-frontend) | Supporting OWNER Frontend | 등록 화면과 일부 입력 UI 초기 구현 |
+| [ppodeuk-backend](https://github.com/minjuko/ppodeuk-backend) | Spring Boot Backend | 원 개발 담당 아님; local reproduction·integration 보완 |
 
 USER 저장소 URL은 현재 `origin` remote에서 확인했습니다. OWNER와 Backend는 기존 프로젝트 문서에 연결된 fork 저장소입니다.
 
