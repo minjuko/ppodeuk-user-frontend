@@ -61,12 +61,9 @@ const PaymentTemplate = () => {
 
       dispatch(saveTid(response.tid));
 
-      // 로컬 백엔드 콜백 URL이 다른 프론트 포트로 설정되어 있어도
-      // 현재 결제를 시작한 사용자 앱으로 돌아오도록 origin을 보정합니다.
-      const callbackUrl = new URL(nextRedirectUrl, window.location.origin);
-      setRedirectLink(
-        `${window.location.origin}${callbackUrl.pathname}${callbackUrl.search}`,
-      );
+      // KakaoPay의 next_redirect_*_url은 외부 결제 브릿지 URL입니다.
+      // origin을 현재 프론트로 바꾸면 KakaoPay 인증 화면에 진입할 수 없습니다.
+      setRedirectLink(nextRedirectUrl);
     },
     onError: (error) => {
       dispatch(clearPayment());
