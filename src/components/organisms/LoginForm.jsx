@@ -11,6 +11,13 @@ import Close from "/close.svg";
 import { showDemoUi } from "../../demo/mode";
 import { DEMO_CREDENTIALS } from "../../mocks/demoData";
 
+const PORTFOLIO_CREDENTIALS = showDemoUi
+  ? DEMO_CREDENTIALS
+  : {
+      email: "test-user@example.com",
+      password: "test1234!",
+    };
+
 const ValidationMessage = ({ message }) => (
   <small
     className="block min-h-10 text-red-500"
@@ -137,32 +144,31 @@ const LoginForm = () => {
             >
               로그인
             </Button>
-            {__DEMO_BUILD__ && showDemoUi && (
-              <div className="grid gap-2 p-3 text-sm border border-yellow-300 rounded-lg bg-yellow-50">
-                <div>
-                  <strong>Portfolio Demo</strong>
-                  <br />
-                  실제 계정이나 결제 정보가 필요하지 않습니다.
-                </div>
-                <Button
-                  variant="long"
-                  className="rounded-lg"
-                  onClick={() => {
-                    setValue("email", DEMO_CREDENTIALS.email, {
-                      shouldValidate: true,
-                    });
-                    setValue("password", DEMO_CREDENTIALS.password, {
-                      shouldValidate: true,
-                    });
-                  }}
-                >
-                  데모 계정 입력
-                </Button>
-                <small>
-                  {DEMO_CREDENTIALS.email} / {DEMO_CREDENTIALS.password}
-                </small>
+            <div className="flex items-center justify-between gap-3 p-3 text-sm border border-sky-200 rounded-lg bg-sky-50">
+              <div className="min-w-0">
+                <p className="font-semibold text-sky-700">처음 방문하셨나요?</p>
+                <p className="mt-1">테스트 계정으로 바로 체험해 보세요.</p>
+                <p className="mt-1 text-xs text-gray-500 break-all">
+                  {PORTFOLIO_CREDENTIALS.email} /{" "}
+                  {PORTFOLIO_CREDENTIALS.password}
+                </p>
               </div>
-            )}
+              <Button
+                type="button"
+                variant="demo"
+                onClick={() => {
+                  setValue("email", PORTFOLIO_CREDENTIALS.email, {
+                    shouldValidate: true,
+                  });
+                  setValue("password", PORTFOLIO_CREDENTIALS.password, {
+                    shouldValidate: true,
+                  });
+                }}
+                aria-label="테스트 계정 정보 입력"
+              >
+                테스트 계정 사용
+              </Button>
+            </div>
             <Link
               to="/signup"
               className="w-full p-4 font-semibold text-center text-gray-700 border border-slate-200 bg-[aliceblue] h-14 rounded-xl active:filter active:brightness-75"
