@@ -3,6 +3,7 @@ import { carwashesReviews } from "../../apis/carwashes";
 import ReviewList from "../molecules/ReviewList";
 import KeywordReview from "./KeywordReview";
 import UserStar from "./UserStar";
+import Loader from "./Loader";
 
 const TabReview = ({ carwashId }) => {
   const {
@@ -42,7 +43,8 @@ const TabReview = ({ carwashId }) => {
     return keywordMapping[id] || "존재하지 않음";
   };
 
-  if (isPending) return <div role="status">리뷰를 불러오는 중입니다.</div>;
+  if (isPending)
+    return <Loader variant="inline" label="리뷰를 불러오는 중입니다." />;
   if (isError) return <div role="alert">리뷰를 불러오지 못했습니다.</div>;
 
   return (

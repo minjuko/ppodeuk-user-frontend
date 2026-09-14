@@ -97,7 +97,13 @@ const ReservationItem = ({
           onClick={() => setIsModalOpen(true)}
           className="bg-red-500 rounded-md "
         >
-          {mutation.isPending ? "취소 중..." : "예약 취소"}
+          {mutation.isPending ? (
+            <span role="status" aria-live="polite">
+              취소 중...
+            </span>
+          ) : (
+            "예약 취소"
+          )}
         </Button>
       )}
       {buttontype === "review" && (

@@ -281,7 +281,13 @@ const SignupForm = () => {
             variant="long"
             className="rounded-xl"
           >
-            {mutation.isPending ? "가입 중..." : "회원가입"}
+            {mutation.isPending ? (
+              <span role="status" aria-live="polite">
+                가입 중...
+              </span>
+            ) : (
+              "회원가입"
+            )}
           </Button>
           {submitMessage && (
             <small

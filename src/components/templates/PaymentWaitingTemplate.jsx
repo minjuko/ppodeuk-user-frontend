@@ -117,7 +117,13 @@ const PaymentWaitingTemplate = () => {
         onClick={handlePayment}
         disabled={isApproving}
       >
-        {isApproving ? "결제 승인 중..." : "결제 완료를 위해 클릭하세요"}
+        {isApproving ? (
+          <span role="status" aria-live="polite">
+            결제 승인 중...
+          </span>
+        ) : (
+          "결제 완료를 위해 클릭하세요"
+        )}
       </Button>
       <CustomModal
         isOpen={isModalOpen}

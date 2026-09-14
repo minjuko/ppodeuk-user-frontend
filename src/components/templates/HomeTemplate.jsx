@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../store/authSlice";
 import { resetStore } from "../../store/action";
 import LogoIcon from "/bdbd_icon.svg";
+import Loader from "../atoms/Loader";
 
 const HomeTemplate = () => {
   const navigate = useNavigate();
@@ -119,7 +120,7 @@ const HomeTemplate = () => {
       <section className="grid-4">
         <h2 className="text-xl font-semibold">이런 세차장 어때요?</h2>
         {recommended.isPending ? (
-          <div role="status">추천 세차장을 불러오는 중입니다.</div>
+          <Loader variant="inline" label="추천 세차장을 불러오는 중입니다." />
         ) : recommended.isError ? (
           <div role="alert">추천 세차장을 불러오지 못했습니다.</div>
         ) : recommendedData ? (
@@ -140,7 +141,10 @@ const HomeTemplate = () => {
         <section className="grid-4">
           <h2 className="text-xl font-semibold">최근 이용 내역</h2>
           {recent.isPending ? (
-            <div role="status">최근 이용 내역을 불러오는 중입니다.</div>
+            <Loader
+              variant="inline"
+              label="최근 이용 내역을 불러오는 중입니다."
+            />
           ) : recent.isError ? (
             <div role="alert">최근 이용 내역을 불러오지 못했습니다.</div>
           ) : recentList.length === 0 ? (

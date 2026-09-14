@@ -139,7 +139,13 @@ const ReviewPostTemplate = () => {
           disabled={mutation.isPending}
           className="fixed bottom-0 left-0"
         >
-          {mutation.isPending ? "등록 중..." : "리뷰 등록하기"}
+          {mutation.isPending ? (
+            <span role="status" aria-live="polite">
+              등록 중...
+            </span>
+          ) : (
+            "리뷰 등록하기"
+          )}
         </Button>
         <CustomModal
           isOpen={isModalOpen}

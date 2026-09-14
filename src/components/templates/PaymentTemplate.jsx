@@ -187,7 +187,15 @@ const PaymentTemplate = () => {
       >
         <div className="flex items-center justify-center gap-2 text-xl font-semibold">
           <img src={KakaoPayIcon} alt="카카오페이 아이콘" className="w-14" />
-          <div>{isPreparingPayment ? "결제 준비 중..." : "결제하기"}</div>
+          <div>
+            {isPreparingPayment ? (
+              <span role="status" aria-live="polite">
+                결제 준비 중...
+              </span>
+            ) : (
+              "결제하기"
+            )}
+          </div>
         </div>
       </Button>
       <CustomModal
