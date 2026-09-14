@@ -66,7 +66,7 @@ const LoginForm = () => {
   const {
     register,
     handleSubmit,
-    setValue,
+    reset,
     watch,
     formState: { isSubmitting, errors },
   } = useForm({
@@ -157,11 +157,9 @@ const LoginForm = () => {
                 type="button"
                 variant="demo"
                 onClick={() => {
-                  setValue("email", PORTFOLIO_CREDENTIALS.email, {
-                    shouldValidate: true,
-                  });
-                  setValue("password", PORTFOLIO_CREDENTIALS.password, {
-                    shouldValidate: true,
+                  reset({
+                    email: PORTFOLIO_CREDENTIALS.email,
+                    password: PORTFOLIO_CREDENTIALS.password,
                   });
                 }}
                 aria-label="테스트 계정 정보 입력"
