@@ -7,7 +7,7 @@
 ![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-4-646CFF?logo=vite&logoColor=white)
 ![Tests](https://img.shields.io/badge/Tests-74%20passed-2EA44F)
-![Demo](https://img.shields.io/badge/Local%20Demo-Available-2EA44F)
+![Live](https://img.shields.io/badge/Live%20Deployment-Available-2EA44F)
 [![CI](https://github.com/minjuko/ppodeuk-user-frontend/actions/workflows/ci.yml/badge.svg)](https://github.com/minjuko/ppodeuk-user-frontend/actions/workflows/ci.yml)
 
 <p align="center">
@@ -29,6 +29,16 @@
 | Portfolio | USER Frontend 안정성·테스트 개선 및 Stateful Demo 구축 |
 
 서비스는 고객용 **USER**와 사업자용 **OWNER**로 구성됩니다. USER는 주변 세차장과 리뷰를 살펴보고 Bay·날짜·시간·이용 시간을 선택해 결제한 뒤 예약을 취소하거나 리뷰를 작성할 수 있습니다. OWNER는 별도 Frontend에서 세차장, Bay, 예약 현황과 매출을 관리합니다.
+
+## Live Deployment
+
+| Service | URL | Environment |
+|---|---|---|
+| USER Frontend | [ppodeuk-user.vercel.app](https://ppodeuk-user.vercel.app/) | Vercel |
+| OWNER Frontend | [ppodeuk-owner.vercel.app](https://ppodeuk-owner.vercel.app/) | Vercel |
+| Backend API | [team10be-production.up.railway.app](https://team10be-production.up.railway.app/) | Railway · MariaDB |
+
+USER·OWNER Frontend와 Spring Boot API·MariaDB를 연결해 배포했으며, USER 예약 흐름의 **KakaoPay 테스트 결제**까지 확인했습니다. 테스트 결제는 실제 청구를 위한 운영 결제가 아닙니다.
 
 ## Key Features
 
