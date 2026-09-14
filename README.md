@@ -40,6 +40,15 @@
 
 USER·OWNER Frontend와 Spring Boot API·MariaDB를 연결해 배포했으며, USER 예약 흐름의 **KakaoPay 테스트 결제**까지 확인했습니다. 테스트 결제는 실제 청구를 위한 운영 결제가 아닙니다.
 
+### Portfolio Test Accounts
+
+| App | Email | Password |
+|---|---|---|
+| USER | `test-user@example.com` | `test1234!` |
+| OWNER | `test-owner@example.com` | `test1234!` |
+
+공용 데모 계정이므로 예약·리뷰·매장 데이터가 다른 방문자에게도 보일 수 있습니다. 실제 개인정보나 결제정보는 입력하지 마세요.
+
 ## Key Features
 
 ### 1. 주변 세차장 탐색
