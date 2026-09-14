@@ -4,6 +4,7 @@ import Image from "../atoms/Image";
 import CustomModal from "../atoms/CustomModal";
 import TimePicker from "../molecules/TimePicker";
 import DurationPicker from "../molecules/DurationPicker";
+import DatePicker from "../molecules/DatePicker";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "../atoms/Button";
 import { useSuspenseQueries } from "@tanstack/react-query";
@@ -18,7 +19,7 @@ import {
 
 const ScheduleTemplate = ({ carwashId, bayId }) => {
   const location = useLocation();
-  const [date] = useState(() => {
+  const [date, setDate] = useState(() => {
     const selectedDate = location.state?.selectedDate;
     return selectedDate ? new Date(selectedDate) : new Date();
   });
@@ -72,6 +73,12 @@ const ScheduleTemplate = ({ carwashId, bayId }) => {
     setDuration(null);
   };
 
+  const handleDateChange = (nextDate) => {
+    setDate(nextDate);
+    setStartTime(null);
+    setDuration(null);
+  };
+
   const handleDurationChange = (duration) => {
     setDuration(duration);
   };
@@ -115,6 +122,14 @@ const ScheduleTemplate = ({ carwashId, bayId }) => {
               주말 {openingHours.weekend.start} ~ {openingHours.weekend.end}
             </div>
           </div>
+        </section>
+
+        <section className="grid gap-2">
+          <h2 className="text-lg font-bold">예약 날짜</h2>
+          <DatePicker
+            selectedDate={date}
+            handleButtonClick={handleDateChange}
+          />
         </section>
 
         <div className="grid gap-6">

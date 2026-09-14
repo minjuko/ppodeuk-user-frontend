@@ -6,6 +6,14 @@ import {
   isReservationOverlapping,
 } from "../../utils/reservationTime";
 
+const isToday = (date, now = new Date()) =>
+  date.getFullYear() === now.getFullYear() &&
+  date.getMonth() === now.getMonth() &&
+  date.getDate() === now.getDate();
+
+const shouldShowMorning = (date, now = new Date()) =>
+  !isToday(date, now) || now.getHours() < 12;
+
 const TimePicker = ({
   openingHours,
   handleButtonClick,
@@ -13,10 +21,13 @@ const TimePicker = ({
   selectedDate,
 }) => {
   const [selectedTime, setSelectedTime] = useState(null);
-  const [isMorningSelected, setIsMorningSelected] = useState(true);
+  const [isMorningSelected, setIsMorningSelected] = useState(() =>
+    shouldShowMorning(selectedDate),
+  );
 
   useEffect(() => {
     setSelectedTime(null);
+    setIsMorningSelected(shouldShowMorning(selectedDate));
   }, [selectedDate]);
 
   const isScheduled = (time) => {

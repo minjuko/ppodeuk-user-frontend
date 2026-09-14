@@ -1,7 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const DatePicker = ({ handleButtonClick }) => {
-  const [selectedDate, setSelectedDate] = useState(new Date());
+const DatePicker = ({ handleButtonClick, selectedDate: controlledDate }) => {
+  const [selectedDate, setSelectedDate] = useState(
+    controlledDate || new Date(),
+  );
+
+  useEffect(() => {
+    if (controlledDate) {
+      setSelectedDate(controlledDate);
+    }
+  }, [controlledDate]);
 
   const handleClick = (date) => {
     setSelectedDate(date);
