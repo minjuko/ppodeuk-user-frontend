@@ -1,6 +1,6 @@
 # 뽀득뽀득 — USER Frontend
 
-> 셀프세차장 탐색부터 Bay 기반 예약·결제·리뷰까지 제공하는 모바일 웹 서비스
+> 셀프세차장 탐색부터 세차 공간(Bay) 예약·결제·리뷰까지 제공하는 모바일 웹 서비스
 
 [![CI](https://github.com/minjuko/ppodeuk-user-frontend/actions/workflows/ci.yml/badge.svg)](https://github.com/minjuko/ppodeuk-user-frontend/actions/workflows/ci.yml)
 ![Tests](https://img.shields.io/badge/Tests-74%20passed-2EA44F)
@@ -10,9 +10,9 @@
 저는 **USER Frontend의 예약 Flow**를 중심으로 구현했고, 이후 예약·결제 안정성, 회귀 테스트, 실행 환경을 개선했습니다.
 
 <p align="center">
-  <img src="./docs/assets/readme/user/reservation/reservation_flow.png" alt="Bay 선택부터 예약 시간, 결제, 예약 완료까지의 사용자 흐름" width="88%">
+  <img src="./docs/assets/readme/user/reservation/reservation_flow.png" alt="세차 공간(Bay) 선택부터 예약 시간, 결제, 예약 완료까지의 사용자 흐름" width="88%">
 </p>
-<p align="center"><sub>Bay 선택 · 예약 시간 선택 · 결제 · 예약 완료</sub></p>
+<p align="center"><sub>세차 공간 선택 · 예약 시간 선택 · 결제 · 예약 완료</sub></p>
 
 ## Project Overview
 
@@ -39,14 +39,14 @@ USER·OWNER Frontend와 Spring Boot API·MariaDB를 연결했고, USER 예약 Fl
 
 ### USER Frontend
 
-- Bay → 날짜 → 시작 시간 → 이용 시간을 순서대로 선택하는 예약 UI와 공유 예약 상태를 구현했습니다.
+- 세차 공간(Bay) → 날짜 → 시작 시간 → 이용 시간을 순서대로 선택하는 예약 UI와 공유 예약 상태를 구현했습니다.
 - 영업시간과 기존 예약을 반영해 선택 가능한 시간 조합만 보여주도록 예약 조건을 연결했습니다.
 - 세차장 상세·리뷰·Kakao Map UI 일부와 결제 UI·예약 상태 연결에 참여했습니다.
 - 개선 작업에서 예약 시간 계산을 Pure Function으로 분리하고, 결제 callback·Loading/Error/Empty State·cache invalidation·keyboard interaction을 보완했습니다.
 
 ### 팀 기능과 개인 기여의 경계
 
-- OWNER의 Dashboard·매출·Bay·예약 관리와 Backend 원 구현은 개인 담당 범위가 아닙니다.
+- OWNER의 대시보드·매출·세차 공간·예약 관리와 Backend 원 구현은 개인 담당 범위가 아닙니다.
 - OWNER에서는 세차장 등록 화면의 초기 구조와 일부 입력·공통 UI에 참여했습니다.
 - Backend는 원 개발 담당이 아니며, 이후 local 실행 환경과 USER Frontend 연동 검증을 보완했습니다.
 
@@ -57,7 +57,7 @@ USER·OWNER Frontend와 Spring Boot API·MariaDB를 연결했고, USER 예약 Fl
 상위 조건이 바뀌면 하위 선택값을 초기화해 이전 선택이 다음 요청에 남지 않게 했습니다.
 
 ```text
-Bay → 날짜 → 시작 시간 → 이용 시간 → 예약·결제
+세차 공간(Bay) → 날짜 → 시작 시간 → 이용 시간 → 예약·결제
   변경 시 종속 선택값 초기화
 ```
 
