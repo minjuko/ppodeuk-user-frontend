@@ -3,7 +3,7 @@
 > 셀프세차장 탐색부터 Bay 기반 예약·결제·리뷰까지 제공하는 모바일 웹 서비스
 
 [![CI](https://github.com/minjuko/ppodeuk-user-frontend/actions/workflows/ci.yml/badge.svg)](https://github.com/minjuko/ppodeuk-user-frontend/actions/workflows/ci.yml)
-![Tests](https://img.shields.io/badge/Tests-74%20passed-2EA44F)
+![Tests](https://img.shields.io/badge/Tests-83%20passed-2EA44F)
 ![Live](https://img.shields.io/badge/Live-Available-2EA44F)
 
 뽀득뽀득은 Frontend 3명·Backend 3명이 개발한 팀 프로젝트입니다.  
@@ -84,12 +84,25 @@ flowchart LR
 
 | 검증 | 결과 |
 |---|---:|
-| Frontend tests | **74 / 74 passed** |
-| Test files | **18 / 18 passed** |
-| 예약 규칙 회귀 테스트 | **24 / 24 passed** |
-| Production build | **728 modules transformed** |
-| Main JavaScript | **343.12 kB · gzip 113.08 kB** |
-| GitHub Actions | `npm ci` · lint · test · build 성공 |
+| 프론트엔드 테스트 | **83 / 83 passed** |
+| 테스트 파일 | **22 / 22 passed** |
+| 코드 품질 | **ESLint 0 errors · 0 warnings** |
+| Production build | 성공 |
+| 이미지 최적화 | **106,998 B → 66,413 B (-37.9%)** |
+| Lighthouse 모바일 성능 점수 | **88 → 91** |
+| Lighthouse LCP 중앙값 | **3,578 ms → 3,331 ms (-247 ms)** |
+| Lighthouse 측정 조건 | Chrome 152 · 모바일 기본 프로필 · 3회 중앙값 · demo production build |
+
+> JPEG 재압축 후 동일한 로컬 환경에서 측정한 결과입니다. 실제 사용자 환경에서 동일한 폭의 개선을 보장하지는 않습니다.
+
+### 2026-09-17 production build 측정 및 검증
+
+- 문제와 변경: MSW demo의 추천 세차장·상세 화면에서 요청하는 `public/carouselimage1.jpg`(800×450)가 106,998 B였습니다. 동일한 경로·크기의 JPEG를 품질 78로 재압축했습니다.
+- 측정 조건: Windows, Node 22.20.0, npm 10.9.3에서 `npm ci` 후 `npm run build`로 생성한 production 산출물의 파일 크기를 비교했습니다. 개발 서버 수치는 사용하지 않았습니다.
+- 전후 수치: 이미지 106,998 B → 66,413 B (40,585 B, 37.9% 감소). Main JavaScript는 양쪽 모두 343.27 kB / gzip 113.14 kB, CSS는 3.71 kB / gzip 1.06 kB 및 15.86 kB / gzip 4.01 kB였습니다. JS 38개, CSS 2개 chunk 구성도 같았습니다. 이 이미지는 현재 PWA precache 대상이 아니므로 이미지 요청 payload 감소에 한정됩니다.
+- 검증: `npm run lint`, `npm test -- --run`(22개 파일, 83개 테스트, 예약 규칙 24개 포함), `npm run build`, `npm run build:demo`, `git diff --check` 통과. MSW demo에서 로그인 → 예약 가능 시간·이용 시간 선택 → 가격 조회 → 모의 결제 승인 → 예약 내역 반영을 한 테스트로 확인했습니다. 실제 결제는 실행하지 않았습니다.
+- Lighthouse CI 0.15.1 / Lighthouse 12.6.1 / Chrome 152에서 MSW demo production build를 `npm run preview`로 `http://127.0.0.1:4173/`에 제공했습니다. 변경 전후 산출물은 동일한 demo build를 복사한 뒤 JPEG 한 파일만 각각 Git 원본·재압축본으로 구성했습니다. 모바일 기본 프로필(412×823, simulated throttling, RTT 150 ms, 1,638.4 Kbps, CPU slowdown 4×)로 각각 3회 실행하고 median을 비교했습니다.
+- Lighthouse 전후 median: 성능 점수 **88 → 91**, LCP **3,578 → 3,331 ms**, FCP **2,068 → 2,007 ms**, TBT **69 → 25 ms**, CLS **0 → 0**. 보고서에서 해당 JPEG가 홈 화면의 LCP 이미지이며 매 실행 HTTP 200으로 요청된 것을 확인했습니다. 이는 이 로컬 측정 조건의 결과이며, 3회씩 순차 측정한 수치만으로 실제 사용자 환경의 개선 폭이나 다른 지표 변화의 원인을 확정할 수 없습니다.
 
 ## Local Run
 

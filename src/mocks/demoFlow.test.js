@@ -17,6 +17,11 @@ import {
   reservationsCurrentstatus,
 } from "../apis/reservations";
 import { instance } from "../apis/instance";
+import {
+  buildReservationPayload,
+  getAvailableDurations,
+  normalizeOpeningHours,
+} from "../utils/reservationTime";
 
 const server = setupServer(...handlers);
 
@@ -34,6 +39,55 @@ const authenticate = async () => {
 };
 
 describe("Portfolio Demo 사용자 흐름", () => {
+  it("logs in, selects an available reservation, and confirms it through demo payment", async () => {
+    await authenticate();
+    const detail = await carwashesInfo(101);
+    const bays = await carwashesBays(101);
+    const selectedDate = new Date();
+    selectedDate.setDate(selectedDate.getDate() + 1);
+    const openingHours = normalizeOpeningHours(detail.data.response.optime);
+    const openingPeriod =
+      selectedDate.getDay() === 0 || selectedDate.getDay() === 6
+        ? openingHours.weekend
+        : openingHours.weekday;
+    const bay = bays.data.response.bayList[0];
+    const durations = getAvailableDurations({
+      selectedDate,
+      startTime: "11:00",
+      openingPeriod,
+      bookedTimeList: bay.bayBookedTimeList,
+    });
+    expect(durations).toContain(60);
+
+    const saveDTO = buildReservationPayload(
+      bay.bayId,
+      selectedDate,
+      "11:00",
+      60,
+    );
+    const price = await calculatePayment(bay.bayId, {
+      startTime: saveDTO.startTime,
+      endTime: saveDTO.endTime,
+    });
+    const ready = await pgpayment({
+      requestDto: { total_amount: price.data.response.price },
+      saveDTO,
+    });
+    const approved = await pgapprove({
+      payApprovalRequestDTO: {
+        tid: ready.data.response.tid,
+        pg_token: "portfolio-demo-approved",
+      },
+      saveDTO,
+    });
+    const history = await reservationsCurrentstatus();
+
+    expect(approved.data.response.reservation.price).toBe(12000);
+    expect(history.data.response.upcomingReservationList[0].time).toEqual({
+      start: saveDTO.startTime,
+      end: saveDTO.endTime,
+    });
+  });
   it("데모 계정으로 로그인하고 명시적인 데모 토큰을 받는다", async () => {
     const response = await login(DEMO_CREDENTIALS);
 
