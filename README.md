@@ -14,7 +14,7 @@
 </p>
 <p align="center"><sub>세차 공간 선택 · 예약 시간 선택 · 결제 · 예약 완료</sub></p>
 
-## Project Overview
+## 프로젝트 정보
 
 | 항목 | 내용 |
 |---|---|
@@ -25,7 +25,7 @@
 | 백엔드 | Spring Boot · MariaDB |
 | 성과 | 카카오 테크 캠퍼스 1기 신규 서비스 개발 프로젝트 대상 |
 
-## Live Deployment
+## 서비스 링크
 
 | Service | URL |
 |---|---|
@@ -35,7 +35,7 @@
 
 사용자용·사업자용 프론트엔드와 Spring Boot API·MariaDB를 연결했고, 사용자 예약 흐름의 **KakaoPay 테스트 결제**까지 확인했습니다. 테스트 결제는 실제 청구를 위한 운영 결제가 아닙니다. 공용 데모에서는 실제 개인정보나 결제정보를 입력하지 마세요.
 
-## My Contribution
+## 개인 기여
 
 ### 사용자용 프론트엔드
 
@@ -50,7 +50,7 @@
 - 사업자용에서는 세차장 등록 화면의 초기 구조와 일부 입력·공통 UI에 참여했습니다.
 - 백엔드는 원 개발 담당이 아니며, 이후 로컬 실행 환경과 사용자용 프론트엔드 연동 검증을 보완했습니다.
 
-## Key Engineering Decisions
+## 핵심 설계
 
 ### 예약 조건의 종속 상태를 명확히 관리
 
@@ -84,7 +84,7 @@ flowchart LR
   API -. "payment" .-> PAY["KakaoPay"]
 ```
 
-## Quality Verification
+## 검증 결과
 
 | 검증 | 결과 |
 |---|---:|
@@ -99,7 +99,7 @@ flowchart LR
 
 > JPEG 재압축 후 동일한 로컬 환경에서 측정한 결과입니다. 실제 사용자 환경에서 동일한 폭의 개선을 보장하지는 않습니다.
 
-## Local Run
+## 로컬 실행
 
 ```bash
 npm ci
@@ -120,13 +120,13 @@ Stateful MSW 기반 Demo는 실제 백엔드나 결제 서비스 없이 로그�
 npm run dev -- --mode demo
 ```
 
-## Related Repositories
+## 관련 저장소
 
 - [사업자용 프론트엔드](https://github.com/minjuko/ppodeuk-owner-frontend) — 사업자용 관리 화면 · 초기 등록 UI 일부 참여
 - [백엔드](https://github.com/minjuko/ppodeuk-backend) — Spring Boot API · 백엔드 팀 원 구현
 - [기술 문서](docs/architecture.md) · [예약 규칙과 개선 기록](docs/refactoring.md) · [2023 README 보존본](docs/archive/README-2023-original.md)
 
-## Limitations
+## 한계 및 검증 범위
 
 - Demo 데이터는 브라우저를 새로고침하면 초기화됩니다.
 - Demo 결제는 실제 KakaoPay 결제가 아닌 사용자 흐름 검증용입니다.
