@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
+import { getDemoDate } from "../../utils/demoDate";
 
 const DatePicker = ({ handleButtonClick, selectedDate: controlledDate }) => {
   const [selectedDate, setSelectedDate] = useState(
-    controlledDate || new Date(),
+    controlledDate || getDemoDate(),
   );
 
   useEffect(() => {
@@ -17,7 +18,7 @@ const DatePicker = ({ handleButtonClick, selectedDate: controlledDate }) => {
   };
 
   const generateWeekDates = () => {
-    const today = new Date();
+    const today = getDemoDate();
     const dates = [];
     for (let i = 0; i < 7; i++) {
       const date = new Date(today);

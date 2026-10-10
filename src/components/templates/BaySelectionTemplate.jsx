@@ -8,11 +8,12 @@ import { useNavigate } from "react-router-dom";
 import Warning from "/warning.svg";
 import DatePicker from "../molecules/DatePicker";
 import { useState } from "react";
+import { getDemoDate } from "../../utils/demoDate";
 
 const BaySelectionTemplate = ({ carwashId }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(() => getDemoDate());
 
   const [carwashInfoData, baysData] = useSuspenseQueries({
     queries: [

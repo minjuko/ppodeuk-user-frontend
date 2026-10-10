@@ -5,6 +5,7 @@ import {
   isPastSlot,
   isReservationOverlapping,
 } from "../../utils/reservationTime";
+import { getDemoDate } from "../../utils/demoDate";
 
 const isToday = (date, now = new Date()) =>
   date.getFullYear() === now.getFullYear() &&
@@ -22,12 +23,12 @@ const TimePicker = ({
 }) => {
   const [selectedTime, setSelectedTime] = useState(null);
   const [isMorningSelected, setIsMorningSelected] = useState(() =>
-    shouldShowMorning(selectedDate),
+    shouldShowMorning(selectedDate, getDemoDate()),
   );
 
   useEffect(() => {
     setSelectedTime(null);
-    setIsMorningSelected(shouldShowMorning(selectedDate));
+    setIsMorningSelected(shouldShowMorning(selectedDate, getDemoDate()));
   }, [selectedDate]);
 
   const isScheduled = (time) => {
@@ -74,12 +75,12 @@ const TimePicker = ({
             <button
               key={time}
               onClick={() => handleTimeClick(time)}
-              disabled={isScheduled(time) || isPastSlot(selectedDate, time)}
+              disabled={isScheduled(time) || isPastSlot(selectedDate, time, getDemoDate())}
               aria-pressed={selectedTime === time}
               className={`p-4 border rounded-xl ${
                 selectedTime === time ? "bg-primary text-white" : "bg-white"
               } ${
-                (isScheduled(time) || isPastSlot(selectedDate, time)) &&
+                (isScheduled(time) || isPastSlot(selectedDate, time, getDemoDate())) &&
                 "opacity-50 cursor-not-allowed"
               }`}
             >
