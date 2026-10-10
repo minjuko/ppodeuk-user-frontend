@@ -24,10 +24,10 @@ const KakaoMap = ({
         if (!container) return;
         const options = {
           center: new kakao.maps.LatLng(
-            currentloc.latitude - 0.03,
+            currentloc.latitude - 0.015,
             currentloc.longitude,
           ),
-          level: 7,
+          level: 6,
           mapTypeId: kakao.maps.MapTypeId.ROADMAP,
         };
 
