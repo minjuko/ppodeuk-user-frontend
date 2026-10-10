@@ -16,12 +16,13 @@ import {
   normalizeOpeningHours,
   parseLocalDateTime,
 } from "../../utils/reservationTime";
+import { getDemoDate } from "../../utils/demoDate";
 
 const ScheduleTemplate = ({ carwashId, bayId }) => {
   const location = useLocation();
   const [date, setDate] = useState(() => {
     const selectedDate = location.state?.selectedDate;
-    return selectedDate ? new Date(selectedDate) : new Date();
+    return selectedDate ? new Date(selectedDate) : getDemoDate();
   });
   const [startTime, setStartTime] = useState();
   const [duration, setDuration] = useState();
