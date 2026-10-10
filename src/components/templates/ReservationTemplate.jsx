@@ -9,34 +9,21 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import TextInput from "../atoms/TextInput";
 import { useDispatch } from "react-redux";
 import { resetStore } from "../../store/action";
+import useGeoLocation from "../../hooks/useGeoLocation";
 
 const ReservationTemplate = () => {
   const dispatch = useDispatch();
   const initialKeypoints = [];
   const [keypoints, setKeypoints] = useState(initialKeypoints);
   const [firstClick, setFirstClick] = useState(true);
-  const [location, setLocation] = useState({
-    latitude: 35.14,
-    longitude: 126.9,
-  });
+  const { location, error: locationError } = useGeoLocation();
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     dispatch(resetStore());
   }, [dispatch]);
 
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        setLocation({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        });
-      });
-    }
-  }, []);
-
-  const { data } = useSuspenseQuery({
+const { data } = useSuspenseQuery({
     queryKey: [
       "getcarwashes",
       location.latitude,
@@ -90,6 +77,11 @@ const ReservationTemplate = () => {
             onChange={handleSearchChange}
             value={searchTerm}
           />
+          {locationError && (
+            <p className="text-sm text-gray-600" role="status">
+              {locationError}
+            </p>
+          )}
           <div className="flex gap-2 pb-2 overflow-x-auto scrollbar-hide">
             <Badge
               key="8"

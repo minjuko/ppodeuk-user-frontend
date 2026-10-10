@@ -38,8 +38,8 @@ describe("홈 API 상태", () => {
 
     expect(queryState.options.queries[0].queryKey).toEqual([
       "recommended",
-      35.14,
-      126.9,
+      35.1472,
+      126.918,
     ]);
     expect(queryState.options.queries[1].enabled).toBe(false);
     expect(screen.getByRole("status")).toHaveTextContent(

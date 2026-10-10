@@ -7,7 +7,7 @@ import ReservationHistory from "/Button/home/reservationHistory.svg";
 import { carwashesRecommended } from "../../apis/carwashes";
 import { reservationsRecent } from "../../apis/reservations";
 import { Link, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import useGeoLocation from "../../hooks/useGeoLocation";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../store/authSlice";
 import { resetStore } from "../../store/action";
@@ -18,24 +18,10 @@ const HomeTemplate = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const queryClient = useQueryClient();
-  const [location, setLocation] = useState({
-    latitude: 35.14,
-    longitude: 126.9,
-  });
+  const { location } = useGeoLocation();
   const { isLoggedIn, userName } = useSelector((state) => state.auth);
 
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        setLocation({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        });
-      });
-    }
-  }, []);
-
-  const [recommended, recent] = useQueries({
+const [recommended, recent] = useQueries({
     queries: [
       {
         queryKey: ["recommended", location.latitude, location.longitude],
