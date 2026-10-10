@@ -1,49 +1,30 @@
 import { useEffect, useState } from "react";
 
-export const DEFAULT_LOCATION = Object.freeze({
-  latitude: 35.1472,
-  longitude: 126.918,
-});
-
-const useGeoLocation = ({
-  enableHighAccuracy = false,
-  timeout = 8000,
-  maximumAge = 300000,
-} = {}) => {
-  const [location, setLocation] = useState(DEFAULT_LOCATION);
+const useGeoLocation = (options = {}) => {
+  const [location, setLocation] = useState({});
   const [error, setError] = useState("");
-  const [isUsingFallback, setIsUsingFallback] = useState(false);
+
+  const handleSuccess = (position) => {
+    const { latitude, longitude } = position.coords;
+    setLocation({ latitude, longitude });
+  };
+
+  const handleError = (error) => {
+    setError(error.message);
+  };
 
   useEffect(() => {
-    if (!navigator.geolocation) {
-      setError("현재 위치를 지원하지 않아 기본 위치를 사용합니다.");
-      setIsUsingFallback(true);
+    const { geoLocation } = navigator;
+
+    if (!geoLocation) {
+      setError("Geolocation이 지원되지 않습니다.");
       return;
     }
 
-    navigator.geolocation.getCurrentPosition(
-      ({ coords }) => {
-        if (
-          Number.isFinite(coords.latitude) &&
-          Number.isFinite(coords.longitude)
-        ) {
-          setLocation({
-            latitude: coords.latitude,
-            longitude: coords.longitude,
-          });
-          setError("");
-          setIsUsingFallback(false);
-        }
-      },
-      () => {
-        setError("현재 위치를 확인할 수 없어 광주 중심 위치를 사용합니다.");
-        setIsUsingFallback(true);
-      },
-      { enableHighAccuracy, timeout, maximumAge },
-    );
-  }, [enableHighAccuracy, maximumAge, timeout]);
+    geoLocation.getCurrentPosition(handleSuccess, handleError, options);
+  }, [options]);
 
-  return { location, error, isUsingFallback };
+  return { location, error };
 };
 
 export default useGeoLocation;
