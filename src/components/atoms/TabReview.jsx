@@ -50,7 +50,7 @@ const TabReview = ({ carwashId }) => {
   return (
     <div>
       <div className="grid-4">
-        <section className="grid gap-2">
+        <section className="grid gap-2 p-4 bg-gray-50 border border-gray-200 rounded-lg">
           <h2 className="font-semibold">평균별점</h2>
           <UserStar averageStar={averageStar} />
         </section>

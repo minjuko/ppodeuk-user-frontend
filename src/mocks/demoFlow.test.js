@@ -105,6 +105,8 @@ describe("Portfolio Demo 사용자 흐름", () => {
     });
     expect(detail.data.response.imageFileList).toEqual([
       { url: "/carouselimage1.jpg" },
+      { url: "/carwash-blue.png" },
+      { url: "/carwash-garden.png" },
     ]);
     expect(detail.data.response.keywordIdList).toEqual([8, 10, 11]);
     expect(detail.data.response.optime.weekday).toEqual({
@@ -172,11 +174,29 @@ describe("Portfolio Demo 사용자 흐름", () => {
       comment: "데모 리뷰입니다.",
     });
     const response = await instance.get("/api/open/carwashes/101/reviews");
+    const history = await reservationsCurrentstatus();
 
     expect(response.data.response.reviewList[0].comment).toBe(
       "데모 리뷰입니다.",
     );
     expect(response.data.response.overview.totalCnt).toBe(2);
+    expect(history.data.response.completeReservationList[0].reviewed).toBe(
+      true,
+    );
+    await expect(
+      postReviews({
+        carwashId: 101,
+        reservationId: 401,
+        keywordIdList: [4],
+        rate: 5,
+        comment: "중복 리뷰입니다.",
+      }),
+    ).rejects.toMatchObject({
+      response: {
+        status: 409,
+        data: { error: { code: "REVIEW_ALREADY_EXISTS" } },
+      },
+    });
   });
 
   it("등록되지 않은 API는 실제 네트워크로 통과시키지 않고 mock error를 반환한다", async () => {

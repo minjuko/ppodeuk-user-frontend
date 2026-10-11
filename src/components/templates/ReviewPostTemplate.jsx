@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { StarPicker } from "../atoms/StarPicker";
 import { BadgeSet } from "../molecules/BadgeSet";
 import { useNavigate } from "react-router-dom";
@@ -30,6 +30,7 @@ const ReviewPostTemplate = () => {
   const [isOverLimit, setIsOverLimit] = useState(false);
 
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const carwashId = useSelector(
     (state) => state.reservationProcess.selectedCarwashId,
@@ -43,6 +44,26 @@ const ReviewPostTemplate = () => {
       return postReviews(data);
     },
     onSuccess: () => {
+      queryClient.setQueryData(["getHistory"], (previous) => {
+        const response = previous?.data?.response;
+        if (!response) return previous;
+        return {
+          ...previous,
+          data: {
+            ...previous.data,
+            response: {
+              ...response,
+              completeReservationList: (
+                response.completeReservationList || []
+              ).map((reservation) =>
+                Number(reservation.id) === Number(reservationId)
+                  ? { ...reservation, reviewed: true }
+                  : reservation,
+              ),
+            },
+          },
+        };
+      });
       setModalContent("리뷰 등록에 성공했습니다.");
       setModalType("history");
       setIsModalOpen(true);

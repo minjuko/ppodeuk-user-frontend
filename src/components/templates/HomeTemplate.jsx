@@ -54,7 +54,7 @@ const HomeTemplate = () => {
   const recentList = recent?.data?.data?.response?.recentReservationList || [];
 
   return (
-    <div className="relative grid-8">
+    <div className="relative grid gap-5">
       <nav className="items-center h-10 bg-white flex-between">
         <div className="flex items-center gap-2">
           <img src={LogoIcon} className="w-5 h-6" alt="뽀득뽀득 아이콘" />
@@ -93,10 +93,10 @@ const HomeTemplate = () => {
           </>
         )}
       </h1>
-      <section className="gap-4 flex-between">
+      <section className="gap-3 flex-between">
         <Link
           to="/reservation"
-          className="relative flex items-start w-full h-[72px] p-4 overflow-hidden text-left bg-white border border-gray-300 shadow-xl break-keep rounded-xl"
+          className="relative flex items-start w-full h-[72px] p-3 overflow-hidden text-left bg-white border border-gray-300 shadow-xl break-keep rounded-xl"
         >
           내 주변 세차장 예약하기
           <img
@@ -107,7 +107,7 @@ const HomeTemplate = () => {
         </Link>
         <Link
           to="/history"
-          className="relative flex items-start w-full h-[72px] p-4 overflow-hidden text-left bg-white border border-gray-300 shadow-xl break-keep rounded-xl"
+          className="relative flex items-start w-full h-[72px] p-3 overflow-hidden text-left bg-white border border-gray-300 shadow-xl break-keep rounded-xl"
         >
           예약내역 보기
           <img
@@ -117,7 +117,7 @@ const HomeTemplate = () => {
           />
         </Link>
       </section>
-      <section className="grid-4">
+      <section className="grid gap-3">
         <h2 className="text-xl font-semibold">이런 세차장 어때요?</h2>
         {recommended.isPending ? (
           <Loader variant="inline" label="추천 세차장을 불러오는 중입니다." />
@@ -138,7 +138,7 @@ const HomeTemplate = () => {
         )}
       </section>
       {isLoggedIn && (
-        <section className="grid-4">
+        <section className="grid gap-3">
           <h2 className="text-xl font-semibold">최근 이용 내역</h2>
           {recent.isPending ? (
             <Loader

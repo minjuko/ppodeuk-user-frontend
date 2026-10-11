@@ -38,7 +38,7 @@ export const CarwashCard = ({ id, image, name, address, rate, distance }) => {
           <div>{name}</div>
           <div className="text-sm text-gray-500">{address}</div>
           <DistanceFromHere
-            distance={distance.toFixed(1)}
+            distance={distance}
             className="absolute right-0 -translate-y-1/2 top-1/2"
           />
         </div>

@@ -17,12 +17,12 @@ const CarwashDetailTemplate = ({ carwashId }) => {
   const navigate = useNavigate();
   const detailData = data.data.response;
 
-  const weekdayOpeningHours = `평일 ${detailData.optime.weekday.start} ~ ${
+  const weekdayOpeningHours = `${detailData.optime.weekday.start}–${
     detailData.optime.weekday.end === "00:00"
       ? "24:00"
       : detailData.optime.weekday.end
   }`;
-  const weekendOpeningHours = `주말 ${detailData.optime.weekend.start} ~ ${
+  const weekendOpeningHours = `${detailData.optime.weekend.start}–${
     detailData.optime.weekend.end === "00:00"
       ? "24:00"
       : detailData.optime.weekend.end
@@ -44,27 +44,34 @@ const CarwashDetailTemplate = ({ carwashId }) => {
         ];
 
   return (
-    <div className="relative mb-16 overflow-y-auto">
+    <div className="relative w-full max-w-full mb-16 overflow-x-hidden overflow-y-auto">
       <StatusBar />
-      <div>
+      <div className="w-full max-w-full min-w-0">
         <ImageCarousel images={images} />
-        <div className="p-4">
-          <div className="grid-4">
-            <div className="flex justify-between">
-              <div>
-                <h1 className="text-2xl font-bold">{detailData.name}</h1>
+        <div className="w-full max-w-full min-w-0 p-3 pb-0 bg-gray-50">
+          <div className="grid min-w-0 gap-3">
+            <section
+              className="flex items-start justify-between min-w-0 gap-4 py-1"
+              aria-labelledby="carwash-name"
+            >
+              <div className="min-w-0">
+                <h1 id="carwash-name" className="text-2xl font-bold truncate">
+                  {detailData.name}
+                </h1>
                 <Star
                   starCount={detailData.rate.toFixed(1)}
                   reviewCount={detailData.reviewCnt}
                 />
               </div>
-              <div>
-                <div className="text-3xl text-center text-primary">
+              <div className="px-3 py-2 text-center border rounded-xl bg-sky-50 border-sky-100 shrink-0">
+                <div className="text-3xl font-extrabold leading-none text-primary">
                   {detailData.bayCnt}
                 </div>
-                <h2 className="text-sm">예약베이</h2>
+                <h2 className="mt-1 text-xs font-bold text-gray-700">
+                  예약베이
+                </h2>
               </div>
-            </div>
+            </section>
             <StoreInfo
               weekhour={weekdayOpeningHours}
               weekendhour={weekendOpeningHours}
@@ -78,10 +85,8 @@ const CarwashDetailTemplate = ({ carwashId }) => {
       </div>
       <Button
         variant="long"
-        className="fixed bottom-0"
-        onClick={() => {
-          navigate(`/bayselection/${carwashId}`);
-        }}
+        className="fixed bottom-0 left-0 right-0"
+        onClick={() => navigate(`/bayselection/${carwashId}`)}
       >
         예약하러 가기
       </Button>

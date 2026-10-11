@@ -44,6 +44,46 @@ const requireDemoAuth = (req, res, ctx) => {
 
 const getCarwash = (id) => demoCarwashes.find((item) => item.id === Number(id));
 
+const distanceInMeters = (
+  fromLatitude,
+  fromLongitude,
+  toLatitude,
+  toLongitude,
+) => {
+  const toRadians = (degree) => (degree * Math.PI) / 180;
+  const earthRadius = 6371000;
+  const latitudeDelta = toRadians(toLatitude - fromLatitude);
+  const longitudeDelta = toRadians(toLongitude - fromLongitude);
+  const a =
+    Math.sin(latitudeDelta / 2) ** 2 +
+    Math.cos(toRadians(fromLatitude)) *
+      Math.cos(toRadians(toLatitude)) *
+      Math.sin(longitudeDelta / 2) ** 2;
+  return Math.round(
+    earthRadius * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)),
+  );
+};
+
+const getCarwashesByDistance = (req) => {
+  const latitude = Number(req.url.searchParams.get("latitude"));
+  const longitude = Number(req.url.searchParams.get("longitude"));
+  if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
+    return [...demoCarwashes].sort((a, b) => a.distance - b.distance);
+  }
+
+  return demoCarwashes
+    .map((carwash) => ({
+      ...carwash,
+      distance: distanceInMeters(
+        latitude,
+        longitude,
+        carwash.location.latitude,
+        carwash.location.longitude,
+      ),
+    }))
+    .sort((a, b) => a.distance - b.distance);
+};
+
 const historyResponse = () => ({
   currentReservationList: state.reservations.filter(
     (item) => item.status === "current",
@@ -51,9 +91,14 @@ const historyResponse = () => ({
   upcomingReservationList: state.reservations.filter(
     (item) => item.status === "upcoming",
   ),
-  completeReservationList: state.reservations.filter(
-    (item) => item.status === "complete",
-  ),
+  completeReservationList: state.reservations
+    .filter((item) => item.status === "complete")
+    .map((item) => ({
+      ...item,
+      reviewed: state.reviews.some(
+        (review) => Number(review.reservationId) === item.id,
+      ),
+    })),
 });
 
 export const handlers = [
@@ -83,10 +128,10 @@ export const handlers = [
     res(ctx.json(ok([demoCarwashes[0]]))),
   ),
   rest.get("*/api/open/carwashes/nearby", (req, res, ctx) =>
-    res(ctx.json(ok(demoCarwashes))),
+    res(ctx.json(ok(getCarwashesByDistance(req)))),
   ),
   rest.get("*/api/open/carwashes/search", (req, res, ctx) =>
-    res(ctx.json(ok(demoCarwashes))),
+    res(ctx.json(ok(getCarwashesByDistance(req)))),
   ),
   rest.get("*/api/open/carwashes/:carwashId/info", (req, res, ctx) => {
     const carwash = getCarwash(req.params.carwashId);
@@ -264,6 +309,17 @@ export const handlers = [
     const unauthorized = requireDemoAuth(req, res, ctx);
     if (unauthorized) return unauthorized;
     const review = await req.json();
+    const isDuplicate = state.reviews.some(
+      (item) => Number(item.reservationId) === Number(review.reservationId),
+    );
+    if (isDuplicate) {
+      return res(
+        ctx.status(409),
+        ctx.json(
+          fail("REVIEW_ALREADY_EXISTS", "이미 리뷰를 작성한 예약입니다."),
+        ),
+      );
+    }
     state.reviews.unshift({
       ...review,
       username: "데모 사용자",

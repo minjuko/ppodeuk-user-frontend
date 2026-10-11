@@ -17,6 +17,7 @@ const ReservationItem = ({
   bayname,
   priceinfo,
   buttontype,
+  reviewed = false,
 }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -40,26 +41,20 @@ const ReservationItem = ({
     },
     onError: (error) => {
       const errorDetail = getErrorDetail(error);
-
       setFailmodalContent(errorDetail);
       setIsModalOpen(true);
     },
   });
 
   const handleConfirm = () => {
-    if (!failmodalContent) {
-      mutation.mutate(rsvid);
-    }
-
+    if (!failmodalContent) mutation.mutate(rsvid);
     setIsModalOpen(false);
-    if (failmodalContent) {
-      navigate("/");
-    }
+    if (failmodalContent) navigate("/");
   };
 
   const modalContent = failmodalContent ? (
     <div className="grid gap-2">
-      <div> 오류가 발생하였습니다.</div>
+      <div>오류가 발생하였습니다.</div>
       <div>{failmodalContent}</div>
     </div>
   ) : (
@@ -72,49 +67,55 @@ const ReservationItem = ({
       <div>취소 금액: {priceinfo}</div>
     </div>
   );
+
   return (
-    <div className="grid gap-4 p-4 border border-gray-300 rounded-xl">
+    <div className="p-4 bg-white border border-gray-300 shadow-sm rounded-lg">
       <div className="flex items-center gap-4">
         <Image
           src={imgsrc}
-          className="w-20 h-20 rounded-xl"
+          className="object-cover w-16 h-16 rounded-lg shrink-0"
           alt="세차장 이미지"
         />
-        <div>
-          <div className="text-sm">
+        <div className="min-w-0 grow">
+          <div className="text-xs text-gray-500">
             {start.format("YYYY-MM-DD HH:mm")} ~ {end.format("HH:mm")}
           </div>
-          <div className="font-semibold">{bayname}</div>
-          <div className="font-bold text-primary">
-            {priceinfo.toLocaleString()}원
+          <div className="mt-1 font-semibold truncate">{bayname}</div>
+          <div className="flex items-end justify-between gap-3 mt-2">
+            <div className="text-lg font-extrabold leading-none text-gray-900">
+              {priceinfo.toLocaleString()}원
+            </div>
+            {buttontype === "cancel" && (
+              <Button
+                variant="cancel"
+                disabled={mutation.isPending}
+                onClick={() => setIsModalOpen(true)}
+              >
+                {mutation.isPending ? (
+                  <span role="status" aria-live="polite">
+                    취소 중...
+                  </span>
+                ) : (
+                  "예약 취소"
+                )}
+              </Button>
+            )}
+            {buttontype === "review" && !reviewed && (
+              <Button
+                variant="review"
+                onClick={() => handleBayClick(rsvid, carwashid)}
+              >
+                리뷰 작성
+              </Button>
+            )}
+            {buttontype === "review" && reviewed && (
+              <span className="px-3 py-2 text-xs font-bold text-gray-500 bg-gray-100 rounded-lg">
+                작성 완료
+              </span>
+            )}{" "}
           </div>
         </div>
       </div>
-      {buttontype === "cancel" && (
-        <Button
-          variant="long"
-          disabled={mutation.isPending}
-          onClick={() => setIsModalOpen(true)}
-          className="bg-red-500 rounded-md "
-        >
-          {mutation.isPending ? (
-            <span role="status" aria-live="polite">
-              취소 중...
-            </span>
-          ) : (
-            "예약 취소"
-          )}
-        </Button>
-      )}
-      {buttontype === "review" && (
-        <Button
-          variant="long"
-          className="rounded-md"
-          onClick={() => handleBayClick(rsvid, carwashid)}
-        >
-          리뷰 작성
-        </Button>
-      )}
       <CustomModal
         isOpen={isModalOpen}
         onRequestClose={() => setIsModalOpen(false)}

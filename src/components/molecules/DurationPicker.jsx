@@ -34,10 +34,11 @@ const DurationPicker = ({
         {durations.map((duration) => (
           <button
             key={duration}
+            type="button"
             onClick={() => handleDurationClick(duration)}
             disabled={!availableDurations.includes(duration)}
             aria-pressed={selectedDuration === duration}
-            className={`p-4 border rounded-xl ${
+            className={`px-2 py-3 font-medium border border-gray-300 rounded-lg transition hover:border-primary hover:bg-sky-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
               selectedDuration === duration
                 ? "bg-primary text-white rounded-md"
                 : "bg-white rounded-md"
