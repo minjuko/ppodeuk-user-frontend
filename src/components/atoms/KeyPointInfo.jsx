@@ -1,29 +1,30 @@
 const KeyPointInfo = ({ selectedPoints }) => {
   const keypointToText = {
-    8: { text: "하부세차", icon: "/CarwashDetail/underside.svg" },
-    9: { text: "개러지형 독립공간", icon: "/CarwashDetail/garage.svg" },
-    10: { text: "야간조명", icon: "/CarwashDetail/light.svg" },
-    11: { text: "100% 수돗물", icon: "/CarwashDetail/tapwater.svg" },
-    12: { text: "휴게실", icon: "/CarwashDetail/breakroom.svg" },
-    13: { text: "에어컨", icon: "/CarwashDetail/ac.svg" },
-    14: { text: "발수코팅건", icon: "/CarwashDetail/waterproof.svg" },
+    8: "하부세차",
+    9: "개러지형 독립공간",
+    10: "야간조명",
+    11: "100% 수돗물",
+    12: "휴게실",
+    13: "에어컨",
+    14: "발수코팅건",
   };
 
   return (
-    <section className="grid gap-2 p-4 bg-gray-100 rounded-lg">
-      <h2 className="font-semibold">키포인트</h2>
-      <div className="grid grid-cols-2 gap-2">
+    <section className="px-4 py-4 bg-white border-gray-200 border-y">
+      <h2 className="mb-3 text-base font-bold">키포인트</h2>
+      <ul
+        className="flex flex-wrap max-w-full min-w-0 gap-2.5"
+        aria-label="세차장 주요 편의시설"
+      >
         {selectedPoints.map((point) => (
-          <div className="flex items-center text-sm" key={point}>
-            <img
-              src={keypointToText[point].icon}
-              alt={keypointToText[point].text}
-              className="w-4 h-4 mr-2"
-            />
-            {keypointToText[point].text}
-          </div>
+          <li
+            className="ui-chip ui-chip-md border-primary bg-white text-gray-900"
+            key={point}
+          >
+            {keypointToText[point]}
+          </li>
         ))}
-      </div>
+      </ul>
     </section>
   );
 };

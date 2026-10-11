@@ -21,36 +21,30 @@ const ReservationHistoryTemplate = () => {
     data?.data?.response?.completeReservationList || [];
 
   return (
-    <div className="min-h-screen pb-20 bg-gray-50">
+    <div className="min-h-screen pb-20 bg-white">
       <nav className="items-center h-10 bg-white flex-between">
         <div className="flex items-center gap-2">
           <img src={LogoIcon} className="w-5 h-6" alt="뽀득뽀득 아이콘" />
           <img src="/bdbd.svg" className="w-24 h-auto" alt="뽀득뽀득" />
         </div>
       </nav>
-      <header className="px-4 py-5 bg-white border-b border-gray-200">
+      <header className="px-4 py-3 bg-white border-b border-gray-200">
         <h1 className="text-2xl font-bold">예약 내역</h1>
-        <p className="mt-1 text-sm text-gray-500">
-          진행 상태별로 세차 예약을 확인할 수 있습니다.
-        </p>
       </header>
 
-      <main className="grid gap-4 p-4">
-        <section
-          className="grid gap-4 p-4 bg-white border border-gray-200 rounded-xl"
-          aria-labelledby="current-reservations"
-        >
+      <main className="grid gap-6 px-4 py-5">
+        <section className="grid gap-3" aria-labelledby="current-reservations">
           <div className="flex items-center justify-between">
             <h2 id="current-reservations" className="text-lg font-semibold">
-              현재 진행 중인 세차
+              이용 중
             </h2>
-            <span className="px-2 py-1 text-xs font-semibold rounded-full bg-sky-50 text-sky-600">
+            <span className="px-2 py-1 text-xs font-semibold border rounded-full border-sky-100 bg-sky-50 text-sky-700">
               {currentReservations.length}건
             </span>
           </div>
           {currentReservations.length === 0 ? (
-            <div className="px-4 py-8 text-sm text-center text-gray-500 border border-gray-200 border-dashed rounded-lg bg-gray-50">
-              현재 진행 중인 세차가 없습니다.
+            <div className="px-3 py-5 text-sm text-center text-gray-500 border border-gray-200 border-dashed rounded-lg bg-gray-50">
+              현재 이용 중인 세차가 없습니다.
             </div>
           ) : (
             currentReservations.map((reservation) => (
@@ -71,13 +65,10 @@ const ReservationHistoryTemplate = () => {
           )}
         </section>
 
-        <section
-          className="grid gap-4 p-4 bg-white border border-gray-200 rounded-xl"
-          aria-labelledby="upcoming-reservations"
-        >
+        <section className="grid gap-3" aria-labelledby="upcoming-reservations">
           <div className="flex items-center justify-between">
             <h2 id="upcoming-reservations" className="text-lg font-semibold">
-              예정된 세차
+              이용 예정
             </h2>
             <span className="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-50 text-yellow-700">
               {upcomingReservations.length}건
@@ -115,19 +106,19 @@ const ReservationHistoryTemplate = () => {
         </section>
 
         <section
-          className="grid gap-4 p-4 bg-white border border-gray-200 rounded-xl"
+          className="grid gap-3"
           aria-labelledby="completed-reservations"
         >
           <div className="flex items-center justify-between">
             <h2 id="completed-reservations" className="text-lg font-semibold">
-              완료한 세차
+              이용 완료
             </h2>
             <span className="px-2 py-1 text-xs font-semibold text-gray-600 bg-gray-100 rounded-full">
               {completedReservations.length}건
             </span>
           </div>
           {completedReservations.length === 0 ? (
-            <div className="px-4 py-8 text-sm text-center text-gray-500 border border-gray-200 border-dashed rounded-lg bg-gray-50">
+            <div className="px-3 py-5 text-sm text-center text-gray-500 border border-gray-200 border-dashed rounded-lg bg-gray-50">
               완료된 세차 내역이 없습니다.
             </div>
           ) : (
@@ -145,6 +136,12 @@ const ReservationHistoryTemplate = () => {
                 bayname={`${reservation.carwashName}: 베이${reservation.bayNum}`}
                 priceinfo={reservation.price}
                 buttontype="review"
+                reviewed={
+                  reservation.reviewed ??
+                  reservation.reviewWritten ??
+                  reservation.hasReview ??
+                  false
+                }
               />
             ))
           )}

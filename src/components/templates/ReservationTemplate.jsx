@@ -66,11 +66,9 @@ const ReservationTemplate = () => {
     setSearchTerm(event.target.value);
   };
 
-  const filteredCarwashList = searchTerm
-    ? carwashList?.data?.response.filter((item) =>
-        item?.name.includes(searchTerm),
-      )
-    : carwashList?.data?.response;
+  const filteredCarwashList = [...(carwashList?.data?.response || [])]
+    .filter((item) => !searchTerm || item?.name.includes(searchTerm))
+    .sort((a, b) => Number(a.distance) - Number(b.distance));
 
   return (
     <div className="w-screen">

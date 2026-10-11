@@ -45,12 +45,11 @@ const StoreItem = ({
         <div className="w-4/5 overflow-hidden font-semibold text-ellipsis whitespace-nowrap">
           {storename}
         </div>
-        <div className="text-primary">{priceinfo.toLocaleString()}원/30분</div>
+        <strong className="text-lg font-extrabold text-primary">
+          {priceinfo.toLocaleString()}원 / 30분
+        </strong>
       </div>
-      <DistanceFromHere
-        className="absolute right-4"
-        distance={distance.toFixed(1)}
-      />
+      <DistanceFromHere className="absolute right-4" distance={distance} />
     </div>
   );
 };

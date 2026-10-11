@@ -33,21 +33,20 @@ const KakaoMap = ({
 
         const map = new kakao.maps.Map(container, options);
 
-        const markerImage = new kakao.maps.MarkerImage(
-          "/myloca.png",
-          new kakao.maps.Size(20, 30),
-          { offset: new kakao.maps.Point(10, 25) },
-        );
-
-        const marker = new kakao.maps.Marker({
+        new kakao.maps.CustomOverlay({
+          map,
           position: new kakao.maps.LatLng(
             currentloc.latitude,
             currentloc.longitude,
           ),
-          image: markerImage,
+          content: `<div class="current-location-marker" aria-label="현위치">
+            <span class="current-location-dot"></span>
+            <span class="current-location-label">현위치</span>
+          </div>`,
+          xAnchor: 0.5,
+          yAnchor: 0.5,
+          zIndex: 10,
         });
-
-        marker.setMap(map);
 
         mapdata.forEach((el) => {
           const position = new kakao.maps.LatLng(
@@ -59,6 +58,7 @@ const KakaoMap = ({
             position: position,
             content: createMapLabel(el?.name),
             yAnchor: 1,
+            zIndex: 5,
           });
         });
         kakao.maps.event.addListener(map, "tilesloaded", () => {

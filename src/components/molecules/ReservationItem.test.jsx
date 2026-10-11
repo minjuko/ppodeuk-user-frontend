@@ -43,4 +43,27 @@ describe("예약 취소 후 내역 갱신", () => {
       queryKey: ["getHistory"],
     });
   });
+
+  it("리뷰를 작성한 예약은 작성 버튼 대신 완료 상태를 표시한다", () => {
+    render(
+      <MemoryRouter>
+        <ReservationItem
+          rsvid={1}
+          carwashid={2}
+          imgsrc="/test.png"
+          reservedTime={{
+            start: "2026-08-11T10:00",
+            end: "2026-08-11T11:00",
+          }}
+          bayname="테스트 베이"
+          priceinfo={10000}
+          buttontype="review"
+          reviewed
+        />
+      </MemoryRouter>,
+    );
+
+    expect(screen.queryByRole("button", { name: "리뷰 작성" })).toBeNull();
+    expect(screen.getByText("작성 완료")).toBeInTheDocument();
+  });
 });

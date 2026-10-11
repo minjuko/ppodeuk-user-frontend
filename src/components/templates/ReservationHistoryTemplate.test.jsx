@@ -19,7 +19,7 @@ describe("예약 내역 empty 상태", () => {
       </MemoryRouter>,
     );
     expect(
-      screen.getByText("현재 진행 중인 세차가 없습니다."),
+      screen.getByText("현재 이용 중인 세차가 없습니다."),
     ).toBeInTheDocument();
     expect(
       screen.getByText("완료된 세차 내역이 없습니다."),

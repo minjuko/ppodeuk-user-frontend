@@ -10,37 +10,43 @@ export const Tab = ({ introduction, carwashId }) => {
     { name: "평가", content: <TabReview carwashId={carwashId} /> },
   ];
 
-  const selectMenuHandler = (index) => {
-    setCurrentTab(index);
-  };
-
   return (
-    <div>
-      <ul
-        className="flex items-center font-bold text-gray-800 bg-gray-300"
+    <div className="bg-white">
+      <div
+        className="flex border-t border-gray-200"
         role="tablist"
+        aria-label="세차장 상세 메뉴"
       >
-        {menuArr.map((item, index) => (
-          <li
-            className={`w-1/2 p-4 text-center transition duration-500 ${
-              index === currentTab &&
-              "border border-gray-300 bg-white text-black"
-            }`}
-            key={index}
-          >
+        {menuArr.map((item, index) => {
+          const isSelected = index === currentTab;
+          return (
             <button
               type="button"
               role="tab"
-              className="w-full"
-              aria-selected={index === currentTab}
-              onClick={() => selectMenuHandler(index)}
+              id={`carwash-tab-${index}`}
+              aria-controls={`carwash-panel-${index}`}
+              aria-selected={isSelected}
+              className={`relative flex-1 py-3 text-sm font-semibold transition-colors ${
+                isSelected
+                  ? "text-primary after:absolute after:inset-x-5 after:bottom-0 after:h-0.5 after:bg-primary"
+                  : "text-gray-500"
+              }`}
+              key={item.name}
+              onClick={() => setCurrentTab(index)}
             >
               {item.name}
             </button>
-          </li>
-        ))}
-      </ul>
-      <div className="p-4">{menuArr[currentTab].content}</div>
+          );
+        })}
+      </div>
+      <div
+        id={`carwash-panel-${currentTab}`}
+        role="tabpanel"
+        aria-labelledby={`carwash-tab-${currentTab}`}
+        className="p-4"
+      >
+        {menuArr[currentTab].content}
+      </div>
     </div>
   );
 };

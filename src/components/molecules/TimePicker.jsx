@@ -51,19 +51,25 @@ const TimePicker = ({
 
   return (
     <div className="grid gap-2">
-      <div>
+      <div className="flex p-1 bg-gray-100 border border-gray-200 rounded-lg">
         <button
           onClick={() => setIsMorningSelected(true)}
-          className={`p-1 rounded-l-xl border w-1/2 ${
-            isMorningSelected ? "bg-primary text-white" : "bg-white"
+          type="button"
+          className={`w-1/2 py-2 font-semibold rounded-md transition ${
+            isMorningSelected
+              ? "bg-white text-primary shadow-sm"
+              : "text-gray-600 hover:text-gray-900"
           } `}
         >
           오전
         </button>
         <button
           onClick={() => setIsMorningSelected(false)}
-          className={`p-1 rounded-r-xl border w-1/2 ${
-            !isMorningSelected ? "bg-primary text-white" : "bg-white"
+          type="button"
+          className={`w-1/2 py-2 font-semibold rounded-md transition ${
+            !isMorningSelected
+              ? "bg-white text-primary shadow-sm"
+              : "text-gray-600 hover:text-gray-900"
           } `}
         >
           오후
@@ -74,13 +80,20 @@ const TimePicker = ({
           {currentHours.map((time) => (
             <button
               key={time}
+              type="button"
               onClick={() => handleTimeClick(time)}
-              disabled={isScheduled(time) || isPastSlot(selectedDate, time, getDemoDate())}
+              disabled={
+                isScheduled(time) ||
+                isPastSlot(selectedDate, time, getDemoDate())
+              }
               aria-pressed={selectedTime === time}
-              className={`p-4 border rounded-xl ${
-                selectedTime === time ? "bg-primary text-white" : "bg-white"
+              className={`px-2 py-3 font-medium border border-gray-300 rounded-lg transition hover:border-primary hover:bg-sky-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
+                selectedTime === time
+                  ? "bg-white text-primary shadow-sm"
+                  : "text-gray-600 hover:text-gray-900"
               } ${
-                (isScheduled(time) || isPastSlot(selectedDate, time, getDemoDate())) &&
+                (isScheduled(time) ||
+                  isPastSlot(selectedDate, time, getDemoDate())) &&
                 "opacity-50 cursor-not-allowed"
               }`}
             >

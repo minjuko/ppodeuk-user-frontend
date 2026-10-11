@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import TimeImage from "/StoreInfo/Time.svg";
-import Image from "../atoms/Image";
+import OperatingHoursCard from "../atoms/OperatingHoursCard";
 import CustomModal from "../atoms/CustomModal";
 import TimePicker from "../molecules/TimePicker";
 import DurationPicker from "../molecules/DurationPicker";
@@ -108,24 +107,14 @@ const ScheduleTemplate = ({ carwashId, bayId }) => {
 
   return (
     <div>
-      <div className="p-4 grid-4">
-        <h1 className="text-2xl font-bold">
+      <div className="p-4 pb-24 grid gap-4">
+        <h1 className="text-2xl font-extrabold text-gray-900">
           {name}: 베이 {bayInfo.bayNo}
         </h1>
 
-        <section className="flex items-center gap-2">
-          <Image src={TimeImage} alt="영업시간" />
-          <div>
-            <div>
-              평일 {openingHours.weekday.start} ~ {openingHours.weekday.end}
-            </div>
-            <div>
-              주말 {openingHours.weekend.start} ~ {openingHours.weekend.end}
-            </div>
-          </div>
-        </section>
+        <OperatingHoursCard openingHours={openingHours} />
 
-        <section className="grid gap-2">
+        <section className="grid gap-2 p-4 bg-white border border-gray-300 rounded-lg">
           <h2 className="text-lg font-bold">예약 날짜</h2>
           <DatePicker
             selectedDate={date}
@@ -133,8 +122,8 @@ const ScheduleTemplate = ({ carwashId, bayId }) => {
           />
         </section>
 
-        <div className="grid gap-6">
-          <section className="grid gap-2">
+        <div className="grid gap-4">
+          <section className="grid gap-2 p-4 bg-white border border-gray-300 rounded-lg">
             <h2 className="text-lg font-bold">시작 시간</h2>
             <TimePicker
               bayId={bayInfo.bayId}
@@ -145,7 +134,7 @@ const ScheduleTemplate = ({ carwashId, bayId }) => {
               selectedDate={date}
             />
           </section>
-          <section className="grid gap-2">
+          <section className="grid gap-2 p-4 bg-white border border-gray-300 rounded-lg">
             <h2 className="text-lg font-bold">사용 시간</h2>
             <DurationPicker
               bayId={bayInfo.bayId}
@@ -157,7 +146,7 @@ const ScheduleTemplate = ({ carwashId, bayId }) => {
             />
           </section>
         </div>
-        <section className="grid gap-2 p-4 bg-gray-100 border rounded-lg">
+        <section className="grid gap-2 p-4 bg-sky-50 border border-sky-200 rounded-lg">
           <h2 className="text-lg font-semibold">예약 일정</h2>
           <div>
             <div>

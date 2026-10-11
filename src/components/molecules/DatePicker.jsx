@@ -7,9 +7,7 @@ const DatePicker = ({ handleButtonClick, selectedDate: controlledDate }) => {
   );
 
   useEffect(() => {
-    if (controlledDate) {
-      setSelectedDate(controlledDate);
-    }
+    if (controlledDate) setSelectedDate(controlledDate);
   }, [controlledDate]);
 
   const handleClick = (date) => {
@@ -17,55 +15,50 @@ const DatePicker = ({ handleButtonClick, selectedDate: controlledDate }) => {
     handleButtonClick(date);
   };
 
-  const generateWeekDates = () => {
-    const today = getDemoDate();
-    const dates = [];
-    for (let i = 0; i < 7; i++) {
-      const date = new Date(today);
-      date.setDate(today.getDate() + i);
-      dates.push(date);
-    }
-    return dates;
-  };
-
-  const isWeekend = (date) => [0, 6].includes(date.getDay());
-
-  const weekDates = generateWeekDates();
+  const weekDates = Array.from({ length: 7 }, (_, index) => {
+    const date = new Date(getDemoDate());
+    date.setDate(date.getDate() + index);
+    return date;
+  });
 
   return (
-    <div className="p-4 rounded-lg bg-gray-50">
-      <div className="flex justify-between">
-        {weekDates.map((date) => (
-          <button
-            type="button"
-            key={date.toDateString()}
-            className="grid w-10 gap-2 text-center"
-            aria-pressed={selectedDate.toDateString() === date.toDateString()}
-            onClick={() => handleClick(date)}
-          >
-            {isWeekend(date) ? (
-              date.getDay() === 0 ? (
-                <div className="text-red-500">일</div>
-              ) : (
-                <div className="text-blue-500">토</div>
-              )
-            ) : (
-              <div>
-                {date.toLocaleDateString("ko-KR", { weekday: "short" })}
-              </div>
-            )}
-
-            <div
-              className={`${
-                selectedDate.toDateString() === date.toDateString()
-                  ? "bg-primary text-white rounded-full font-bold w-10 h-10 flex items-center justify-center"
-                  : ""
-              }`}
+    <div className="p-3 bg-white border border-gray-300 rounded-lg shadow-sm">
+      <div className="grid grid-cols-7 gap-1">
+        {weekDates.map((date) => {
+          const isSelected =
+            selectedDate.toDateString() === date.toDateString();
+          const day = date.getDay();
+          return (
+            <button
+              type="button"
+              key={date.toDateString()}
+              className="flex flex-col items-center gap-1 py-1 rounded-md transition hover:bg-sky-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              aria-pressed={isSelected}
+              onClick={() => handleClick(date)}
             >
-              {date.getDate()}
-            </div>
-          </button>
-        ))}
+              <span
+                className={`text-xs font-medium ${
+                  day === 0
+                    ? "text-red-500"
+                    : day === 6
+                    ? "text-blue-500"
+                    : "text-gray-500"
+                }`}
+              >
+                {date.toLocaleDateString("ko-KR", { weekday: "short" })}
+              </span>
+              <span
+                className={`flex items-center justify-center w-9 h-9 text-sm rounded-md ${
+                  isSelected
+                    ? "font-bold text-white bg-primary shadow-sm"
+                    : "font-semibold text-gray-800"
+                }`}
+              >
+                {date.getDate()}
+              </span>
+            </button>
+          );
+        })}
       </div>
     </div>
   );

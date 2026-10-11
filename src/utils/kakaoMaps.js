@@ -57,11 +57,12 @@ export const createMapLabel = (text) => {
     position: "relative",
     padding: "5px 10px",
     background: "#0098FF",
-    border: "2px solid #D6E7F1",
+    border: "2px solid #FFFFFF",
     borderRadius: "8px",
     boxShadow: "0 2px 4px rgba(0, 0, 0, 0.35)",
     color: "#FFFFFF",
     fontSize: "12px",
+    fontWeight: "700",
     textAlign: "center",
     whiteSpace: "nowrap",
   });
