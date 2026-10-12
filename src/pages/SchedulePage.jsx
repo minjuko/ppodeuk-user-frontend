@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import ScheduleTemplate from "../components/templates/ScheduleTemplate";
 import { GeneralErrorBoundary } from "../components/atoms/GeneralErrorBoundary";
-import Loader from "../components/atoms/Loader";
+import SectionSkeleton from "../components/feedback/SectionSkeleton";
 
 const SchedulePage = () => {
   const navigate = useNavigate();
@@ -10,7 +10,11 @@ const SchedulePage = () => {
 
   return (
     <GeneralErrorBoundary navigate={navigate}>
-      <Suspense fallback={<Loader />}>
+      <Suspense
+        fallback={
+          <SectionSkeleton rows={5} label="예약 일정을 불러오는 중입니다." />
+        }
+      >
         <ScheduleTemplate carwashId={carwashId} bayId={bayId} />
       </Suspense>
     </GeneralErrorBoundary>

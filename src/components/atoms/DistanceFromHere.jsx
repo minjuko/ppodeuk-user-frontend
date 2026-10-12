@@ -9,8 +9,10 @@ const DistanceFromHere = ({ distance, className }) => {
 
   return (
     <div className={`text-center ${className}`}>
-      <img className="inline w-6 h-6" src={LocationIcon} alt="위치 아이콘" />
-      <div className="font-semibold text-primary">{formattedDistance}</div>
+      <img className="inline w-5 h-5" src={LocationIcon} alt="위치 아이콘" />
+      <div className="text-sm font-semibold leading-5 text-primary">
+        {formattedDistance}
+      </div>
     </div>
   );
 };

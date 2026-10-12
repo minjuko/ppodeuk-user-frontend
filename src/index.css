@@ -46,8 +46,8 @@
   height: 38px;
   border: 3px solid #fff;
   border-radius: 9999px;
-  background: #0f9f8f;
-  box-shadow: 0 3px 10px rgb(15 118 110 / 42%);
+  background: #62aaa5;
+  box-shadow: 0 3px 10px rgb(71 116 113 / 24%);
 }
 
 .current-location-marker::before {
@@ -55,9 +55,9 @@
   width: 52px;
   height: 52px;
   content: "";
-  border: 2px solid rgb(15 159 143 / 30%);
+  border: 2px solid rgb(98 170 165 / 26%);
   border-radius: inherit;
-  background: rgb(15 159 143 / 14%);
+  background: rgb(148 184 181 / 20%);
 }
 
 .current-location-dot {
@@ -83,4 +83,29 @@
   white-space: nowrap;
   box-shadow: 0 2px 6px rgb(15 23 42 / 18%);
   transform: translateX(-50%);
+}
+
+.carwash-list-scrollbar {
+  scrollbar-color: rgb(98 170 165 / 58%) transparent;
+  scrollbar-width: thin;
+}
+
+.carwash-list-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.carwash-list-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.carwash-list-scrollbar::-webkit-scrollbar-thumb {
+  border: 1px solid transparent;
+  border-radius: 9999px;
+  background: rgb(98 170 165 / 58%);
+  background-clip: padding-box;
+}
+
+.carwash-list-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgb(71 116 113 / 72%);
+  background-clip: padding-box;
 }

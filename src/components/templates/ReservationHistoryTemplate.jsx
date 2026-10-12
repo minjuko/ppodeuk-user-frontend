@@ -38,7 +38,7 @@ const ReservationHistoryTemplate = () => {
             <h2 id="current-reservations" className="text-lg font-semibold">
               이용 중
             </h2>
-            <span className="px-2 py-1 text-xs font-semibold border rounded-full border-sky-100 bg-sky-50 text-sky-700">
+            <span className="px-2 py-1 text-xs font-semibold text-gray-600 bg-gray-100 rounded-full">
               {currentReservations.length}건
             </span>
           </div>
@@ -68,9 +68,9 @@ const ReservationHistoryTemplate = () => {
         <section className="grid gap-3" aria-labelledby="upcoming-reservations">
           <div className="flex items-center justify-between">
             <h2 id="upcoming-reservations" className="text-lg font-semibold">
-              이용 예정
+              예약 예정
             </h2>
-            <span className="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-50 text-yellow-700">
+            <span className="px-2 py-1 text-xs font-semibold text-gray-600 bg-gray-100 rounded-full">
               {upcomingReservations.length}건
             </span>
           </div>

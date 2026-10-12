@@ -87,10 +87,10 @@ const TimePicker = ({
                 isPastSlot(selectedDate, time, getDemoDate())
               }
               aria-pressed={selectedTime === time}
-              className={`px-2 py-3 font-medium border border-gray-300 rounded-lg transition hover:border-primary hover:bg-sky-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
+              className={`px-2 py-3 font-medium border border-gray-300 rounded-lg transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
                 selectedTime === time
-                  ? "bg-white text-primary shadow-sm"
-                  : "text-gray-600 hover:text-gray-900"
+                  ? "border-primary bg-primary text-white hover:brightness-95"
+                  : "bg-white text-gray-600 hover:border-primary hover:bg-sky-50 hover:text-gray-900"
               } ${
                 (isScheduled(time) ||
                   isPastSlot(selectedDate, time, getDemoDate())) &&
