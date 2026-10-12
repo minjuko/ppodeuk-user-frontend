@@ -13,19 +13,24 @@ import { logout } from "../../store/authSlice";
 import { resetStore } from "../../store/action";
 import LogoIcon from "/bdbd_icon.svg";
 import Loader from "../atoms/Loader";
+import { DEMO_LOCATION, isDemoMode } from "../../demo/mode";
 
 const HomeTemplate = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const queryClient = useQueryClient();
-  const [location, setLocation] = useState({
-    latitude: 35.14,
-    longitude: 126.9,
-  });
+  const [location, setLocation] = useState(
+    isDemoMode
+      ? DEMO_LOCATION
+      : {
+          latitude: 35.14,
+          longitude: 126.9,
+        },
+  );
   const { isLoggedIn, userName } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    if (navigator.geolocation) {
+    if (!isDemoMode && navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
         setLocation({
           latitude: position.coords.latitude,

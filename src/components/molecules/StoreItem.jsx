@@ -25,7 +25,7 @@ const StoreItem = ({
 
   return (
     <div
-      className="relative flex items-center gap-4 p-4 bg-white border border-gray-300 rounded-xl"
+      className="relative flex items-center gap-2.5 p-2.5 bg-white border border-gray-300 rounded-xl"
       onClick={handleClick}
       onKeyDown={(event) => {
         if (event.key === "Enter" || event.key === " ") handleClick();
@@ -33,23 +33,24 @@ const StoreItem = ({
       role="button"
       tabIndex={0}
     >
-      <div className="w-24 h-24 overflow-auto rounded-xl">
+      <div className="w-[72px] h-[72px] overflow-hidden rounded-lg shrink-0">
         <img
           className="object-cover w-full h-full"
           src={imageUrl}
           alt="세차장이미지"
         />
       </div>
-      <div className="grid flex-grow gap-2">
+      <div className="grid min-w-0 flex-grow gap-1">
         <UserStar averageStar={starcount} />
-        <div className="w-4/5 overflow-hidden font-semibold text-ellipsis whitespace-nowrap">
+        <div className="w-4/5 overflow-hidden font-semibold leading-5 text-ellipsis whitespace-nowrap">
           {storename}
         </div>
-        <strong className="text-lg font-extrabold text-primary">
-          {priceinfo.toLocaleString()}원 / 30분
+        <strong className="text-base font-extrabold leading-5 text-primary">
+          {priceinfo.toLocaleString()}원
+          <span className="font-bold text-gray-600"> / 30분</span>
         </strong>
       </div>
-      <DistanceFromHere className="absolute right-4" distance={distance} />
+      <DistanceFromHere className="absolute right-2.5" distance={distance} />
     </div>
   );
 };

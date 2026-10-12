@@ -1,3 +1,8 @@
+export const DEMO_LOCATION = {
+  latitude: 35.143066,
+  longitude: 126.922375,
+};
+
 export const resolveDemoMode = ({ demoMode, screenshotMode }) => {
   const isDemo = demoMode === "true";
   const isScreenshot = isDemo && screenshotMode === "true";

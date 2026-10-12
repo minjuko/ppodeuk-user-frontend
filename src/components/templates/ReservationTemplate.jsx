@@ -9,16 +9,22 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import TextInput from "../atoms/TextInput";
 import { useDispatch } from "react-redux";
 import { resetStore } from "../../store/action";
+import { DEMO_LOCATION, isDemoMode } from "../../demo/mode";
+import { FiSearch } from "react-icons/fi";
 
 const ReservationTemplate = () => {
   const dispatch = useDispatch();
   const initialKeypoints = [];
   const [keypoints, setKeypoints] = useState(initialKeypoints);
   const [firstClick, setFirstClick] = useState(true);
-  const [location, setLocation] = useState({
-    latitude: 35.14,
-    longitude: 126.9,
-  });
+  const [location, setLocation] = useState(
+    isDemoMode
+      ? DEMO_LOCATION
+      : {
+          latitude: 35.14,
+          longitude: 126.9,
+        },
+  );
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
@@ -26,7 +32,7 @@ const ReservationTemplate = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (navigator.geolocation) {
+    if (!isDemoMode && navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
         setLocation({
           latitude: position.coords.latitude,
@@ -80,14 +86,20 @@ const ReservationTemplate = () => {
 
       <DualBottomsheet className="fixed left-0 z-10">
         <Bottomsheet className="z-20 flex flex-col h-full gap-4 p-4">
-          <TextInput
-            type="text"
-            id="search-bar"
-            placeholder="검색할 세차장 이름을 입력하세요"
-            className="p-4 border-gray-300"
-            onChange={handleSearchChange}
-            value={searchTerm}
-          />
+          <div className="relative">
+            <TextInput
+              type="text"
+              id="search-bar"
+              placeholder="검색할 세차장 이름을 입력하세요"
+              className="w-full p-4 pr-11 border-gray-300"
+              onChange={handleSearchChange}
+              value={searchTerm}
+            />
+            <FiSearch
+              className="absolute w-5 h-5 text-gray-400 -translate-y-1/2 pointer-events-none right-4 top-1/2"
+              aria-hidden="true"
+            />
+          </div>
           <div className="flex gap-2 pb-2 overflow-x-auto scrollbar-hide">
             <Badge
               key="8"
@@ -148,7 +160,7 @@ const ReservationTemplate = () => {
           </div>
 
           <div
-            className="grid flex-1 min-h-0 gap-4 overflow-y-auto overscroll-contain pb-16 touch-pan-y"
+            className="carwash-list-scrollbar grid flex-1 min-h-0 gap-3 overflow-y-auto overscroll-contain pb-16 touch-pan-y"
             style={{
               height: "calc(100dvh - var(--sheet-offset) - 190px)",
               flex: "none",

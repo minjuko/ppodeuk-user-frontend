@@ -5,6 +5,7 @@ import {
   demoBookedTimes,
   demoCarwashes,
 } from "./demoData";
+import { getDemoDate } from "../utils/demoDate";
 
 const ok = (response) => ({ success: true, response, error: null });
 const fail = (code, message) => ({
@@ -323,7 +324,7 @@ export const handlers = [
     state.reviews.unshift({
       ...review,
       username: "데모 사용자",
-      created_at: new Date().toISOString().slice(0, 16),
+      created_at: getDemoDate().toISOString().slice(0, 16),
     });
     return res(ctx.json(ok(null)));
   }),

@@ -22,6 +22,7 @@ describe("예약 picker 상태 reset", () => {
     const startButton = getByRole("button", { name: "09:00" });
     fireEvent.click(startButton);
     expect(startButton).toHaveAttribute("aria-pressed", "true");
+    expect(startButton).toHaveClass("bg-primary", "text-white");
 
     rerender(
       <TimePicker
@@ -50,6 +51,7 @@ describe("예약 picker 상태 reset", () => {
     const durationButton = getByRole("button", { name: "30분" });
     fireEvent.click(durationButton);
     expect(durationButton).toHaveAttribute("aria-pressed", "true");
+    expect(durationButton).toHaveClass("bg-primary", "text-white");
 
     rerender(<DurationPicker {...props} startTime="09:30" />);
     expect(getByRole("button", { name: "30분" })).toHaveAttribute(

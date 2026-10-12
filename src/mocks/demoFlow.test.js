@@ -108,12 +108,26 @@ describe("Portfolio Demo 사용자 흐름", () => {
       { url: "/carwash-blue.png" },
       { url: "/carwash-garden.png" },
     ]);
-    expect(detail.data.response.keywordIdList).toEqual([8, 10, 11]);
+    expect(detail.data.response.keywordIdList).toEqual([8, 10, 12]);
     expect(detail.data.response.optime.weekday).toEqual({
       start: "09:30",
       end: "18:30",
     });
     expect(bays.data.response.bayList[0].bayBookedTimeList).toHaveLength(2);
+  });
+
+  it("프리미엄터치세차의 두 베이에 타 사용자 예약을 고르게 제공한다", async () => {
+    const bays = await carwashesBays(108);
+    const [firstBay, secondBay] = bays.data.response.bayList;
+
+    expect(firstBay.bayBookedTimeList).toHaveLength(4);
+    expect(secondBay.bayBookedTimeList).toHaveLength(4);
+    expect(
+      firstBay.bayBookedTimeList.every(({ userId }) => userId >= 3101),
+    ).toBe(true);
+    expect(
+      secondBay.bayBookedTimeList.every(({ userId }) => userId >= 3201),
+    ).toBe(true);
   });
 
   it("선택한 60분 예약의 가격을 기존 endpoint 계약으로 계산한다", async () => {
@@ -158,7 +172,7 @@ describe("Portfolio Demo 사용자 흐름", () => {
 
   it("예약 취소 후 같은 demo session의 예약 내역에서 제거한다", async () => {
     await authenticate();
-    await cancelReservation(501);
+    await cancelReservation(502);
     const history = await reservationsCurrentstatus();
 
     expect(history.data.response.upcomingReservationList).toEqual([]);
@@ -179,7 +193,7 @@ describe("Portfolio Demo 사용자 흐름", () => {
     expect(response.data.response.reviewList[0].comment).toBe(
       "데모 리뷰입니다.",
     );
-    expect(response.data.response.overview.totalCnt).toBe(2);
+    expect(response.data.response.overview.totalCnt).toBe(4);
     expect(history.data.response.completeReservationList[0].reviewed).toBe(
       true,
     );

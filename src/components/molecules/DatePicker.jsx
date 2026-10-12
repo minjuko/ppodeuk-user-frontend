@@ -48,7 +48,7 @@ const DatePicker = ({ handleButtonClick, selectedDate: controlledDate }) => {
                 {date.toLocaleDateString("ko-KR", { weekday: "short" })}
               </span>
               <span
-                className={`flex items-center justify-center w-9 h-9 text-sm rounded-md ${
+                className={`flex items-center justify-center w-9 h-9 text-sm rounded-full ${
                   isSelected
                     ? "font-bold text-white bg-primary shadow-sm"
                     : "font-semibold text-gray-800"

@@ -19,9 +19,7 @@ const OperatingHoursCard = ({ openingHours }) => (
       </h2>
       <div className="flex items-center gap-2 text-xs whitespace-nowrap">
         <p className="flex items-center gap-1">
-          <span className="px-1.5 py-0.5 font-bold text-sky-700 bg-white rounded">
-            평일
-          </span>
+          <span className="font-bold text-sky-700">평일</span>
           <span className="font-medium text-gray-700">
             {openingHours.weekday.start}~
             {displayEndTime(openingHours.weekday.end)}
@@ -29,9 +27,7 @@ const OperatingHoursCard = ({ openingHours }) => (
         </p>
         <span className="w-px h-3 bg-sky-200" aria-hidden="true" />
         <p className="flex items-center gap-1">
-          <span className="px-1.5 py-0.5 font-bold text-sky-700 bg-white rounded">
-            주말
-          </span>
+          <span className="font-bold text-sky-700">주말</span>
           <span className="font-medium text-gray-700">
             {openingHours.weekend.start}~
             {displayEndTime(openingHours.weekend.end)}

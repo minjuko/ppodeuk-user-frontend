@@ -9,6 +9,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from "./store";
 import Loader from "./components/atoms/Loader.jsx";
 import { startDemoWorker } from "./demo/mode.js";
+import { ToastProvider } from "./components/feedback/ToastProvider.jsx";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -29,7 +30,9 @@ prepareDemo.then(() => {
       <Provider store={store}>
         <PersistGate loading={<Loader />} persistor={persistor}>
           <QueryClientProvider client={queryClient}>
-            <App />
+            <ToastProvider>
+              <App />
+            </ToastProvider>
           </QueryClientProvider>
         </PersistGate>
       </Provider>

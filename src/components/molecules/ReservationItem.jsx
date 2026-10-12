@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getErrorDetail } from "../../layouts/errorswitch";
 import dayjs from "dayjs";
+import { useToast } from "../feedback/ToastProvider";
 
 const ReservationItem = ({
   rsvid,
@@ -22,6 +23,7 @@ const ReservationItem = ({
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [failmodalContent, setFailmodalContent] = useState("");
 
@@ -36,8 +38,11 @@ const ReservationItem = ({
 
   const mutation = useMutation({
     mutationFn: (rsvid) => cancelReservation(rsvid),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["getHistory"] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["getHistory"] });
+      setIsModalOpen(false);
+      setFailmodalContent("");
+      showToast({ message: "예약이 취소되었습니다." });
     },
     onError: (error) => {
       const errorDetail = getErrorDetail(error);
@@ -47,9 +52,11 @@ const ReservationItem = ({
   });
 
   const handleConfirm = () => {
-    if (!failmodalContent) mutation.mutate(rsvid);
-    setIsModalOpen(false);
-    if (failmodalContent) navigate("/");
+    if (!failmodalContent) {
+      mutation.mutate(rsvid);
+      return;
+    }
+    setFailmodalContent("");
   };
 
   const modalContent = failmodalContent ? (
@@ -70,19 +77,19 @@ const ReservationItem = ({
 
   return (
     <div className="p-4 bg-white border border-gray-300 shadow-sm rounded-lg">
-      <div className="flex items-center gap-4">
+      <div className="flex items-stretch gap-4">
         <Image
           src={imgsrc}
-          className="object-cover w-16 h-16 rounded-lg shrink-0"
+          className="block object-cover w-20 h-20 rounded-lg shrink-0"
           alt="세차장 이미지"
         />
-        <div className="min-w-0 grow">
-          <div className="text-xs text-gray-500">
+        <div className="flex flex-col h-20 min-w-0 grow">
+          <div className="text-xs leading-4 text-gray-500 whitespace-nowrap">
             {start.format("YYYY-MM-DD HH:mm")} ~ {end.format("HH:mm")}
           </div>
-          <div className="mt-1 font-semibold truncate">{bayname}</div>
-          <div className="flex items-end justify-between gap-3 mt-2">
-            <div className="text-lg font-extrabold leading-none text-gray-900">
+          <div className="mt-1 font-semibold leading-5 truncate">{bayname}</div>
+          <div className="flex items-end justify-between gap-3 mt-auto">
+            <div className="text-lg font-extrabold leading-none text-gray-900 whitespace-nowrap">
               {priceinfo.toLocaleString()}원
             </div>
             {buttontype === "cancel" && (
@@ -109,10 +116,10 @@ const ReservationItem = ({
               </Button>
             )}
             {buttontype === "review" && reviewed && (
-              <span className="px-3 py-2 text-xs font-bold text-gray-500 bg-gray-100 rounded-lg">
+              <span className="inline-flex items-center h-9 px-3 text-xs font-bold text-gray-500 bg-gray-100 rounded-lg whitespace-nowrap">
                 작성 완료
               </span>
-            )}{" "}
+            )}
           </div>
         </div>
       </div>
@@ -122,6 +129,9 @@ const ReservationItem = ({
         onConfirm={handleConfirm}
         title={failmodalContent ? "오류발생" : "예약 취소 확인"}
         content={modalContent}
+        isPending={mutation.isPending}
+        pendingText="예약 취소 중..."
+        variant="danger"
         confirmText={failmodalContent ? "홈으로" : "취소하기"}
         cancelText={failmodalContent ? null : "닫기"}
       />
