@@ -19,10 +19,9 @@ const queryClient = new QueryClient({
   },
 });
 
-const prepareDemo =
-  __DEMO_BUILD__ && import.meta.env.VITE_DEMO_MODE === "true"
-    ? startDemoWorker(() => import("./mocks/worker"))
-    : Promise.resolve();
+const prepareDemo = __DEMO_BUILD__
+  ? startDemoWorker(() => import("./mocks/worker"))
+  : Promise.resolve();
 
 prepareDemo.then(() => {
   ReactDOM.createRoot(document.getElementById("root")).render(

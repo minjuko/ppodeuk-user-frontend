@@ -3,8 +3,12 @@ export const DEMO_LOCATION = {
   longitude: 126.922375,
 };
 
-export const resolveDemoMode = ({ demoMode, screenshotMode }) => {
-  const isDemo = demoMode === "true";
+export const resolveDemoMode = ({
+  demoMode,
+  screenshotMode,
+  demoBuild = false,
+}) => {
+  const isDemo = demoBuild || demoMode === "true";
   const isScreenshot = isDemo && screenshotMode === "true";
 
   return {
@@ -17,6 +21,7 @@ export const resolveDemoMode = ({ demoMode, screenshotMode }) => {
 export const { isDemoMode, isScreenshotMode, showDemoUi } = resolveDemoMode({
   demoMode: import.meta.env.VITE_DEMO_MODE,
   screenshotMode: import.meta.env.VITE_SCREENSHOT_MODE,
+  demoBuild: __DEMO_BUILD__,
 });
 
 export const startDemoWorker = async (loadWorker) => {
