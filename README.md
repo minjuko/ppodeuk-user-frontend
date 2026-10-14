@@ -104,59 +104,9 @@ flowchart LR
   API -. "payment" .-> PAY["KakaoPay"]
 ```
 
-## 2026년 개인 유지보수: 인증 안정성
+## 인증·예약 안정성 개선
 
-2023년 팀 프로젝트 종료 후 개인 유지보수로 인증 경계의 오류 처리와 보호 경로 정책을 보완했습니다.
+- **인증:** 네트워크·서버 오류와 누락된 토큰을 안전하게 처리하고, 보호 경로에서 로그인 후 원래 화면으로 복귀하도록 보완했습니다.
+- **예약:** 직접 예약 URL 접근 시 경로와 공유 상태가 불일치하던 문제를 수정하고, 날짜 변경에 따른 종속 선택값 초기화를 검증했습니다.
+- **결제:** callback 직접 접근·중복 요청·실패 후 재시도를 방어하고, 회귀 테스트로 주요 예외 흐름을 확인했습니다.
 
-- 기존 결함: 네트워크 오류나 본문 없는 HTTP 오류에서 Redux rejected 처리 중 예외가 발생했고, 일부 보호 경로는 토큰 존재 여부·실패 후 정리·원래 경로 전달 정책이 달랐습니다.
-- 실제 수정: 인증 오류를 안전한 공통 형태로 처리하고, token 없는 로그인 응답을 거부하며, 인증 실패 시 사용자 상태를 초기화합니다. 두 AuthLayout은 token 확인과 실패 처리 정책을 동일하게 적용합니다.
-- 경로 복귀: 보호 경로에서 로그인으로 이동할 때 query string과 hash를 포함한 원래 내부 경로를 전달하고, 로그인 성공 후 해당 경로로 복귀합니다.
-- 추가 테스트: 정상 로그인, 잘못된 로그인 정보, 네트워크·서버·본문 없는 오류, payload 없는 rejected action, token 없는 보호 경로, 유효하지 않은 token, 로그아웃, 새로고침 복원, 로그인 후 경로 복귀를 회귀 테스트로 고정했습니다.
-
-## 검증 결과
-
-| 검증 | 결과 |
-|---|---:|
-| 프론트엔드 테스트 | **101 / 101 passed** |
-| 테스트 파일 | **25 / 25 passed** |
-| 코드 품질 | **ESLint 0 errors · 0 warnings** |
-| Production build | 성공 |
-| 이미지 최적화 | **106,998 B → 66,413 B (-37.9%)** |
-| Lighthouse 모바일 성능 점수 | **88 → 91** |
-| Lighthouse LCP 중앙값 | **3,578 ms → 3,331 ms (-247 ms)** |
-| Lighthouse 측정 조건 | Chrome 152 · 모바일 기본 프로필 · 3회 중앙값 · demo production build |
-
-> JPEG 재압축 후 동일한 로컬 환경에서 측정한 결과입니다. 실제 사용자 환경에서 동일한 폭의 개선을 보장하지는 않습니다.
-
-## 로컬 실행
-
-```bash
-npm ci
-npm run dev
-```
-
-테스트와 Production build는 다음 명령으로 확인합니다.
-
-```bash
-npm run lint
-npm test -- --run
-npm run build
-```
-
-Stateful MSW 기반 Demo는 실제 백엔드나 결제 서비스 없이 로그인 → 탐색 → 예약 → 결제 → 취소 → 리뷰 등록 흐름을 재현합니다.
-
-```bash
-npm run dev -- --mode demo
-```
-
-## 관련 저장소
-
-- [사업자용 프론트엔드](https://github.com/minjuko/ppodeuk-owner-frontend) — 사업자용 관리 화면 · 초기 등록 UI 일부 참여
-- [백엔드](https://github.com/minjuko/ppodeuk-backend) — Spring Boot API · 백엔드 팀 원 구현
-- [기술 문서](docs/architecture.md) · [예약 규칙과 개선 기록](docs/refactoring.md) · [예약 규칙·상태·API 감사](docs/reservation-audit-2026.md) · [2023 README 보존본](docs/archive/README-2023-original.md)
-
-## 한계 및 검증 범위
-
-- Demo 데이터는 브라우저를 새로고침하면 초기화됩니다.
-- Demo 결제는 실제 KakaoPay 결제가 아닌 사용자 흐름 검증용입니다.
-- 동시 예약의 최종 경쟁 조건은 서버 측 동시성 제어가 필요합니다.
