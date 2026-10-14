@@ -12,10 +12,12 @@ const AuthLayout = () => {
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
   useEffect(() => {
+    const from = `${location.pathname}${location.search}${location.hash}`;
+
     if (!localStorage.getItem("token")) {
       navigate("/login", {
         replace: true,
-        state: { authRequired: true, from: location.pathname },
+        state: { authRequired: true, from },
       });
       return;
     }
@@ -27,10 +29,10 @@ const AuthLayout = () => {
         localStorage.removeItem("token");
         navigate("/login", {
           replace: true,
-          state: { authRequired: true, from: location.pathname },
+          state: { authRequired: true, from },
         });
       });
-  }, [dispatch, location.pathname, navigate]);
+  }, [dispatch, location.hash, location.pathname, location.search, navigate]);
 
   if (isCheckingAuth) return <Loader />;
 
