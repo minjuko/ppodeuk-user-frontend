@@ -31,6 +31,7 @@ export default defineConfig(({ mode }) => ({
   plugins: [
     demoServiceWorker(mode === "demo"),
     VitePWA({
+      disable: mode === "demo",
       includeAssets: ["/favicon.ico", "/apple-touch-icon.png"],
       registerType: "autoUpdate",
       injectRegister: "auto",
