@@ -59,9 +59,8 @@ const HomeTemplate = () => {
     ],
   });
 
-  const recommendedData =
-    recommended?.data?.data?.response?.[0] ??
-    (!recommended.isPending ? FALLBACK_RECOMMENDED_CARWASH : null);
+  const apiRecommendedData = recommended?.data?.data?.response?.[0];
+  const recommendedData = apiRecommendedData ?? FALLBACK_RECOMMENDED_CARWASH;
   const recentList = recent?.data?.data?.response?.recentReservationList || [];
 
   return (
@@ -130,23 +129,20 @@ const HomeTemplate = () => {
       </section>
       <section className="grid gap-3">
         <h2 className="text-xl font-semibold">이런 세차장 어때요?</h2>
-        {recommended.isPending ? (
-          <Loader variant="inline" label="추천 세차장을 불러오는 중입니다." />
-        ) : recommended.isError && !recommendedData ? (
-          <div role="alert">추천 세차장을 불러오지 못했습니다.</div>
-        ) : recommendedData ? (
-          <CarwashCard
-            id={recommendedData.id}
-            image={recommendedData.image}
-            name={recommendedData.name}
-            address={recommendedData.location.address}
-            rate={recommendedData.rate}
-            reviewCount={recommendedData.reviewCount}
-            distance={recommendedData.distance}
-          />
-        ) : (
-          <div>현재 추천할 수 있는 세차장이 없습니다.</div>
+        {!apiRecommendedData && (
+          <p className="text-sm text-gray-500">
+            추천 세차장 예시를 표시하고 있습니다.
+          </p>
         )}
+        <CarwashCard
+          id={recommendedData.id}
+          image={recommendedData.image}
+          name={recommendedData.name}
+          address={recommendedData.location.address}
+          rate={recommendedData.rate}
+          reviewCount={recommendedData.reviewCount}
+          distance={recommendedData.distance}
+        />
       </section>
       {isLoggedIn && (
         <section className="grid gap-3">

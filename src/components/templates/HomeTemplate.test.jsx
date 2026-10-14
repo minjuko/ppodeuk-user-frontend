@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it, vi } from "vitest";
 import HomeTemplate from "./HomeTemplate";
+import { FALLBACK_RECOMMENDED_CARWASH } from "../../demo/mode";
 
 const queryState = vi.hoisted(() => ({ options: null, mode: "pending" }));
 
@@ -29,8 +30,8 @@ vi.mock("../../store/authSlice", () => ({
   logout: () => ({ type: "logout" }),
 }));
 
-describe("홈 추천 세차장", () => {
-  it("비로그인 상태에서도 기본 좌표로 추천 query를 활성화한다", () => {
+describe("home recommended carwash", () => {
+  it("requests recommendations with demo coordinates and immediately shows fallback while pending", () => {
     queryState.mode = "pending";
     render(
       <MemoryRouter>
@@ -43,12 +44,15 @@ describe("홈 추천 세차장", () => {
       enabled: true,
     });
     expect(queryState.options.queries[1].enabled).toBe(false);
-    expect(screen.getByRole("status")).toHaveTextContent(
-      "추천 세차장을 불러오는 중입니다.",
+    expect(screen.getByTestId("recommended-card")).toHaveTextContent(
+      FALLBACK_RECOMMENDED_CARWASH.name,
     );
+    expect(
+      screen.getByText("추천 세차장 예시를 표시하고 있습니다."),
+    ).toBeInTheDocument();
   });
 
-  it("추천 API가 실패해도 기본 추천 카드를 표시한다", () => {
+  it("shows fallback when the recommendation API fails", () => {
     queryState.mode = "error";
     render(
       <MemoryRouter>
@@ -57,7 +61,7 @@ describe("홈 추천 세차장", () => {
     );
 
     expect(screen.getByTestId("recommended-card")).toHaveTextContent(
-      "버블샤인 세차장",
+      FALLBACK_RECOMMENDED_CARWASH.name,
     );
   });
 });
