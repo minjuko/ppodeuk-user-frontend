@@ -3,6 +3,7 @@ import { Provider } from "react-redux";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { describe, expect, it, vi } from "vitest";
 import LoginForm from "./LoginForm";
+import { DEMO_CREDENTIALS } from "../../mocks/demoData";
 
 vi.mock("../../store/authSlice", () => ({
   loginThunk: vi.fn(),
@@ -13,6 +14,20 @@ const store = {
   subscribe: () => () => {},
   dispatch: vi.fn(),
 };
+
+describe("production login", () => {
+  it("does not show mock login credentials", () => {
+    render(
+      <Provider store={store}>
+        <MemoryRouter>
+          <LoginForm />
+        </MemoryRouter>
+      </Provider>,
+    );
+
+    expect(screen.queryByText(DEMO_CREDENTIALS.email)).not.toBeInTheDocument();
+  });
+});
 
 describe("로그인 화면 진입 동선", () => {
   it("회원가입 링크를 항상 제공한다", () => {

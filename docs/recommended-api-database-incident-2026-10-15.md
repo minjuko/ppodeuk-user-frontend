@@ -1,28 +1,38 @@
-# Recommended carwash API incident (2026-10-15)
+# 추천 세차장 조회 장애 해결 기록 (2026-10-15)
 
-## Impact
+## 문제 상황
 
-On the public user site, the recommended carwash request could remain pending and then appear as `canceled` in browser DevTools. The home page could show an error instead of a recommendation while signed out.
+- 로그인 전 홈 화면에서 추천 세차장 조회가 실패했고, 브라우저 네트워크 탭에는 요청이 `취소됨`으로 표시됐다.
+- 장애 중에는 추천 카드가 보이지 않거나 오류 문구가 노출됐다.
+- 공개 사이트 상단에 `Portfolio Demo` 문구가 노출되고, Vercel 배포가 모의 백엔드(MSW)를 사용하는 데모 빌드로 설정돼 있었다.
 
-## Findings
+## 원인 확인
 
-- A direct request to `/api/open/carwashes/recommended?latitude=35.14&longitude=126.9` returned HTTP 500 after about 10 seconds.
-- The response included `JDBCConnectionException: could not extract ResultSet`.
-- Railway backend logs recorded MySQL SQL error 1053 / SQLState 08S01 and `Server shutdown in progress` while `CarwashService.findNearestCarwashByUserLocation` was executing.
-- The frontend Axios timeout is 5 seconds. The backend failure took longer than that, so the browser could abort/mark the request canceled before it received the server's eventual 500. `canceled` is therefore not itself an HTTP response code.
-- The available evidence points to a transient backend-to-MySQL connection interruption (consistent with Railway service sleep/resume), not invalid default coordinates or a login requirement. Root cause of the database shutdown still needs Railway-side confirmation.
+- API를 직접 호출하자 약 10초 뒤 HTTP 500 응답이 돌아왔다. 응답에는 `JDBCConnectionException: could not extract ResultSet`가 포함됐다.
+- Railway 백엔드 로그에는 MySQL 오류 1053, 연결 상태 `08S01`, `Server shutdown in progress`가 기록됐고 추천 세차장 조회 서비스가 실행 중이었다.
+- 프런트엔드 요청 제한시간은 5초다. 서버 오류가 돌아오기 전에 브라우저가 요청을 끊어 네트워크 탭에는 `취소됨`으로 보일 수 있었다. 이 표시는 HTTP 응답 코드가 아니다.
+- 따라서 좌표나 로그인 권한보다 백엔드와 데이터베이스 사이의 연결 중단이 직접 원인으로 확인됐다. 데이터베이스 종료의 근본 사유는 Railway 측 기록을 더 확인해야 한다.
+- 데모 빌드의 MSW와 PWA 서비스워커는 모두 같은 범위를 사용할 수 있어 공개 배포에서 함께 실행하면 충돌할 수 있다.
 
-## Resolution
+## 해결 방법
 
-- Always render the local example recommendation immediately; replace it with API data once the request succeeds.
-- Label the card as an example while no API recommendation is available, so fallback content is not mistaken for live results.
-- Keep the API call enabled for signed-out users and retain the default coordinates when browser geolocation is unavailable.
-- The public production alias still served the prior error UI after the new deployment was Ready, while the version-specific preview showed the updated card. A stale service-worker cache is a likely explanation, but needs confirmation and a scope-safe cleanup strategy.
-- Demo mode already registers MSW at the root scope. Enabling the PWA worker in that build is unsafe because both workers compete for the same scope; this was tested and reverted.
+- 추천 API 응답이 아직 없거나 실패해도 로컬 예시 추천 카드를 즉시 보여주고, 실제 응답이 도착하면 해당 데이터로 교체하도록 했다.
+- API 데이터가 없어 예시 카드를 표시할 때는 예시임을 알리는 문구를 함께 보여준다.
+- Vercel 빌드를 일반 프로덕션 빌드로 바꾸고 산출물 경로를 `dist`로 변경했다. 공개 배포에서는 MSW가 시작되지 않고 `VITE_API_BASE_URL` 설정으로 실제 백엔드에 연결된다.
+- MSW 실행은 `npm run dev:mock`으로 분리해 백엔드 없이 프런트엔드만 확인하는 로컬 검증에서만 사용한다. 모의 빌드 명령도 `npm run build:demo:local`로 구분한다.
+- 로그인 화면의 데모 계정 안내·자동 입력 UI는 모의 모드에서만 노출한다. 프로덕션 빌드에서는 숨긴다.
+- 상단 `Portfolio Demo` 안내 UI는 완전히 제거했다.
 
-## Verification and follow-up
+## 검증 및 결과
 
-- Add component coverage for fallback display while the request is pending and after it fails.
-- Verify the production bundle includes the new behavior after deployment.
-- Resolve stale production service-worker caches without competing with the MSW worker, then verify with an existing browser session.
-- Backend follow-up: inspect Railway MySQL sleep/restart and connection-pool lifecycle around the recorded error. Do not change Railway sizing/always-on settings without reviewing the possible cost impact.
+- 추천 세차장 컴포넌트 테스트에서 요청 대기 중과 API 실패 상태 모두 예시 카드가 표시되는 것을 확인했다.
+- lint, 전체 테스트, 운영 빌드, 로컬 모의 빌드를 통과했다. 운영 산출물에는 MSW 워커 파일이 없고 로컬 모의 산출물에만 포함된다.
+- Vercel에는 `VITE_API_BASE_URL` Production 설정이 등록돼 있다. 공개 빌드는 이 값을 사용하며 MSW는 시작하지 않는다.
+- Vercel Production의 `VITE_DEMO_MODE`와 `VITE_SCREENSHOT_MODE` 설정을 제거했다. 이후 새 배포가 필요하다.
+- 공개 주소의 실제 반영 여부와 추천 카드·이미지 표시, 데모 계정 UI 미노출은 새 배포가 완료된 뒤 확인한다.
+- Railway의 DB 연결 중단은 프런트엔드 변경으로 복구되지 않는다. MySQL 종료·재시작 시점과 백엔드 연결 풀 상태를 추가 확인해야 한다. 비용이 발생할 수 있는 상시 실행 설정은 별도 검토 없이 변경하지 않는다.
+
+## 남은 확인 사항
+
+- 새 커밋을 배포한 뒤 공개 주소에서 변경 사항과 기존 서비스워커 캐시 영향을 확인한다.
+- Railway DB 연결 원인을 확인하고, 재발 시 백엔드 연결 풀과 DB 수명주기를 조정한다.

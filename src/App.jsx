@@ -5,7 +5,6 @@ import Modal from "react-modal";
 import AuthLayout from "./layouts/AuthLayout";
 import AuthLayoutWithStatusBar from "./layouts/AuthLayoutWithStatusBar";
 import Loader from "./components/atoms/Loader";
-import DemoNotice from "./components/atoms/DemoNotice";
 
 const HomePage = lazy(() =>
   import("./pages/HomePage").then((module) => ({ default: module.HomePage })),
@@ -31,7 +30,6 @@ Modal.setAppElement("#root");
 function App() {
   return (
     <BrowserRouter>
-      {__DEMO_BUILD__ && <DemoNotice />}
       <Suspense fallback={<Loader />}>
         <Routes>
           <Route element={<MainLayout />}>
