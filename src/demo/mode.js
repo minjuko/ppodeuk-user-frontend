@@ -3,6 +3,19 @@ export const DEMO_LOCATION = {
   longitude: 126.922375,
 };
 
+export const FALLBACK_RECOMMENDED_CARWASH = {
+  id: 101,
+  name: "버블샤인 세차장",
+  image: { url: "/carouselimage1.jpg" },
+  rate: 4.8,
+  reviewCount: 12,
+  distance: 850,
+  location: {
+    address: "광주광역시 북구 데모로 10",
+    ...DEMO_LOCATION,
+  },
+};
+
 export const resolveDemoMode = ({
   demoMode,
   screenshotMode,

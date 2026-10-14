@@ -13,30 +13,31 @@ import { logout } from "../../store/authSlice";
 import { resetStore } from "../../store/action";
 import LogoIcon from "/bdbd_icon.svg";
 import Loader from "../atoms/Loader";
-import { DEMO_LOCATION, isDemoMode } from "../../demo/mode";
+import {
+  DEMO_LOCATION,
+  FALLBACK_RECOMMENDED_CARWASH,
+  isDemoMode,
+} from "../../demo/mode";
 
 const HomeTemplate = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const queryClient = useQueryClient();
-  const [location, setLocation] = useState(
-    isDemoMode
-      ? DEMO_LOCATION
-      : {
-          latitude: 35.14,
-          longitude: 126.9,
-        },
-  );
+  const [location, setLocation] = useState(DEMO_LOCATION);
   const { isLoggedIn, userName } = useSelector((state) => state.auth);
 
   useEffect(() => {
     if (!isDemoMode && navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        setLocation({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        });
-      });
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLocation({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
+        },
+        () => setLocation(DEMO_LOCATION),
+        { timeout: 5000, maximumAge: 300000 },
+      );
     }
   }, []);
 
@@ -46,6 +47,9 @@ const HomeTemplate = () => {
         queryKey: ["recommended", location.latitude, location.longitude],
         queryFn: () =>
           carwashesRecommended(location.latitude, location.longitude),
+        enabled:
+          Number.isFinite(location.latitude) &&
+          Number.isFinite(location.longitude),
       },
       {
         queryKey: ["recent"],
@@ -55,7 +59,9 @@ const HomeTemplate = () => {
     ],
   });
 
-  const recommendedData = recommended?.data?.data?.response?.[0];
+  const recommendedData =
+    recommended?.data?.data?.response?.[0] ??
+    (!recommended.isPending ? FALLBACK_RECOMMENDED_CARWASH : null);
   const recentList = recent?.data?.data?.response?.recentReservationList || [];
 
   return (
@@ -126,7 +132,7 @@ const HomeTemplate = () => {
         <h2 className="text-xl font-semibold">이런 세차장 어때요?</h2>
         {recommended.isPending ? (
           <Loader variant="inline" label="추천 세차장을 불러오는 중입니다." />
-        ) : recommended.isError ? (
+        ) : recommended.isError && !recommendedData ? (
           <div role="alert">추천 세차장을 불러오지 못했습니다.</div>
         ) : recommendedData ? (
           <CarwashCard
