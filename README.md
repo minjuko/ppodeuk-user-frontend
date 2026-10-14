@@ -153,7 +153,7 @@ npm run dev -- --mode demo
 
 - [사업자용 프론트엔드](https://github.com/minjuko/ppodeuk-owner-frontend) — 사업자용 관리 화면 · 초기 등록 UI 일부 참여
 - [백엔드](https://github.com/minjuko/ppodeuk-backend) — Spring Boot API · 백엔드 팀 원 구현
-- [기술 문서](docs/architecture.md) · [예약 규칙과 개선 기록](docs/refactoring.md) · [2023 README 보존본](docs/archive/README-2023-original.md)
+- [기술 문서](docs/architecture.md) · [예약 규칙과 개선 기록](docs/refactoring.md) · [예약 규칙·상태·API 감사](docs/reservation-audit-2026.md) · [2023 README 보존본](docs/archive/README-2023-original.md)
 
 ## 한계 및 검증 범위
 

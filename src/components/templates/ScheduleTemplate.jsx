@@ -8,7 +8,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "../atoms/Button";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { useDispatch } from "react-redux";
-import { saveReservation } from "../../store/action";
+import { saveReservation, setBayId, setCarwashId } from "../../store/action";
 import { carwashesInfo, carwashesBays } from "../../apis/carwashes";
 import {
   buildReservationPayload,
@@ -84,9 +84,11 @@ const ScheduleTemplate = ({ carwashId, bayId }) => {
   };
 
   useEffect(() => {
+    dispatch(setCarwashId(Number(carwashId)));
+    dispatch(setBayId(Number(bayId)));
     setStartTime(null);
     setDuration(null);
-  }, [carwashId, bayId]);
+  }, [carwashId, bayId, dispatch]);
 
   const reservationPayload =
     startTime && duration
