@@ -17,9 +17,11 @@ On the public user site, the recommended carwash request could remain pending an
 - Always render the local example recommendation immediately; replace it with API data once the request succeeds.
 - Label the card as an example while no API recommendation is available, so fallback content is not mistaken for live results.
 - Keep the API call enabled for signed-out users and retain the default coordinates when browser geolocation is unavailable.
+- Keep the PWA service worker enabled in demo deployments too. A production demo build that omits the worker cannot replace a previously installed worker/cache, which can leave returning visitors on stale HTML and JavaScript after the Vercel alias has moved.
 
 ## Verification and follow-up
 
 - Add component coverage for fallback display while the request is pending and after it fails.
 - Verify the production bundle includes the new behavior after deployment.
+- Verify an existing browser session updates its service worker and receives the current production bundle; a new preview hostname alone does not test the production cache.
 - Backend follow-up: inspect Railway MySQL sleep/restart and connection-pool lifecycle around the recorded error. Do not change Railway sizing/always-on settings without reviewing the possible cost impact.
