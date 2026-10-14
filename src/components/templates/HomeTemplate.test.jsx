@@ -19,7 +19,9 @@ vi.mock("@tanstack/react-query", () => ({
     return [{ isPending: true, isError: false }, { isPending: false }];
   },
 }));
-vi.mock("../molecules/CarwashCard", () => ({ CarwashCard: () => null }));
+vi.mock("../molecules/CarwashCard", () => ({
+  CarwashCard: ({ name }) => <div data-testid="recommended-card">{name}</div>,
+}));
 vi.mock("../organisms/RecentCarwashSlider", () => ({ default: () => null }));
 vi.mock("../../apis/carwashes", () => ({ carwashesRecommended: vi.fn() }));
 vi.mock("../../apis/reservations", () => ({ reservationsRecent: vi.fn() }));
@@ -27,8 +29,8 @@ vi.mock("../../store/authSlice", () => ({
   logout: () => ({ type: "logout" }),
 }));
 
-describe("홈 API 상태", () => {
-  it("추천 query를 위치별로 구분하고 비로그인 시 최근 예약을 호출하지 않는다", () => {
+describe("홈 추천 세차장", () => {
+  it("비로그인 상태에서도 기본 좌표로 추천 query를 활성화한다", () => {
     queryState.mode = "pending";
     render(
       <MemoryRouter>
@@ -36,26 +38,26 @@ describe("홈 API 상태", () => {
       </MemoryRouter>,
     );
 
-    expect(queryState.options.queries[0].queryKey).toEqual([
-      "recommended",
-      35.14,
-      126.9,
-    ]);
+    expect(queryState.options.queries[0]).toMatchObject({
+      queryKey: ["recommended", 35.143066, 126.922375],
+      enabled: true,
+    });
     expect(queryState.options.queries[1].enabled).toBe(false);
     expect(screen.getByRole("status")).toHaveTextContent(
       "추천 세차장을 불러오는 중입니다.",
     );
   });
 
-  it("추천 API 실패를 빈 화면 대신 사용자에게 알린다", () => {
+  it("추천 API가 실패해도 기본 추천 카드를 표시한다", () => {
     queryState.mode = "error";
     render(
       <MemoryRouter>
         <HomeTemplate />
       </MemoryRouter>,
     );
-    expect(screen.getByRole("alert")).toHaveTextContent(
-      "추천 세차장을 불러오지 못했습니다.",
+
+    expect(screen.getByTestId("recommended-card")).toHaveTextContent(
+      "버블샤인 세차장",
     );
   });
 });
