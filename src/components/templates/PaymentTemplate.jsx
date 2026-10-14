@@ -73,9 +73,16 @@ const PaymentTemplate = () => {
   });
   useEffect(() => {
     if (redirectLink) {
-      window.location.href = redirectLink;
+      const redirectUrl = new URL(redirectLink, window.location.origin);
+
+      if (redirectUrl.origin === window.location.origin) {
+        navigate(`${redirectUrl.pathname}${redirectUrl.search}`);
+        return;
+      }
+
+      window.location.href = redirectUrl.href;
     }
-  }, [redirectLink]);
+  }, [navigate, redirectLink]);
 
   const handleConfirm = () => {
     setIsModalOpen(false);

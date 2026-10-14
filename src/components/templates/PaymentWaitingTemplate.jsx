@@ -44,7 +44,9 @@ const PaymentWaitingTemplate = () => {
     mutationFn: (data) => pgapprove(data),
     onSuccess: (data) => {
       dispatch(resetStore());
-      navigate("/paymentresult", { state: { reservationData: data.data } });
+      navigate("/paymentresult", {
+        state: { reservationData: data?.data?.response },
+      });
     },
     onError: (error) => {
       dispatch(clearPayment());
