@@ -110,3 +110,40 @@ flowchart LR
 - **예약:** 직접 예약 URL 접근 시 경로와 공유 상태가 불일치하던 문제를 수정하고, 날짜 변경에 따른 종속 선택값 초기화를 검증했습니다.
 - **결제:** callback 직접 접근·중복 요청·실패 후 재시도를 방어하고, 회귀 테스트로 주요 예외 흐름을 확인했습니다.
 
+
+## 검증 결과
+
+| 검증 | 결과 |
+| --- | --- |
+| 프론트엔드 테스트 | **25파일 · 101건 통과** |
+| ESLint | 오류·경고 0건 |
+| Production / Demo build | 통과 |
+| GitHub Actions | CI #37 성공 |
+| 이미지 최적화 | 106,998B → 66,413B (37.9% 감소) |
+| Lighthouse 모바일 | 3회 중앙값 기준 Performance 88→91, LCP 3,578→3,331ms |
+
+> 이미지 재압축 후 동일한 로컬 환경에서 측정한 결과이며, 실제 사용자 환경의 성능을 보장하지 않습니다.
+
+## 로컬 실행
+
+```bash
+npm ci
+npm run dev
+```
+
+```bash
+npm run lint
+npm test -- --run
+npm run build
+```
+
+백엔드 없이 사용자 흐름을 확인하려면 `npm run dev -- --mode demo`로 MSW 기반 데모를 실행할 수 있습니다. 데모 결제는 실제 결제가 아니며 새로고침 시 데이터가 초기화됩니다.
+
+## 관련 자료
+
+- [사업자용 프론트엔드](https://github.com/minjuko/ppodeuk-owner-frontend) · [백엔드](https://github.com/minjuko/ppodeuk-backend)
+- [설계 문서](docs/architecture.md) · [예약 규칙과 개선 기록](docs/refactoring.md)
+
+## 검증 범위
+
+동시 예약의 최종 경쟁 조건과 실제 KakaoPay 결제·장애 복구는 자동화 테스트만으로 보장할 수 없습니다.
