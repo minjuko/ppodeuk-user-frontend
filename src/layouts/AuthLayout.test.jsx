@@ -1,8 +1,9 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { Provider } from "react-redux";
-import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import AuthLayout from "./AuthLayout";
+import AuthLayoutWithStatusBar from "./AuthLayoutWithStatusBar";
 
 vi.mock("../store/authSlice", () => ({
   getUserInfoThunk: () => ({ type: "auth/check" }),
@@ -73,4 +74,60 @@ describe("보호 route 인증 확인", () => {
     expect(screen.queryByText("history content")).not.toBeInTheDocument();
     expect(store.dispatch).not.toHaveBeenCalled();
   });
+
+  it("상태바 보호 route도 token이 없으면 원래 경로를 전달하고 인증 요청을 생략한다", async () => {
+    const store = {
+      getState: () => ({}),
+      subscribe: () => () => {},
+      dispatch: vi.fn(),
+    };
+
+    render(
+      <Provider store={store}>
+        <MemoryRouter initialEntries={["/payment?step=confirm"]}>
+          <Routes>
+            <Route element={<AuthLayoutWithStatusBar />}>
+              <Route path="payment" element={<div>payment content</div>} />
+            </Route>
+            <Route path="login" element={<LoginLocationState />} />
+          </Routes>
+        </MemoryRouter>
+      </Provider>,
+    );
+
+    expect(
+      await screen.findByText("/payment?step=confirm"),
+    ).toBeInTheDocument();
+    expect(store.dispatch).not.toHaveBeenCalled();
+  });
+
+  it("상태바 보호 route의 token 검증 실패 시 token을 제거한다", async () => {
+    localStorage.setItem("token", "invalid-token");
+    const store = {
+      getState: () => ({}),
+      subscribe: () => () => {},
+      dispatch: vi.fn(() => Promise.resolve({ error: { message: "invalid" } })),
+    };
+
+    render(
+      <Provider store={store}>
+        <MemoryRouter initialEntries={["/payment"]}>
+          <Routes>
+            <Route element={<AuthLayoutWithStatusBar />}>
+              <Route path="payment" element={<div>payment content</div>} />
+            </Route>
+            <Route path="login" element={<div>login page</div>} />
+          </Routes>
+        </MemoryRouter>
+      </Provider>,
+    );
+
+    expect(await screen.findByText("login page")).toBeInTheDocument();
+    expect(localStorage.getItem("token")).toBeNull();
+  });
 });
+
+const LoginLocationState = () => {
+  const location = useLocation();
+  return <div>{location.state?.from}</div>;
+};

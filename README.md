@@ -3,7 +3,7 @@
 > 셀프세차장 탐색부터 세차 공간(Bay) 예약·결제·리뷰까지 제공하는 모바일 웹 서비스
 
 [![CI](https://github.com/minjuko/ppodeuk-user-frontend/actions/workflows/ci.yml/badge.svg)](https://github.com/minjuko/ppodeuk-user-frontend/actions/workflows/ci.yml)
-![Tests](https://img.shields.io/badge/Tests-83%20passed-2EA44F)
+![Tests](https://img.shields.io/badge/Tests-100%20passed-2EA44F)
 ![Live](https://img.shields.io/badge/Live-Available-2EA44F)
 
 뽀득뽀득은 프론트엔드 3명·백엔드 3명이 개발한 팀 프로젝트입니다.  
@@ -104,12 +104,21 @@ flowchart LR
   API -. "payment" .-> PAY["KakaoPay"]
 ```
 
+## 2026년 개인 유지보수: 인증 안정성
+
+2023년 팀 프로젝트 종료 후 개인 유지보수로 인증 경계의 오류 처리와 보호 경로 정책을 보완했습니다.
+
+- 기존 결함: 네트워크 오류나 본문 없는 HTTP 오류에서 Redux rejected 처리 중 예외가 발생했고, 일부 보호 경로는 토큰 존재 여부·실패 후 정리·원래 경로 전달 정책이 달랐습니다.
+- 실제 수정: 인증 오류를 안전한 공통 형태로 처리하고, token 없는 로그인 응답을 거부하며, 인증 실패 시 사용자 상태를 초기화합니다. 두 AuthLayout은 token 확인과 실패 처리 정책을 동일하게 적용합니다.
+- 경로 복귀: 보호 경로에서 로그인으로 이동할 때 query string과 hash를 포함한 원래 내부 경로를 전달하고, 로그인 성공 후 해당 경로로 복귀합니다.
+- 추가 테스트: 정상 로그인, 잘못된 로그인 정보, 네트워크·서버·본문 없는 오류, payload 없는 rejected action, token 없는 보호 경로, 유효하지 않은 token, 로그아웃, 새로고침 복원, 로그인 후 경로 복귀를 회귀 테스트로 고정했습니다.
+
 ## 검증 결과
 
 | 검증 | 결과 |
 |---|---:|
-| 프론트엔드 테스트 | **83 / 83 passed** |
-| 테스트 파일 | **22 / 22 passed** |
+| 프론트엔드 테스트 | **100 / 100 passed** |
+| 테스트 파일 | **24 / 24 passed** |
 | 코드 품질 | **ESLint 0 errors · 0 warnings** |
 | Production build | 성공 |
 | 이미지 최적화 | **106,998 B → 66,413 B (-37.9%)** |

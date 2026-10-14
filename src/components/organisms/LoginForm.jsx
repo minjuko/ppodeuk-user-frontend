@@ -42,7 +42,13 @@ const LoginForm = () => {
     return dispatch(loginThunk(data))
       .then(unwrapResult)
       .then(() => {
-        navigate("/");
+        const from = location.state?.from;
+        navigate(
+          typeof from === "string" && from.startsWith("/") && from !== "/login"
+            ? from
+            : "/",
+          { replace: true },
+        );
       })
       .catch((error) => {
         if (error?.error?.code === "1001") {
