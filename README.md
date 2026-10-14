@@ -4,7 +4,6 @@
 
 [![CI](https://github.com/minjuko/ppodeuk-user-frontend/actions/workflows/ci.yml/badge.svg)](https://github.com/minjuko/ppodeuk-user-frontend/actions/workflows/ci.yml)
 ![Tests](https://img.shields.io/badge/Tests-101%20passed-2EA44F)
-![Live](https://img.shields.io/badge/Live-Available-2EA44F)
 
 뽀득뽀득은 프론트엔드 3명·백엔드 3명이 개발한 팀 프로젝트입니다.  
 저는 **사용자용 프론트엔드의 예약 흐름**을 중심으로 구현했고, 이후 예약·결제 안정성, 회귀 테스트, 실행 환경을 개선했습니다.
@@ -44,16 +43,6 @@
 | 프론트엔드 | React 18 · JavaScript · Redux Toolkit · TanStack Query · Vite |
 | 백엔드 | Spring Boot · MariaDB |
 | 성과 | 카카오 테크 캠퍼스 1기 신규 서비스 개발 프로젝트 대상 |
-
-## 서비스 링크
-
-| Service | URL |
-|---|---|
-| USER Frontend | [ppodeuk-user.vercel.app](https://ppodeuk-user.vercel.app/) |
-| OWNER Frontend | [ppodeuk-owner.vercel.app](https://ppodeuk-owner.vercel.app/) |
-| Backend API | [team10be-production.up.railway.app](https://team10be-production.up.railway.app/) |
-
-사용자용·사업자용 프론트엔드와 Spring Boot API·MariaDB를 연결했고, 사용자 예약 흐름의 **KakaoPay 테스트 결제**까지 확인했습니다. 테스트 결제는 실제 청구를 위한 운영 결제가 아닙니다. 공용 데모에서는 실제 개인정보나 결제정보를 입력하지 마세요.
 
 ## 개인 기여
 
