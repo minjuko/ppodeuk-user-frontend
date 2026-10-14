@@ -3,7 +3,7 @@
 > 셀프세차장 탐색부터 세차 공간(Bay) 예약·결제·리뷰까지 제공하는 모바일 웹 서비스
 
 [![CI](https://github.com/minjuko/ppodeuk-user-frontend/actions/workflows/ci.yml/badge.svg)](https://github.com/minjuko/ppodeuk-user-frontend/actions/workflows/ci.yml)
-![Tests](https://img.shields.io/badge/Tests-100%20passed-2EA44F)
+![Tests](https://img.shields.io/badge/Tests-101%20passed-2EA44F)
 ![Live](https://img.shields.io/badge/Live-Available-2EA44F)
 
 뽀득뽀득은 프론트엔드 3명·백엔드 3명이 개발한 팀 프로젝트입니다.  
@@ -117,8 +117,8 @@ flowchart LR
 
 | 검증 | 결과 |
 |---|---:|
-| 프론트엔드 테스트 | **100 / 100 passed** |
-| 테스트 파일 | **24 / 24 passed** |
+| 프론트엔드 테스트 | **101 / 101 passed** |
+| 테스트 파일 | **25 / 25 passed** |
 | 코드 품질 | **ESLint 0 errors · 0 warnings** |
 | Production build | 성공 |
 | 이미지 최적화 | **106,998 B → 66,413 B (-37.9%)** |
