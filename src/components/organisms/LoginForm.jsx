@@ -11,12 +11,7 @@ import Close from "/close.svg";
 import { showDemoUi } from "../../demo/mode";
 import { DEMO_CREDENTIALS } from "../../mocks/demoData";
 
-const PORTFOLIO_CREDENTIALS = showDemoUi
-  ? DEMO_CREDENTIALS
-  : {
-      email: "test-user@example.com",
-      password: "test1234!",
-    };
+const PORTFOLIO_CREDENTIALS = DEMO_CREDENTIALS;
 
 const ValidationMessage = ({ message }) => (
   <small
@@ -150,29 +145,33 @@ const LoginForm = () => {
             >
               로그인
             </Button>
-            <div className="flex items-center justify-between gap-3 p-3 text-sm border border-sky-200 rounded-lg bg-sky-50">
-              <div className="min-w-0">
-                <p className="font-semibold text-sky-700">처음 방문하셨나요?</p>
-                <p className="mt-1">테스트 계정으로 바로 체험해 보세요.</p>
-                <p className="mt-1 text-xs text-gray-500 break-all">
-                  {PORTFOLIO_CREDENTIALS.email} /{" "}
-                  {PORTFOLIO_CREDENTIALS.password}
-                </p>
+            {showDemoUi && (
+              <div className="flex items-center justify-between gap-3 p-3 text-sm border border-sky-200 rounded-lg bg-sky-50">
+                <div className="min-w-0">
+                  <p className="font-semibold text-sky-700">
+                    처음 방문하셨나요?
+                  </p>
+                  <p className="mt-1">테스트 계정으로 바로 체험해 보세요.</p>
+                  <p className="mt-1 text-xs text-gray-500 break-all">
+                    {PORTFOLIO_CREDENTIALS.email} /{" "}
+                    {PORTFOLIO_CREDENTIALS.password}
+                  </p>
+                </div>
+                <Button
+                  type="button"
+                  variant="demo"
+                  onClick={() => {
+                    reset({
+                      email: PORTFOLIO_CREDENTIALS.email,
+                      password: PORTFOLIO_CREDENTIALS.password,
+                    });
+                  }}
+                  aria-label="테스트 계정 정보 입력"
+                >
+                  테스트 계정 사용
+                </Button>
               </div>
-              <Button
-                type="button"
-                variant="demo"
-                onClick={() => {
-                  reset({
-                    email: PORTFOLIO_CREDENTIALS.email,
-                    password: PORTFOLIO_CREDENTIALS.password,
-                  });
-                }}
-                aria-label="테스트 계정 정보 입력"
-              >
-                테스트 계정 사용
-              </Button>
-            </div>
+            )}
             <Link
               to="/signup"
               className="w-full p-4 font-semibold text-center text-gray-700 border border-slate-200 bg-[aliceblue] h-14 rounded-xl active:filter active:brightness-75"
