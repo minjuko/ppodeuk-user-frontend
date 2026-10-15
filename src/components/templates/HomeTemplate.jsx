@@ -129,20 +129,28 @@ const HomeTemplate = () => {
       </section>
       <section className="grid gap-3">
         <h2 className="text-xl font-semibold">이런 세차장 어때요?</h2>
-        {!apiRecommendedData && (
+        {recommended.isPending && (
+          <Loader
+            variant="inline"
+            label="서버를 시작하고 추천 세차장을 불러오는 중입니다. 처음 접속하면 최대 30초 정도 걸릴 수 있어요."
+          />
+        )}
+        {recommended.isError && (
           <p className="text-sm text-gray-500">
-            추천 세차장 예시를 표시하고 있습니다.
+            추천 정보를 불러오지 못해 예시 세차장을 표시하고 있습니다.
           </p>
         )}
-        <CarwashCard
-          id={recommendedData.id}
-          image={recommendedData.image}
-          name={recommendedData.name}
-          address={recommendedData.location.address}
-          rate={recommendedData.rate}
-          reviewCount={recommendedData.reviewCount}
-          distance={recommendedData.distance}
-        />
+        {!recommended.isPending && (
+          <CarwashCard
+            id={recommendedData.id}
+            image={recommendedData.image}
+            name={recommendedData.name}
+            address={recommendedData.location.address}
+            rate={recommendedData.rate}
+            reviewCount={recommendedData.reviewCount}
+            distance={recommendedData.distance}
+          />
+        )}
       </section>
       {isLoggedIn && (
         <section className="grid gap-3">

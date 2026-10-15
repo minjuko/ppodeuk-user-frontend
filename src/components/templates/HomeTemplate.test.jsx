@@ -31,7 +31,7 @@ vi.mock("../../store/authSlice", () => ({
 }));
 
 describe("home recommended carwash", () => {
-  it("requests recommendations with demo coordinates and immediately shows fallback while pending", () => {
+  it("requests recommendations with demo coordinates and explains a cold start while pending", () => {
     queryState.mode = "pending";
     render(
       <MemoryRouter>
@@ -44,11 +44,11 @@ describe("home recommended carwash", () => {
       enabled: true,
     });
     expect(queryState.options.queries[1].enabled).toBe(false);
-    expect(screen.getByTestId("recommended-card")).toHaveTextContent(
-      FALLBACK_RECOMMENDED_CARWASH.name,
-    );
+    expect(screen.queryByTestId("recommended-card")).not.toBeInTheDocument();
     expect(
-      screen.getByText("추천 세차장 예시를 표시하고 있습니다."),
+      screen.getByText(
+        "서버를 시작하고 추천 세차장을 불러오는 중입니다. 처음 접속하면 최대 30초 정도 걸릴 수 있어요.",
+      ),
     ).toBeInTheDocument();
   });
 
@@ -63,5 +63,10 @@ describe("home recommended carwash", () => {
     expect(screen.getByTestId("recommended-card")).toHaveTextContent(
       FALLBACK_RECOMMENDED_CARWASH.name,
     );
+    expect(
+      screen.getByText(
+        "추천 정보를 불러오지 못해 예시 세차장을 표시하고 있습니다.",
+      ),
+    ).toBeInTheDocument();
   });
 });

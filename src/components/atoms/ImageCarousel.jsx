@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+import Image from "./Image";
 
 const ArrowButton = ({ direction, onClick, label }) => (
   <button
@@ -32,7 +33,11 @@ const ImageCarousel = ({ images }) => {
 
   const renderSlides = images.map((image, index) => (
     <div key={`${image.url}-${index}`}>
-      <img src={image.url} alt={image.alt} className="object-cover h-48" />
+      <Image
+        src={image.url}
+        alt={image.alt}
+        className="object-cover w-full h-48"
+      />
     </div>
   ));
 

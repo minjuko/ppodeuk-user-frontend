@@ -3,6 +3,7 @@ import DistanceFromHere from "../atoms/DistanceFromHere";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setCarwashId } from "../../store/action";
+import Image from "../atoms/Image";
 
 export const CarwashCard = ({ id, image, name, address, rate, distance }) => {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ export const CarwashCard = ({ id, image, name, address, rate, distance }) => {
       tabIndex={0}
     >
       <div className="relative h-40 overflow-hidden bg-slate-100">
-        <img
+        <Image
           src={imageUrl}
           alt={name}
           className="absolute inset-0 w-full h-full object-cover object-top"

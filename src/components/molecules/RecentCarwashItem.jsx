@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setCarwashId } from "../../store/action";
+import Image from "../atoms/Image";
 
 export const RecentCarwashItem = ({
   image,
@@ -27,19 +28,11 @@ export const RecentCarwashItem = ({
       tabIndex={0}
     >
       <div className="relative w-24 h-24 overflow-hidden rounded-xl bg-slate-600">
-        {image ? (
-          <img
-            src={image.url}
-            alt={`${carwashName} 사진`}
-            className="absolute top-0 object-cover w-24 h-24"
-          />
-        ) : (
-          <img
-            src="/CarwashDetail/CarwashImgNotFound.png"
-            alt="이미지 없음"
-            className="absolute top-0 object-cover w-24 h-24"
-          />
-        )}
+        <Image
+          src={image?.url || "/CarwashDetail/CarwashImgNotFound.png"}
+          alt={image ? `${carwashName} 사진` : "이미지 없음"}
+          className="absolute top-0 object-cover w-24 h-24"
+        />
       </div>
       <div className="text-xs text-center text-gray-500">{reservationDate}</div>
       <div className="overflow-hidden text-sm text-center text-ellipsis whitespace-nowrap">
