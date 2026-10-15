@@ -7,7 +7,10 @@ if (!apiBaseURL) {
 }
 
 export const instance = axios.create({
-  timeout: 5000,
+  // Railway serverless deployments can take longer than five seconds to wake.
+  // Keep the request alive long enough for a cold start while React Query shows
+  // an explicit loading state.
+  timeout: 30000,
   baseURL: apiBaseURL,
   headers: {
     "Content-Type": "application/json",

@@ -24,7 +24,7 @@ export const MainLayout = () => {
 
   return (
     <>
-      <main className="p-4 mb-20">
+      <main className="w-full max-w-md p-4 mx-auto mb-20">
         <Outlet />
       </main>
       <GNB />

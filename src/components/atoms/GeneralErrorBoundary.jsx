@@ -36,19 +36,31 @@ export class GeneralErrorBoundary extends React.Component {
       const buttontext =
         statusCode == 401 ? "로그인 페이지로 이동" : "홈으로 이동";
 
+      const retryCurrentPage = () => window.location.reload();
+
       return (
         <div className="flex items-center h-screen flex-cols">
           <div className="flex flex-col items-center gap-8">
             <img src={Warning} alt="에러 아이콘" className="block w-12" />
             <p className="px-8 text-center">{errordetail || contents}</p>
           </div>
-          <Button
-            variant="long"
-            onClick={() => this.props.navigate(errorPageURL)}
-            className="fixed bottom-0"
-          >
-            {buttontext}
-          </Button>
+          <div className="fixed bottom-0 left-1/2 flex w-full max-w-md -translate-x-1/2">
+            {statusCode != 401 && (
+              <Button
+                variant="long"
+                onClick={retryCurrentPage}
+                className="border-r border-white/40"
+              >
+                다시 시도
+              </Button>
+            )}
+            <Button
+              variant="long"
+              onClick={() => this.props.navigate(errorPageURL)}
+            >
+              {buttontext}
+            </Button>
+          </div>
         </div>
       );
     }

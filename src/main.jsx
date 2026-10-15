@@ -11,10 +11,18 @@ import Loader from "./components/atoms/Loader.jsx";
 import { startDemoWorker } from "./demo/mode.js";
 import { ToastProvider } from "./components/feedback/ToastProvider.jsx";
 
+const shouldRetryQuery = (failureCount, error) => {
+  if (failureCount >= 1) return false;
+
+  const status = error?.response?.status;
+  return !status || status === 408 || status === 429 || status >= 500;
+};
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: false,
+      retry: shouldRetryQuery,
+      retryDelay: 1500,
     },
   },
 });

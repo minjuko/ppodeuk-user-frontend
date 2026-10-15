@@ -30,7 +30,7 @@ export const GNB = () => {
   ];
 
   return (
-    <nav className="fixed bottom-0 z-50 w-full px-8 bg-gray-100 border border-t-gray-200">
+    <nav className="fixed bottom-0 left-1/2 z-50 w-full max-w-md px-8 -translate-x-1/2 bg-gray-100 border border-t-gray-200">
       <div className={`wrapper flex justify-between mt-2 ${paddingByType}`}>
         {menus.map((menu) => {
           return (

@@ -2,6 +2,7 @@ import DistanceFromHere from "../atoms/DistanceFromHere";
 import UserStar from "../atoms/UserStar";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import Image from "../atoms/Image";
 
 const StoreItem = ({
   carwashId,
@@ -34,7 +35,7 @@ const StoreItem = ({
       tabIndex={0}
     >
       <div className="w-[72px] h-[72px] overflow-hidden rounded-lg shrink-0">
-        <img
+        <Image
           className="object-cover w-full h-full"
           src={imageUrl}
           alt="세차장이미지"
