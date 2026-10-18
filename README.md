@@ -3,7 +3,7 @@
 > 셀프세차장 탐색부터 세차 공간(Bay) 예약·결제·리뷰까지 제공하는 모바일 웹 서비스
 
 [![CI](https://github.com/minjuko/ppodeuk-user-frontend/actions/workflows/ci.yml/badge.svg)](https://github.com/minjuko/ppodeuk-user-frontend/actions/workflows/ci.yml)
-![Tests](https://img.shields.io/badge/Tests-101%20passed-2EA44F)
+![Tests](https://img.shields.io/badge/Tests-105%20passed-2EA44F)
 
 뽀득뽀득은 프론트엔드 3명·백엔드 3명이 개발한 팀 프로젝트입니다.  
 저는 **사용자용 프론트엔드의 예약 흐름**을 중심으로 구현했고, 이후 예약·결제 안정성, 회귀 테스트, 실행 환경을 개선했습니다.
@@ -104,10 +104,10 @@ flowchart LR
 
 | 검증 | 결과 |
 | --- | --- |
-| 프론트엔드 테스트 | **25파일 · 101건 통과** |
+| 프론트엔드 테스트 | **27파일 · 105건 통과** |
 | ESLint | 오류·경고 0건 |
 | Production / Demo build | 통과 |
-| GitHub Actions | CI #37 성공 |
+| GitHub Actions | CI workflow (`test → lint → production/demo build → production dependency audit`) |
 | 이미지 최적화 | 106,998B → 66,413B (37.9% 감소) |
 | Lighthouse 모바일 | 3회 중앙값 기준 Performance 88→91, LCP 3,578→3,331ms |
 
