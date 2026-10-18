@@ -70,7 +70,17 @@ npm ci
 npm run dev
 ```
 
-`VITE_DEMO_MODE=false`에서는 MSW worker가 로드되지 않고 요청이 Spring Boot로 전달됩니다.
+`VITE_DEMO_MODE=false`에서는 MSW worker가 로드되지 않고 요청이 Spring Boot로 전달됩니다. 프론트 개발 서버는 Kakao 지도 허용 도메인과 맞추기 위해 `http://localhost:5173`에 고정되며, 포트가 이미 사용 중이면 다른 포트로 자동 이동하지 않고 종료합니다.
+
+### USER Frontend Mock Demo
+
+백엔드 없이 화면과 예약 흐름을 확인할 때는 mock 전용 계정 `test-user@example.com` / `test1234!`를 사용합니다. 이 계정은 MSW 데모와 `scripts/seed-local.sql`의 로컬 통합 재현 계정에 맞춰 둔 공개 테스트 전용 계정입니다. 운영·공유 서비스에서는 사용하지 마세요.
+
+```bash
+npm run dev:mock
+```
+
+데모 빌드 결과는 `npm run build:demo:local` 후 `npm run preview:demo`로 확인합니다. 데모 미리보기는 `http://localhost:4173`에 고정됩니다.
 
 ## Verified Smoke Scope
 
