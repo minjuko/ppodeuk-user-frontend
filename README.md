@@ -126,7 +126,13 @@ npm test -- --run
 npm run build
 ```
 
-백엔드 없이 프런트엔드만 실행해 사용자 흐름을 확인하려면 `npm run dev:mock`으로 MSW 기반 로컬 모의를 실행할 수 있습니다. 이 모의 설정은 로컬 검증 전용이며 Vercel 배포에서는 실제 백엔드 API를 사용합니다. 로컬 모의 결제는 실제 결제가 아니며 새로고침 시 데이터가 초기화됩니다.
+백엔드 없이 사용자 흐름을 확인할 때는 `npm run dev:mock`으로 MSW 데모를 실행합니다. 데모 계정은 `test-user@example.com` / `test1234!`이며, 로컬 테스트 전용입니다. mock 결제는 실제 결제가 아니며 새로고침 시 데이터가 초기화됩니다.
+
+- 개발 서버: `npm run dev` 또는 `npm run dev:mock` → `localhost:5173`
+- 데모 미리보기: `npm run build:demo:local` 후 `npm run preview:demo` → `localhost:4173`
+- 실제 로컬 백엔드 연동: [전체 스택 재현 안내](docs/local-reproduction.md)
+
+Vite는 지정 포트가 사용 중이면 다른 포트로 자동 이동하지 않고 종료합니다. mock 설정은 Vercel 배포에서 사용하지 않습니다.
 
 ## 관련 자료
 
