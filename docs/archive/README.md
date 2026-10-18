@@ -12,3 +12,7 @@
 
 - [예약·화면 캡처](./validation-captures/local-check/)
 - [KakaoMap 캡처](./validation-captures/kakaomap/)
+
+## 데모 이미지 원본
+
+[`carwash-images-original/`](./carwash-images-original/)에는 데모용 세차장 이미지의 PNG 원본을 보존합니다. 현재 데모는 동일한 1536×1024 화면 이미지를 JPEG 품질 90으로 인코딩한 `public/carwash-*.jpg`를 사용합니다. 원본과 비교해 화면 구성을 유지하면서 전송 용량을 줄였으며, 원본 PNG는 검토·복구용으로 남겨 두었습니다.
