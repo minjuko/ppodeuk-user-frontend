@@ -105,8 +105,8 @@ describe("Portfolio Demo 사용자 흐름", () => {
     });
     expect(detail.data.response.imageFileList).toEqual([
       { url: "/carouselimage1.jpg" },
-      { url: "/carwash-blue.png" },
-      { url: "/carwash-garden.png" },
+      { url: "/carwash-blue.jpg" },
+      { url: "/carwash-garden.jpg" },
     ]);
     expect(detail.data.response.keywordIdList).toEqual([8, 10, 12]);
     expect(detail.data.response.optime.weekday).toEqual({
