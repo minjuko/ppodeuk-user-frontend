@@ -47,11 +47,11 @@ PaymentWaiting, PaymentResult, store와 reservation item tests로 direct access,
 | 영역 | 테스트 수 | 대표 검증 |
 |---|---:|---|
 | Reservation time pure functions | 24 | minute boundary, now, overlap, adjacent, cross-day |
-| Stateful Demo flow | 8 | login, lookup, payment, history, cancel, review, fail-closed |
-| Demo mode boundary | 2 | worker start, Live 미로드 |
-| Store | 6 | reservation/payment state lifecycle |
-| Signup | 5 | Backend password contract, async mutation |
-| UI/runtime regression | 16 | picker reset, payment callback/result, empty/error/null, keyboard |
-| **합계** | **74** | **18 test files** |
+| Stateful Demo flow | 14 | login, lookup, payment, history, cancel, review, fail-closed |
+| Demo mode/date boundary | 7 | worker start, Live 미로드, 상대 날짜 계산 |
+| Store/auth state | 14 | 인증·예약·결제 state lifecycle |
+| Signup/login | 12 | Backend password contract, async mutation, 로그인 오류 처리 |
+| UI/API/runtime regression | 34 | picker reset, payment callback/result, empty/error/null, keyboard |
+| **합계** | **105** | **27 test files** |
 
-실행 명령은 `npm test`이며, 최종 검증 결과 18 files / 74 tests가 통과했습니다.
+실행 명령은 `npm test`이며, 2026-10-18 로컬 최종 검증 결과 27 files / 105 tests가 통과했습니다.
