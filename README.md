@@ -132,6 +132,7 @@ npm run build
 
 - [사업자용 프론트엔드](https://github.com/minjuko/ppodeuk-owner-frontend) · [백엔드](https://github.com/minjuko/ppodeuk-backend)
 - [설계 문서](docs/architecture.md) · [예약 규칙과 개선 기록](docs/refactoring.md)
+- [과거 Kubernetes 설정과 검증 캡처 보관 문서](./docs/archive/README.md)
 
 ## 검증 범위
 
