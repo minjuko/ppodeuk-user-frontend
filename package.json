@@ -8,15 +8,16 @@
     "npm": ">=10.9.3 <11"
   },
   "scripts": {
-    "dev": "vite",
-    "dev:mock": "vite --mode demo",
-    "host": "vite --host",
+    "dev": "vite --host localhost --port 5173 --strictPort",
+    "dev:mock": "vite --mode demo --host localhost --port 5173 --strictPort",
+    "host": "vite --host localhost --port 5173 --strictPort",
     "build": "vite build",
     "build:demo:local": "vite build --mode demo --outDir dist-demo",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview",
+    "preview": "vite preview --host localhost --port 4173 --strictPort",
+    "preview:demo": "vite preview --mode demo --outDir dist-demo --host localhost --port 4173 --strictPort",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },

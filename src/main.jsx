@@ -10,6 +10,7 @@ import { store, persistor } from "./store";
 import Loader from "./components/atoms/Loader.jsx";
 import { startDemoWorker } from "./demo/mode.js";
 import { ToastProvider } from "./components/feedback/ToastProvider.jsx";
+import DemoStartupError from "./components/atoms/DemoStartupError.jsx";
 
 const shouldRetryQuery = (failureCount, error) => {
   if (failureCount >= 1) return false;
@@ -31,18 +32,25 @@ const prepareDemo = __DEMO_BUILD__
   ? startDemoWorker(() => import("./mocks/worker"))
   : Promise.resolve();
 
-prepareDemo.then(() => {
-  ReactDOM.createRoot(document.getElementById("root")).render(
-    <React.StrictMode>
-      <Provider store={store}>
-        <PersistGate loading={<Loader />} persistor={persistor}>
-          <QueryClientProvider client={queryClient}>
-            <ToastProvider>
-              <App />
-            </ToastProvider>
-          </QueryClientProvider>
-        </PersistGate>
-      </Provider>
-    </React.StrictMode>,
-  );
-});
+prepareDemo
+  .then(() => {
+    ReactDOM.createRoot(document.getElementById("root")).render(
+      <React.StrictMode>
+        <Provider store={store}>
+          <PersistGate loading={<Loader />} persistor={persistor}>
+            <QueryClientProvider client={queryClient}>
+              <ToastProvider>
+                <App />
+              </ToastProvider>
+            </QueryClientProvider>
+          </PersistGate>
+        </Provider>
+      </React.StrictMode>,
+    );
+  })
+  .catch((error) => {
+    console.error("Demo service worker failed to start.", error);
+    ReactDOM.createRoot(document.getElementById("root")).render(
+      <DemoStartupError onRetry={() => window.location.reload()} />,
+    );
+  });
