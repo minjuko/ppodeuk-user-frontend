@@ -16,24 +16,17 @@ export const FALLBACK_RECOMMENDED_CARWASH = {
   },
 };
 
-export const resolveDemoMode = ({
-  demoMode,
-  screenshotMode,
-  demoBuild = false,
-}) => {
+export const resolveDemoMode = ({ demoMode, demoBuild = false }) => {
   const isDemo = demoBuild || demoMode === "true";
-  const isScreenshot = isDemo && screenshotMode === "true";
 
   return {
     isDemoMode: isDemo,
-    isScreenshotMode: isScreenshot,
-    showDemoUi: isDemo && !isScreenshot,
+    showDemoUi: isDemo,
   };
 };
 
-export const { isDemoMode, isScreenshotMode, showDemoUi } = resolveDemoMode({
+export const { isDemoMode, showDemoUi } = resolveDemoMode({
   demoMode: import.meta.env.VITE_DEMO_MODE,
-  screenshotMode: import.meta.env.VITE_SCREENSHOT_MODE,
   demoBuild: __DEMO_BUILD__,
 });
 

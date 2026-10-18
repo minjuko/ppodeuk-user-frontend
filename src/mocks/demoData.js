@@ -12,7 +12,7 @@ const addDays = (days) => {
 };
 
 export const DEMO_CREDENTIALS = {
-  email: "test@example.com",
+  email: "test-user@example.com",
   password: "test1234!",
 };
 
