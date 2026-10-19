@@ -1,57 +1,52 @@
-# 2026 USER Frontend Refactoring Notes
+# 예약·결제 안정화 설계
 
-이 문서는 2023 팀 프로젝트 결과와 구분되는 2026 개인 개선 작업의 상세 근거를 정리합니다.
+이 문서는 2023년 팀 프로젝트의 예약 화면 구현과 2026년 이후 개인 보완을 구분해 설명합니다. 전체 검증 수치는 README의 최신 결과를 기준으로 합니다.
 
-## Reservation Business Rules
+## 예약 선택 의존성
 
-예약 가능 시간 계산을 picker component에서 `src/utils/reservationTime.js`의 pure function으로 분리했습니다.
+예약 흐름은 세차장 → Bay → 날짜 → 시작 시각 → 이용 시간 → 결제 순서입니다. 상위 선택이 바뀌면 하위 값이 더 이상 유효하지 않을 수 있어 함께 초기화합니다.
 
-| 규칙 | 처리 | 검증 관점 |
-|---|---|---|
-| minute 단위 영업 시작 | `09:30`처럼 정각이 아닌 시작을 slot 경계로 사용 | opening boundary |
-| 오늘의 과거 시간 | 현재보다 앞선 시작 시간 제외 | same-day clock |
-| 기존 예약 overlap | `[start, end)` 구간으로 충돌 판단 | 포함·부분 포함·완전 포함 |
-| 인접 예약 | 기존 종료와 새 시작이 같으면 허용 | end equals next start |
-| 날짜 변경 | 선택했던 시작 시간 reset | stale state 방지 |
-| 시작 시간 변경 | 선택했던 duration reset | 가격·종료 시각 불일치 방지 |
-| cross-day datetime | 날짜와 시간을 결합한 datetime으로 비교 | 자정 경계 계산 |
-| 영업 종료 | duration이 종료 시각을 넘지 않도록 제한 | closing boundary |
+- 세차장 변경: Bay, 조회된 예약, 결제 식별값 초기화
+- Bay 변경: 예약 현황과 결제 식별값 초기화
+- 날짜 변경: 시작 시각과 이용 시간 초기화
+- 시작 시각 변경: 이용 시간 초기화
+- 직접 일정 URL 접근: 경로의 세차장·Bay ID를 공유 예약 상태와 동기화
 
-`src/utils/reservationTime.test.js`의 24개 regression test가 opening/closing, 현재 시각, overlap, 인접 예약, 날짜와 cross-day 경계를 다룹니다. 자정을 넘는 **예약 datetime 계산**은 검증하지만, `22:00–02:00`과 같은 **야간 영업시간 모델** 자체는 현재 UI 지원 범위가 아닙니다.
+## 예약 가능 시간 계산
 
-## Payment Lifecycle
+`src/utils/reservationTime.js`의 순수 함수가 컴포넌트 밖에서 시간 규칙을 계산합니다. 핵심 규칙은 다음과 같습니다.
 
-브라우저 redirect 전후로 이어지는 결제는 단일 API 호출이 아니라 lifecycle로 다뤘습니다.
+- 정각이 아닌 분 단위 영업 시작도 슬롯 경계로 반영
+- 오늘 이미 지난 시작 시간 제외
+- 기존 예약과 신규 예약을 `[start, end)` 구간으로 비교해 겹침만 차단
+- 기존 예약 종료와 신규 예약 시작이 같은 인접 예약은 허용
+- 예약 종료가 영업 종료를 넘지 않도록 제한
+- 날짜·시각을 결합해 실제 datetime 경계로 비교
 
-1. ready 성공 시에만 현재 결제의 `tid`를 보관합니다.
-2. callback에서 `pg_token`과 이동 전 state를 검증합니다.
-3. 직접 접근이나 잘못된 callback이면 approve하지 않고 stale `tid`를 제거합니다.
-4. approve mutation 진행 중 완료 action을 비활성화해 중복 요청을 막습니다.
-5. 실패 화면은 retry 가능한 경로를 제공하되 이전 callback을 성공으로 간주하지 않습니다.
-6. approve 결과와 예약 완료 화면이 확인된 뒤 예약 Redux state를 reset합니다.
-7. 예약 취소·변경 뒤에는 page reload 대신 관련 React Query cache를 invalidate합니다.
+예약 시간 규칙 테스트 24건으로 영업시간 경계, 현재 시각, 중복·인접 예약, 날짜와 자정 경계를 확인했습니다. 날짜·시간 계산이 자정을 넘는 경우를 지원하지만, `22:00–02:00` 형태의 야간 영업시간 모델은 UI 범위가 아닙니다.
 
-PaymentWaiting, PaymentResult, store와 reservation item tests로 direct access, callback 누락, 중복 approve 방지, fallback, reset/invalidate를 확인했습니다. production KakaoPay E2E는 2026 검증 범위가 아닙니다.
+프론트엔드 시간 비활성화는 즉각적인 안내를 위한 사전 검사입니다. 요청 시점의 예약 가능성과 금액은 백엔드가 최종 검증해야 합니다. DB 잠금이나 제약을 통한 동시 예약 제어는 여기서 보장하지 않습니다.
 
-## Runtime and Cache Stability
+## 결제 상태 흐름
 
-- API 화면에 loading/error/empty state를 명시했습니다.
-- 누락된 image, list, navigation state와 callback result의 undefined/null을 방어했습니다.
-- 제출·결제·예약 mutation 진행 중 중복 interaction을 차단했습니다.
-- 위치별 query key를 구분하고, mutation 이후 관련 query만 invalidate했습니다.
-- button semantic과 일부 keyboard interaction을 보완했습니다.
-- 모든 route page를 `React.lazy`로 분리하고 공통 `Suspense` fallback을 사용했습니다.
+외부 결제 화면으로 이동하기 전후의 상태를 하나의 lifecycle로 처리합니다.
 
-## Test Matrix
+1. ready가 성공한 경우에만 현재 결제 TID를 보관합니다.
+2. callback에서 `pg_token`과 이동 전 예약 상태를 확인합니다.
+3. 잘못된 직접 접근이나 필수 callback 값 누락 시 approve를 진행하지 않습니다.
+4. 승인 요청 중에는 중복 완료 동작을 막습니다.
+5. 실패 뒤 재시도는 새 요청으로 처리하며, 이전 callback을 성공으로 오인하지 않습니다.
+6. 승인 응답과 예약 완료 화면에 필요한 예약 정보를 확인한 뒤 공유 상태를 초기화합니다.
+7. 예약 변경 후 관련 React Query 캐시를 무효화합니다.
 
-| 영역 | 테스트 수 | 대표 검증 |
-|---|---:|---|
-| Reservation time pure functions | 24 | minute boundary, now, overlap, adjacent, cross-day |
-| Stateful Demo flow | 14 | login, lookup, payment, history, cancel, review, fail-closed |
-| Demo mode/date boundary | 7 | worker start, Live 미로드, 상대 날짜 계산 |
-| Store/auth state | 14 | 인증·예약·결제 state lifecycle |
-| Signup/login | 12 | Backend password contract, async mutation, 로그인 오류 처리 |
-| UI/API/runtime regression | 34 | picker reset, payment callback/result, empty/error/null, keyboard |
-| **합계** | **105** | **27 test files** |
+운영 KakaoPay E2E 및 외부 결제 성공 후 DB 저장 실패의 보상 처리는 검증하지 않았습니다.
 
-실행 명령은 `npm test`이며, 2026-10-18 로컬 최종 검증 결과 27 files / 105 tests가 통과했습니다.
+## 인증·피드백
+
+보호 경로 인증 확인에서 401이면 만료 토큰을 제거하고 로그인 사유를 안내합니다. 5xx 또는 네트워크 오류는 인증 만료로 단정하지 않고 토큰을 보존해 서버 오류로 안내합니다. 토큰 갱신 API 계약은 확인되지 않아 자동 갱신은 구현하지 않았습니다.
+
+되돌리기 어려운 예약 취소와 다음 선택이 필요한 결제 오류 복구는 공통 `CustomModal`을 사용하고 제목·내용·버튼 문구를 상황별로 지정합니다. 단순 완료나 재시도 피드백은 토스트, 로그인 사유와 입력 오류는 화면 안 안내를 사용합니다.
+
+## 검증
+
+README에 기록된 현재 검증 결과는 프론트엔드 테스트 28개 파일·111건 통과, ESLint 오류·경고 0, 운영 및 로컬 Mock 빌드 통과입니다. 예약 시간 테스트 24건은 전체 테스트 중 일부입니다. 실제 운영 결제 흐름과 서버 DB 동시성은 이 검증 결과에 포함되지 않습니다.

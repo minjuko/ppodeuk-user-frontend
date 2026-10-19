@@ -3,7 +3,7 @@
 > 셀프세차장 탐색부터 세차 공간(Bay) 예약·결제·리뷰까지 제공하는 모바일 웹 서비스
 
 [![CI](https://github.com/minjuko/ppodeuk-user-frontend/actions/workflows/ci.yml/badge.svg)](https://github.com/minjuko/ppodeuk-user-frontend/actions/workflows/ci.yml)
-![Tests](https://img.shields.io/badge/Tests-106%20passed-2EA44F)
+![Tests](https://img.shields.io/badge/Tests-111%20passed-2EA44F)
 
 뽀득뽀득은 프론트엔드 3명·백엔드 3명이 개발한 팀 프로젝트입니다.  
 저는 **사용자 예약 흐름과 API 연동**을 담당하고, 예약 규칙·결제 상태 처리와 테스트·CI를 보강했습니다.
@@ -91,7 +91,7 @@ npm run build
 
 | 검증 | 결과 |
 | --- | --- |
-| 프론트엔드 테스트 | **28파일 · 106건 통과** |
+| 프론트엔드 테스트 | **28파일 · 111건 통과** |
 | ESLint | 오류·경고 0건 |
 | Production / Demo build | 통과 |
 | GitHub Actions | CI workflow (`test → lint → production/demo build → production dependency audit`) |
@@ -101,5 +101,5 @@ npm run build
 ## 산출물 및 관련 문서
 
 - [사업자용 프론트엔드](https://github.com/minjuko/ppodeuk-owner-frontend) · [백엔드](https://github.com/minjuko/ppodeuk-backend)
-- [설계 문서](docs/architecture.md) · [예약 규칙과 개선 기록](docs/refactoring.md)
+- [시스템 구조](docs/architecture.md) · [예약·결제 안정화 설계](docs/refactoring.md) · [로컬 전체 스택 재현](docs/local-reproduction.md) · [배포·운영 안내](docs/deployment-operations.md)
 
