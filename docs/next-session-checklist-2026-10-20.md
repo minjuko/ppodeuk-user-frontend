@@ -96,3 +96,12 @@ npm run build:demo:local
 - 운영 브라우저에서 추천 요청은 콜드 스타트 대기 후 예시 카드로 전환됐고, 이후 추천·목록 요청은 HTTP 200이었다. 검색 API, 세차장 이미지 33개, Kakao 지도 SDK와 타일도 HTTP 200으로 렌더링됐으며 콘솔 오류·경고는 관찰되지 않았다. 배포에서 결제나 데이터 변경은 하지 않았다.
 - 콜드 스타트와 한 번의 자동 재시도를 포함하면 첫 화면 대기가 약 1분까지 갈 수 있어 기존 "최대 30초" 문구를 "1분 정도"로 고쳤다.
 - 최종 검증: lint, 전체 테스트 111개(28개 파일), 운영 빌드, demo 빌드 통과. `git diff --check` 통과. 모달 바깥 클릭 확인 완료. 커밋 `e5c0a02`는 push 및 Vercel Production 배포 완료.
+
+## 2026-10-19 Railway Hobby 안정화
+
+- 사용자가 Railway Hobby 요금제로 전환했다. Railway Usage 화면의 현재 청구 주기는 2026-10-10~2026-11-10이며, 확인 당시 리소스 사용량은 약 `$0.05`, Hobby 포함 사용량은 `$5`였다. 사용량은 월초반의 스냅샷이므로 월말 비용 예측치로 간주하지 않는다.
+- 프로젝트 `agile-ambition`의 `Team10_BE` 백엔드와 `MySQL` 서비스에서 Serverless를 끄고 재배포했다. 둘 다 Railway에서 `Online`이며 설정값도 꺼짐(0)으로 다시 확인했다. MySQL의 기존 `mysql-volume`을 유지했다.
+- Serverless를 끄기 전 배포 실패 로그는 Free 요금제에서는 Serverless가 필수라는 정책 오류였다. Hobby 전환 후 설정을 바꾸고 최신 백엔드 배포를 진행해 해결했다.
+- 공개 추천 API `https://ppodeuk-backend.up.railway.app/api/open/carwashes/recommended?latitude=37.5665&longitude=126.9780`가 성공 응답과 추천 카드 1개를 반환했다. 백엔드와 MySQL 조회 경로를 확인했다.
+- MySQL 시작 옵션의 buffer pool은 1G이며, Hobby replica 메모리 한도(8GB)와 충돌하지 않는다. 실제 메모리 사용량을 관찰한 뒤 필요할 때 조정한다.
+- 다음 운영 확인: 2026-10-26 전후 실제 7일 상시 구동 비용과 backend/MySQL 메모리 사용량을 확인한다. 2026-11-10 갱신 직전 이번 주기 총 사용량을 다시 확인하고 다음 달 예산을 정한다. 관측 기간이 짧아 현재 월말 비용은 신뢰성 있게 추정할 수 없다.
