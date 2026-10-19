@@ -25,7 +25,6 @@ const ReservationItem = ({
   const queryClient = useQueryClient();
   const { showToast } = useToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [failmodalContent, setFailmodalContent] = useState("");
 
   const start = dayjs(reservedTime.start);
   const end = dayjs(reservedTime.end);
@@ -41,30 +40,25 @@ const ReservationItem = ({
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["getHistory"] });
       setIsModalOpen(false);
-      setFailmodalContent("");
       showToast({ message: "예약이 취소되었습니다." });
     },
     onError: (error) => {
-      const errorDetail = getErrorDetail(error);
-      setFailmodalContent(errorDetail);
-      setIsModalOpen(true);
+      const errorDetail = error?.response
+        ? getErrorDetail(error)
+        : "예약 취소에 실패했습니다. 잠시 후 다시 시도해 주세요.";
+      setIsModalOpen(false);
+      showToast({
+        message: errorDetail || "예약 취소에 실패했습니다. 다시 시도해 주세요.",
+        tone: "error",
+      });
     },
   });
 
   const handleConfirm = () => {
-    if (!failmodalContent) {
-      mutation.mutate(rsvid);
-      return;
-    }
-    setFailmodalContent("");
+    mutation.mutate(rsvid);
   };
 
-  const modalContent = failmodalContent ? (
-    <div className="grid gap-2">
-      <div>오류가 발생하였습니다.</div>
-      <div>{failmodalContent}</div>
-    </div>
-  ) : (
+  const modalContent = (
     <div className="grid gap-2">
       <div>{bayname}</div>
       <div>예약일정:</div>
@@ -127,13 +121,13 @@ const ReservationItem = ({
         isOpen={isModalOpen}
         onRequestClose={() => setIsModalOpen(false)}
         onConfirm={handleConfirm}
-        title={failmodalContent ? "오류발생" : "예약 취소 확인"}
+        title="예약 취소 확인"
         content={modalContent}
         isPending={mutation.isPending}
         pendingText="예약 취소 중..."
         variant="danger"
-        confirmText={failmodalContent ? "홈으로" : "취소하기"}
-        cancelText={failmodalContent ? null : "닫기"}
+        confirmText="취소하기"
+        cancelText="닫기"
       />
     </div>
   );

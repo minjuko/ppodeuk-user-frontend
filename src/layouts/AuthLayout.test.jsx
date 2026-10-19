@@ -101,12 +101,17 @@ describe("보호 route 인증 확인", () => {
     expect(store.dispatch).not.toHaveBeenCalled();
   });
 
-  it("상태바 보호 route의 token 검증 실패 시 token을 제거한다", async () => {
+  it("만료된 token을 확인하면 지우고 로그인 안내로 보낸다", async () => {
     localStorage.setItem("token", "invalid-token");
     const store = {
       getState: () => ({}),
       subscribe: () => () => {},
-      dispatch: vi.fn(() => Promise.resolve({ error: { message: "invalid" } })),
+      dispatch: vi.fn(() =>
+        Promise.resolve({
+          meta: { rejectedWithValue: true },
+          payload: { status: 401 },
+        }),
+      ),
     };
 
     render(
@@ -116,18 +121,60 @@ describe("보호 route 인증 확인", () => {
             <Route element={<AuthLayoutWithStatusBar />}>
               <Route path="payment" element={<div>payment content</div>} />
             </Route>
-            <Route path="login" element={<div>login page</div>} />
+            <Route path="login" element={<LoginLocationState />} />
           </Routes>
         </MemoryRouter>
       </Provider>,
     );
 
-    expect(await screen.findByText("login page")).toBeInTheDocument();
+    expect(await screen.findByText("/payment")).toBeInTheDocument();
     expect(localStorage.getItem("token")).toBeNull();
+  });
+
+  it("인증 확인 중 서버 오류가 나도 token을 보존한다", async () => {
+    localStorage.setItem("token", "valid-but-server-unavailable");
+    const store = {
+      getState: () => ({}),
+      subscribe: () => () => {},
+      dispatch: vi.fn(() =>
+        Promise.resolve({
+          meta: { rejectedWithValue: true },
+          payload: { status: 503 },
+        }),
+      ),
+    };
+
+    render(
+      <Provider store={store}>
+        <MemoryRouter initialEntries={["/payment"]}>
+          <Routes>
+            <Route element={<AuthLayoutWithStatusBar />}>
+              <Route path="payment" element={<div>payment content</div>} />
+            </Route>
+            <Route path="login" element={<LoginAuthState />} />
+          </Routes>
+        </MemoryRouter>
+      </Provider>,
+    );
+
+    expect(
+      await screen.findByText("server-error:/payment"),
+    ).toBeInTheDocument();
+    expect(localStorage.getItem("token")).toBe("valid-but-server-unavailable");
   });
 });
 
 const LoginLocationState = () => {
   const location = useLocation();
   return <div>{location.state?.from}</div>;
+};
+
+const LoginAuthState = () => {
+  const location = useLocation();
+  return (
+    <div>
+      {location.state?.authCheckFailed ? "server-error" : "auth-error"}:
+      {location.state?.from}
+    </div>
+  );
 };

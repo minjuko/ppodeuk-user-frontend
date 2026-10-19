@@ -25,11 +25,18 @@ const AuthLayout = () => {
     dispatch(getUserInfoThunk())
       .then(unwrapResult)
       .then(() => setIsCheckingAuth(false))
-      .catch(() => {
-        localStorage.removeItem("token");
+      .catch((error) => {
+        const isUnauthorized =
+          error?.status === 401 || error?.response?.status === 401;
+        if (isUnauthorized) localStorage.removeItem("token");
         navigate("/login", {
           replace: true,
-          state: { authRequired: true, from },
+          state: {
+            authRequired: true,
+            authExpired: isUnauthorized,
+            authCheckFailed: !isUnauthorized,
+            from,
+          },
         });
       });
   }, [dispatch, location.hash, location.pathname, location.search, navigate]);

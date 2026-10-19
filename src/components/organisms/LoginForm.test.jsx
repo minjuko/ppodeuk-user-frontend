@@ -68,6 +68,29 @@ describe("로그인 화면 진입 동선", () => {
     );
   });
 
+  it.each([
+    [
+      { authRequired: true, authExpired: true },
+      "로그인 정보가 만료되었습니다.",
+    ],
+    [
+      { authRequired: true, authCheckFailed: true },
+      "로그인 상태를 확인하지 못했습니다.",
+    ],
+  ])("인증 이동 사유에 맞는 안내를 유지한다", (state, message) => {
+    render(
+      <Provider store={store}>
+        <MemoryRouter initialEntries={[{ pathname: "/login", state }]}>
+          <Routes>
+            <Route path="login" element={<LoginForm />} />
+          </Routes>
+        </MemoryRouter>
+      </Provider>,
+    );
+
+    expect(screen.getByRole("alert")).toHaveTextContent(message);
+  });
+
   it("로그인 성공 후 원래 접근하려던 경로로 복귀한다", async () => {
     const authenticatedStore = {
       getState: () => ({}),

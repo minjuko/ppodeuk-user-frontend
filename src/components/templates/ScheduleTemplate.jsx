@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import OperatingHoursCard from "../atoms/OperatingHoursCard";
-import CustomModal from "../atoms/CustomModal";
 import TimePicker from "../molecules/TimePicker";
 import DurationPicker from "../molecules/DurationPicker";
 import DatePicker from "../molecules/DatePicker";
@@ -16,6 +15,7 @@ import {
   parseLocalDateTime,
 } from "../../utils/reservationTime";
 import { getDemoDate } from "../../utils/demoDate";
+import { useToast } from "../feedback/ToastProvider";
 
 const ScheduleTemplate = ({ carwashId, bayId }) => {
   const location = useLocation();
@@ -25,9 +25,9 @@ const ScheduleTemplate = ({ carwashId, bayId }) => {
   });
   const [startTime, setStartTime] = useState();
   const [duration, setDuration] = useState();
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { showToast } = useToast();
 
   const [washinfo, bayinfo] = useSuspenseQueries({
     queries: [
@@ -42,13 +42,9 @@ const ScheduleTemplate = ({ carwashId, bayId }) => {
     ],
   });
 
-  const handleConfirm = () => {
-    setIsModalOpen(false);
-  };
-
   const handleSubmit = () => {
     if (!startTime || !duration) {
-      setIsModalOpen(true);
+      showToast({ message: "시작 시간과 사용 시간을 선택해 주세요." });
       return;
     }
 
@@ -100,12 +96,6 @@ const ScheduleTemplate = ({ carwashId, bayId }) => {
         time: reservationPayload.endTime.slice(11),
       }
     : null;
-
-  const modalContent = (
-    <div className="flex flex-col gap-2">
-      <div>시작시간과 사용시간을 모두 선택해주세요</div>
-    </div>
-  );
 
   return (
     <div>
@@ -171,14 +161,6 @@ const ScheduleTemplate = ({ carwashId, bayId }) => {
       <Button onClick={handleSubmit} variant="long" className="fixed bottom-0">
         예약하기
       </Button>
-      <CustomModal
-        isOpen={isModalOpen}
-        onRequestClose={() => setIsModalOpen(false)}
-        onConfirm={handleConfirm}
-        title="알림"
-        content={modalContent}
-        confirmText="확인"
-      />
     </div>
   );
 };
