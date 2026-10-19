@@ -2,7 +2,7 @@
 
 대상 저장소: `minjuko/ppodeuk-user-frontend`  
 기준 브랜치: `main`  
-기준 커밋: `e864b61` (`docs: standardize project README structure and presentation`)
+기준 커밋: `e5c0a02` (`fix: refine modal, auth, and feedback flows`)
 
 ## 현재 상태
 
@@ -36,7 +36,7 @@ UX 피드백 구현 메모: 공통 `CustomModal`은 이미 존재했으며 화�
 
 ### 3. 배포 상태 검증
 
-- [x] 배포 URL은 열리고 Vercel Production 배포가 Ready 상태이며 커밋 `e864b61f41aa789e8bb3896baab64204ba5e54a9a`로 확인됐다. 원격 README 관련 4개 커밋을 pull(ff-only)했고 `main`과 `origin/main`이 이 커밋에서 일치한다. 이번 UI 변경은 아직 커밋/배포되지 않았다.
+- [x] 원격 README 변경 4개 커밋을 pull(ff-only)했고 UX/인증/결제 응답 수정 `e5c0a02`를 `main`에 push했다. Vercel Production에서 해당 커밋의 Ready 배포를 확인했다.
 - [x] 배포 화면에서 비로그인 홈·목록·상세와 예약 로그인 유도, 이미지 및 390×844 상세 레이아웃을 확인했다. 운영 모달은 결제/취소 동작을 발생시키지 않기 위해 열지 않았다.
 - [x] 운영 추천·검색 API, 세차장 이미지, Kakao SDK/지도 타일 요청은 HTTP 200이었다. 지도 타일이 렌더링되고 브라우저 콘솔 오류·경고 및 요청 실패는 관찰되지 않았다. 첫 추천 요청은 콜드 스타트 뒤 예시 카드로 fallback했다.
 - [x] 운영 결제와 예약/사용자 데이터 변경은 수행하지 않았다.
@@ -73,7 +73,7 @@ npm run build:demo:local
 
 ## 2026-10-19 실행 결과
 
-- 작업 시작 시 기준은 `main`의 `8a18aae`였다. 원격 README 변경 4개 커밋을 fast-forward로 반영해 현재 `main`/`origin/main`은 `e864b61f41aa789e8bb3896baab64204ba5e54a9a`에서 일치한다. 해당 커밋은 Vercel Production Ready 배포 커밋과도 일치한다.
+- 작업 시작 시 기준은 `main`의 `8a18aae`였다. 원격 README 변경 4개 커밋을 fast-forward로 반영하고 후속 수정 커밋 `e5c0a02`를 push했다. Vercel Production Ready 배포도 해당 코드 커밋 기준이다.
 - `npm run lint`, `npm test`(28개 파일/106개 테스트), `npm run build`, `npm run build:demo:local` 통과.
 - 로컬 MariaDB는 3306 포트에서 수신 중이었다. 설정 파일은 `BDBD_LOCAL_DB_URL`, `BDBD_LOCAL_DB_USERNAME`, `BDBD_LOCAL_DB_PASSWORD`를 참조하지만 현재 실행 환경에는 해당 변수가 설정되지 않았고, 다른 이름의 `LOCAL_DB_PASSWORD`만 있었다. 해당 변수로 `bdbd` 계정의 읽기 전용 접속 확인을 시도했으나 인증 실패. 비밀번호는 출력/기록하지 않았고 seed를 실행하거나 DB/예약 로직을 변경하지 않았다. 백엔드 local 프로필 실행 및 실연동은 미완료.
 - 후속 확인: 사용자가 제공한 기존 로컬 계정으로 `bdbd` DB 접속 성공. MariaDB 11.4.12, 테이블 11개, 데모 USER 1명, 세차장 5개, seed keyword 14개, seed reservation 범위 데이터 확인. 백엔드 `local` 프로필은 `BDBD_LOCAL_DB_*` 변수로 기동했고 Hibernate DDL을 `none`으로 제한한 상태에서 추천 세차장 API가 HTTP 200을 반환했다. seed 재실행이나 데이터 변경은 하지 않았으며, 임시 local JWT 비밀값을 사용하고 확인 후 서버를 종료했다.
@@ -92,7 +92,7 @@ npm run build:demo:local
 - Mock 브라우저에서 비로그인 예약 내역 → 로그인 안내, 공개 테스트 계정 로그인 → 원래 `/history` 복귀, 로그인 실패 인라인 안내, 이후 뒤로 가기를 확인했다. 취소 확인 모달은 단일 인스턴스로 표시됐고 ESC와 오버레이 바깥 클릭으로 닫혔다. 바깥 클릭 후 예약이 그대로 유지됨을 확인했다. 390×844 상세 화면도 확인했다.
 - 피드백 UX를 정리했다. 기존 공통 `CustomModal`을 재사용하며 화면별 제목·내용·확인/취소 텍스트를 설정한다. 예약 취소 확인과 결제 오류 복구는 모달, 예약 시간 선택 누락과 취소 실패·리뷰 완료는 토스트, 로그인 상태 및 입력 오류는 화면 내 안내를 쓴다.
 - 보호 경로 인증 확인에서 401이면 만료 token을 지우고 만료 안내 후 로그인한다. 5xx/네트워크 오류면 token을 보존하며 인증 서버 오류 안내를 표시한다. 이 경로를 단위 테스트했다. API 계약에 token refresh가 없어 자동 갱신은 추가하지 않았다.
-- Railway Free 백엔드의 cold start 정책은 그대로 두기로 했다. Vercel Production 배포는 `e864b61f41aa789e8bb3896baab64204ba5e54a9a`로 Ready였다. 이번 UI 변경은 로컬 작업 트리에만 있고 아직 커밋/푸시/배포 전이다.
+- Railway Free 백엔드의 cold start 정책은 그대로 두기로 했다. Vercel Production 신규 배포 `e5c0a02`가 Ready이고, 배포 고유 URL과 운영 도메인에서 약 1분 안내 문구를 확인했다.
 - 운영 브라우저에서 추천 요청은 콜드 스타트 대기 후 예시 카드로 전환됐고, 이후 추천·목록 요청은 HTTP 200이었다. 검색 API, 세차장 이미지 33개, Kakao 지도 SDK와 타일도 HTTP 200으로 렌더링됐으며 콘솔 오류·경고는 관찰되지 않았다. 배포에서 결제나 데이터 변경은 하지 않았다.
 - 콜드 스타트와 한 번의 자동 재시도를 포함하면 첫 화면 대기가 약 1분까지 갈 수 있어 기존 "최대 30초" 문구를 "1분 정도"로 고쳤다.
-- 최종 검증: lint, 전체 테스트 111개(28개 파일), 운영 빌드, demo 빌드 통과. `git diff --check` 통과. 모달 브라우저 확인을 마쳤다. 이번 UI 수정은 아직 배포되지 않았다.
+- 최종 검증: lint, 전체 테스트 111개(28개 파일), 운영 빌드, demo 빌드 통과. `git diff --check` 통과. 모달 바깥 클릭 확인 완료. 커밋 `e5c0a02`는 push 및 Vercel Production 배포 완료.
