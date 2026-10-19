@@ -57,7 +57,18 @@
 - **상태 책임 분리:** 예약 선택 상태는 Redux Toolkit, 서버 데이터는 TanStack Query로 관리하고 예약 완료 후 관련 캐시를 갱신했습니다.
 - **API·결제 연동:** API 계약과 MSW를 활용해 화면을 병렬 개발하고 결제 승인·실패·재시도 흐름을 처리했습니다.
 
-## 실행 방법
+## 트러블슈팅
+
+### 예약 조건 변경 시 선택 상태와 시간 계산 불일치
+
+- **문제:** 날짜나 시작 시간을 변경한 뒤 이전 선택값이 남으면 예약 가능 시간·이용 시간·금액이 서로 맞지 않을 수 있었습니다.
+- **원인:** 예약 단계가 서로 종속적이고 영업시간·현재 시각·기존 예약에 따라 선택 가능 범위가 달라졌습니다.
+- **해결:** 상위 조건 변경 시 하위 상태를 초기화하고, 시간 계산을 UI에서 분리한 순수 함수로 구성했습니다. 예약 구간의 겹침과 자정 경계도 명시적으로 처리했습니다.
+- **검증:** 예약 시간 규칙 회귀 테스트 24건으로 영업시간 경계, 중복·인접 예약, 날짜 변경을 확인했습니다.
+
+[예약 규칙 상세 기록](docs/refactoring.md)
+
+## 시작하기 (Getting Started)
 
 ```bash
 npm ci
@@ -76,7 +87,7 @@ npm run build
 - 데모 미리보기: `npm run build:demo:local` 후 `npm run preview:demo` → `localhost:4173`
 - 실제 로컬 백엔드 연동: [전체 스택 재현 안내](docs/local-reproduction.md)
 
-## 테스트 및 검증
+## 테스트 및 코드 품질
 
 | 검증 | 결과 |
 | --- | --- |
@@ -87,7 +98,7 @@ npm run build
 | 이미지 최적화 | 106,998B → 66,413B (37.9% 감소) |
 | Lighthouse 모바일 | 3회 중앙값 기준 Performance 88→91, LCP 3,578→3,331ms |
 
-## 관련 문서
+## 산출물 및 관련 문서
 
 - [사업자용 프론트엔드](https://github.com/minjuko/ppodeuk-owner-frontend) · [백엔드](https://github.com/minjuko/ppodeuk-backend)
 - [설계 문서](docs/architecture.md) · [예약 규칙과 개선 기록](docs/refactoring.md)
