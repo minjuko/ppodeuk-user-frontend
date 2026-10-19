@@ -6,7 +6,7 @@
 ![Tests](https://img.shields.io/badge/Tests-106%20passed-2EA44F)
 
 뽀득뽀득은 프론트엔드 3명·백엔드 3명이 개발한 팀 프로젝트입니다.  
-저는 **사용자용 프론트엔드의 예약 흐름**을 중심으로 구현했고, 이후 예약·결제 안정성, 회귀 테스트, 실행 환경을 개선했습니다.
+저는 **사용자 예약 흐름과 API 연동**을 담당하고, 예약 규칙·결제 상태 처리와 테스트·CI를 보강했습니다.
 
 ## 핵심 사용자 흐름
 
@@ -53,12 +53,6 @@
 - 세차장 상세·리뷰·Kakao Map UI 일부와 결제 UI·예약 상태 연결에 참여했습니다.
 - 개선 작업에서 예약 시간 계산을 순수 함수로 분리하고, 결제 callback·Loading/Error/Empty State·cache invalidation·keyboard interaction을 보완했습니다.
 
-### 팀 기능과 개인 기여의 경계
-
-- 사업자용 대시보드·매출·세차 공간·예약 관리와 백엔드 원 구현은 개인 담당 범위가 아닙니다.
-- 사업자용에서는 세차장 등록 화면의 초기 구조와 일부 입력·공통 UI에 참여했습니다.
-- 백엔드는 원 개발 담당이 아니며, 이후 로컬 실행 환경과 사용자용 프론트엔드 연동 검증을 보완했습니다.
-
 ## 핵심 설계
 
 ### 예약 조건의 종속 상태를 명확히 관리
@@ -93,13 +87,6 @@ flowchart LR
   API -. "payment" .-> PAY["KakaoPay"]
 ```
 
-## 인증·예약 안정성 개선
-
-- **인증:** 네트워크·서버 오류와 누락된 토큰을 안전하게 처리하고, 보호 경로에서 로그인 후 원래 화면으로 복귀하도록 보완했습니다.
-- **예약:** 직접 예약 URL 접근 시 경로와 공유 상태가 불일치하던 문제를 수정하고, 날짜 변경에 따른 종속 선택값 초기화를 검증했습니다.
-- **결제:** callback 직접 접근·중복 요청·실패 후 재시도를 방어하고, 회귀 테스트로 주요 예외 흐름을 확인했습니다.
-
-
 ## 검증 결과
 
 | 검증 | 결과 |
@@ -110,8 +97,6 @@ flowchart LR
 | GitHub Actions | CI workflow (`test → lint → production/demo build → production dependency audit`) |
 | 이미지 최적화 | 106,998B → 66,413B (37.9% 감소) |
 | Lighthouse 모바일 | 3회 중앙값 기준 Performance 88→91, LCP 3,578→3,331ms |
-
-> 이미지 재압축 후 동일한 로컬 환경에서 측정한 결과이며, 실제 사용자 환경의 성능을 보장하지 않습니다.
 
 ## 로컬 실행
 
@@ -132,14 +117,9 @@ npm run build
 - 데모 미리보기: `npm run build:demo:local` 후 `npm run preview:demo` → `localhost:4173`
 - 실제 로컬 백엔드 연동: [전체 스택 재현 안내](docs/local-reproduction.md)
 
-Vite는 지정 포트가 사용 중이면 다른 포트로 자동 이동하지 않고 종료합니다. mock 설정은 Vercel 배포에서 사용하지 않습니다.
-
 ## 관련 자료
 
 - [사업자용 프론트엔드](https://github.com/minjuko/ppodeuk-owner-frontend) · [백엔드](https://github.com/minjuko/ppodeuk-backend)
 - [설계 문서](docs/architecture.md) · [예약 규칙과 개선 기록](docs/refactoring.md)
 - [과거 Kubernetes 설정과 검증 캡처 보관 문서](./docs/archive/README.md)
 
-## 검증 범위
-
-동시 예약의 최종 경쟁 조건과 실제 KakaoPay 결제·장애 복구는 자동화 테스트만으로 보장할 수 없습니다.
