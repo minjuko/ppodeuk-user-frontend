@@ -77,6 +77,12 @@ const LoginForm = () => {
 
   const email = watch("email");
   const password = watch("password");
+  const authNotice =
+    (location.state?.authExpired &&
+      "로그인 정보가 만료되었습니다. 다시 로그인해 주세요.") ||
+    (location.state?.authCheckFailed &&
+      "로그인 상태를 확인하지 못했습니다. 다시 로그인해 주세요.") ||
+    "로그인이 필요한 페이지입니다. 로그인 후 이용해 주세요.";
 
   useEffect(() => {
     setErrorMessage("");
@@ -104,7 +110,7 @@ const LoginForm = () => {
               className="p-3 text-sm text-center border border-yellow-300 rounded-lg bg-yellow-50"
               role="alert"
             >
-              로그인이 필요한 페이지입니다. 로그인 후 이용해 주세요.
+              {authNotice}
             </div>
           )}
           <TextInput

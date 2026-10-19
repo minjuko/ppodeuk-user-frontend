@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import CustomModal from "../atoms/CustomModal";
 import { getErrorDetail } from "../../layouts/errorswitch";
 import Close from "/close.svg";
+import { useToast } from "../feedback/ToastProvider";
 
 const REVIEW_KEYWORDS = [
   { id: 1, keyword: "사장님이 친절해요" },
@@ -31,6 +32,7 @@ const ReviewPostTemplate = () => {
 
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
 
   const carwashId = useSelector(
     (state) => state.reservationProcess.selectedCarwashId,
@@ -64,9 +66,8 @@ const ReviewPostTemplate = () => {
           },
         };
       });
-      setModalContent("리뷰 등록에 성공했습니다.");
-      setModalType("history");
-      setIsModalOpen(true);
+      showToast({ message: "리뷰가 등록되었습니다." });
+      navigate("/history", { replace: true });
     },
     onError: (error) => {
       const errorDetail = getErrorDetail(error);
@@ -95,11 +96,9 @@ const ReviewPostTemplate = () => {
       return;
     }
     if (rate === 0 || comment.trim().length === 0) {
-      setModalContent(
-        rate === 0 ? "별점을 선택해주세요." : "후기를 입력해주세요.",
-      );
-      setModalType("info");
-      setIsModalOpen(true);
+      showToast({
+        message: rate === 0 ? "별점을 선택해 주세요." : "후기를 입력해 주세요.",
+      });
       return;
     }
     if (comment.length > 100) {
@@ -171,9 +170,9 @@ const ReviewPostTemplate = () => {
         <CustomModal
           isOpen={isModalOpen}
           onConfirm={handleModalConfirm}
-          title="알림"
+          title={modalType === "error" ? "리뷰 등록 실패" : "예약 정보 확인"}
           content={modalContent}
-          confirmText="확인"
+          confirmText={modalType === "error" ? "홈으로" : "예약 내역"}
         />
       </div>
     </div>

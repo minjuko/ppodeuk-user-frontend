@@ -45,7 +45,7 @@ const PaymentWaitingTemplate = () => {
     onSuccess: (data) => {
       dispatch(resetStore());
       navigate("/paymentresult", {
-        state: { reservationData: data?.data?.response },
+        state: { reservationData: data?.data?.response ?? data?.data },
       });
     },
     onError: (error) => {

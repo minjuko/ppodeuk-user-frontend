@@ -30,7 +30,10 @@ export const getUserInfoThunk = createAsyncThunk(
       const response = await UserInfo();
       return response.data;
     } catch (error) {
-      return rejectWithValue(getAuthError(error));
+      return rejectWithValue({
+        ...getAuthError(error),
+        status: error?.response?.status,
+      });
     }
   },
 );

@@ -47,7 +47,7 @@ describe("home recommended carwash", () => {
     expect(screen.queryByTestId("recommended-card")).not.toBeInTheDocument();
     expect(
       screen.getByText(
-        "서버를 시작하고 추천 세차장을 불러오는 중입니다. 처음 접속하면 최대 30초 정도 걸릴 수 있어요.",
+        "서버를 시작하고 추천 세차장을 불러오는 중입니다. 처음 접속하면 1분 정도 걸릴 수 있어요.",
       ),
     ).toBeInTheDocument();
   });
