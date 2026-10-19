@@ -8,7 +8,18 @@
 뽀득뽀득은 프론트엔드 3명·백엔드 3명이 개발한 팀 프로젝트입니다.  
 저는 **사용자 예약 흐름과 API 연동**을 담당하고, 예약 규칙·결제 상태 처리와 테스트·CI를 보강했습니다.
 
-## 핵심 사용자 흐름
+## 프로젝트 개요
+
+| 항목 | 내용 |
+|---|---|
+| 기간 | 2023.09.14–2023.11.17 |
+| 형태 | 카카오 테크 캠퍼스 1기 · 6인 팀 프로젝트 |
+| 개인 역할 | 사용자용 프론트엔드 예약 흐름 · 세차장 상세·리뷰·지도 UI 일부 |
+| 프론트엔드 | React 18 · JavaScript · Redux Toolkit · TanStack Query · Vite |
+| 백엔드 | Spring Boot · MariaDB |
+| 성과 | 카카오 테크 캠퍼스 1기 신규 서비스 개발 프로젝트 대상 |
+
+## 주요 기능 및 화면
 
 <table>
   <tr>
@@ -33,72 +44,20 @@
   </tr>
 </table>
 
-## 프로젝트 정보
+## 기술 스택
 
-| 항목 | 내용 |
-|---|---|
-| 기간 | 2023.09.14–2023.11.17 |
-| 형태 | 카카오 테크 캠퍼스 1기 · 6인 팀 프로젝트 |
-| 개인 역할 | 사용자용 프론트엔드 예약 흐름 · 세차장 상세·리뷰·지도 UI 일부 |
-| 프론트엔드 | React 18 · JavaScript · Redux Toolkit · TanStack Query · Vite |
-| 백엔드 | Spring Boot · MariaDB |
-| 성과 | 카카오 테크 캠퍼스 1기 신규 서비스 개발 프로젝트 대상 |
+- **Frontend:** React 18 · JavaScript · Redux Toolkit · TanStack Query · Vite
+- **Backend 연동:** Spring Boot · MariaDB · REST API
+- **검증:** Jest · MSW · ESLint · GitHub Actions
 
-## 개인 기여
+## 담당 역할 및 핵심 구현
 
-### 사용자용 프론트엔드
+- **예약 상태 관리:** 세차 공간 → 날짜 → 시작 시간 → 이용 시간의 종속 선택값을 관리하고 상위 조건 변경 시 하위 값을 초기화했습니다.
+- **예약 시간 검증:** 영업시간·기존 예약·30분 단위 이용 조건을 반영하고 시간 계산 로직을 순수 함수와 회귀 테스트로 분리했습니다.
+- **상태 책임 분리:** 예약 선택 상태는 Redux Toolkit, 서버 데이터는 TanStack Query로 관리하고 예약 완료 후 관련 캐시를 갱신했습니다.
+- **API·결제 연동:** API 계약과 MSW를 활용해 화면을 병렬 개발하고 결제 승인·실패·재시도 흐름을 처리했습니다.
 
-- 세차 공간(Bay) → 날짜 → 시작 시간 → 이용 시간을 순서대로 선택하는 예약 UI와 공유 예약 상태를 구현했습니다.
-- 영업시간과 기존 예약을 반영해 선택 가능한 시간 조합만 보여주도록 예약 조건을 연결했습니다.
-- 세차장 상세·리뷰·Kakao Map UI 일부와 결제 UI·예약 상태 연결에 참여했습니다.
-- 개선 작업에서 예약 시간 계산을 순수 함수로 분리하고, 결제 callback·Loading/Error/Empty State·cache invalidation·keyboard interaction을 보완했습니다.
-
-## 핵심 설계
-
-### 예약 조건의 종속 상태를 명확히 관리
-
-상위 조건이 바뀌면 하위 선택값을 초기화해 이전 선택이 다음 요청에 남지 않게 했습니다.
-
-```text
-세차 공간(Bay) → 날짜 → 시작 시간 → 이용 시간 → 예약·결제
-  변경 시 종속 선택값 초기화
-```
-
-시간 규칙은 UI에서 분리해 영업시간, 30분 단위 slot, 이용 시간, 기존 예약의 겹침과 자정 경계를 회귀 테스트로 고정했습니다.
-
-### 상태 성격에 따라 Redux Toolkit과 TanStack Query를 분리
-
-여러 예약 화면에서 이어지는 선택값은 Redux Toolkit으로 관리하고, 서버가 소유한 예약 가능 시간·예약 결과는 TanStack Query로 조회·무효화했습니다. 서버 데이터를 Redux에 복제하면 갱신 시점과 캐시가 이중화되므로 피했고, 예약 완료 뒤에는 관련 Query를 무효화해 최신 상태를 다시 조회했습니다.
-
-### 결제 생명주기 안정화
-
-결제 준비부터 callback·승인·예약 완료까지의 상태를 분리했습니다. callback 직접 접근, 누락 token, 진행 중 중복 요청과 실패 후 retry를 방어하고, 완료 확인 뒤 예약 상태와 Query Cache를 동기화했습니다.
-
-### API 계약 기반 병렬 개발
-
-프론트엔드는 API 명세에 맞춰 화면·요청 구조를 구현하고, 백엔드 준비 전에는 MSW로 예약 흐름을 검증했습니다. 정적 데이터를 컴포넌트에 직접 넣는 대신 API 요청 구조를 유지한 방식이라 실제 API 연동으로 전환하기 쉬웠습니다. 다만 동시 예약의 최종 경쟁 조건과 실제 결제 승인은 서버 측 검증이 필요합니다.
-
-```mermaid
-flowchart LR
-  U["USER React"] --> API["Spring Boot API"]
-  O["OWNER React"] --> API
-  API --> DB[("MariaDB")]
-  U -. "location" .-> MAP["Kakao Maps"]
-  API -. "payment" .-> PAY["KakaoPay"]
-```
-
-## 검증 결과
-
-| 검증 | 결과 |
-| --- | --- |
-| 프론트엔드 테스트 | **28파일 · 106건 통과** |
-| ESLint | 오류·경고 0건 |
-| Production / Demo build | 통과 |
-| GitHub Actions | CI workflow (`test → lint → production/demo build → production dependency audit`) |
-| 이미지 최적화 | 106,998B → 66,413B (37.9% 감소) |
-| Lighthouse 모바일 | 3회 중앙값 기준 Performance 88→91, LCP 3,578→3,331ms |
-
-## 로컬 실행
+## 실행 방법
 
 ```bash
 npm ci
@@ -111,15 +70,25 @@ npm test -- --run
 npm run build
 ```
 
-백엔드 없이 사용자 흐름을 확인할 때는 `npm run dev:mock`으로 MSW 데모를 실행합니다. 데모 계정은 `test-user@example.com` / `test1234!`이며, 로컬 테스트 전용입니다. mock 결제는 실제 결제가 아니며 새로고침 시 데이터가 초기화됩니다.
+백엔드 없이 사용자 흐름을 확인할 때는 `npm run dev:mock`으로 MSW 데모를 실행합니다. 데모 계정은 로컬 테스트 전용입니다. mock 결제는 실제 결제가 아니며 새로고침 시 데이터가 초기화됩니다.
 
 - 개발 서버: `npm run dev` 또는 `npm run dev:mock` → `localhost:5173`
 - 데모 미리보기: `npm run build:demo:local` 후 `npm run preview:demo` → `localhost:4173`
 - 실제 로컬 백엔드 연동: [전체 스택 재현 안내](docs/local-reproduction.md)
 
-## 관련 자료
+## 테스트 및 검증
+
+| 검증 | 결과 |
+| --- | --- |
+| 프론트엔드 테스트 | **28파일 · 106건 통과** |
+| ESLint | 오류·경고 0건 |
+| Production / Demo build | 통과 |
+| GitHub Actions | CI workflow (`test → lint → production/demo build → production dependency audit`) |
+| 이미지 최적화 | 106,998B → 66,413B (37.9% 감소) |
+| Lighthouse 모바일 | 3회 중앙값 기준 Performance 88→91, LCP 3,578→3,331ms |
+
+## 관련 문서
 
 - [사업자용 프론트엔드](https://github.com/minjuko/ppodeuk-owner-frontend) · [백엔드](https://github.com/minjuko/ppodeuk-backend)
 - [설계 문서](docs/architecture.md) · [예약 규칙과 개선 기록](docs/refactoring.md)
-- [과거 Kubernetes 설정과 검증 캡처 보관 문서](./docs/archive/README.md)
 
