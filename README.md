@@ -23,23 +23,17 @@
 
 <table>
   <tr>
-    <td width="50%" align="center" valign="top">
-      <img src="docs/assets/readme/user/nearby/01_nearby_search.png" alt="지도 기반 주변 세차장 탐색 화면" width="100%" />
-      <br /><sub>① 지도에서 주변 세차장 탐색</sub>
+    <td width="33.33%" align="center" valign="top">
+      <img src="docs/assets/readme/01_nearby_search.png" alt="지도에서 주변 세차장을 조회하는 화면" width="100%" />
+      <br /><sub>① 지도에서 세차장 조회</sub>
     </td>
-    <td width="50%" align="center" valign="top">
-      <img src="docs/assets/readme/user/nearby/02_carwash_detail.png" alt="세차장 상세정보 확인 화면" width="100%" />
-      <br /><sub>② 세차장 상세정보 확인</sub>
+    <td width="33.33%" align="center" valign="top">
+      <img src="docs/assets/readme/02_reservation_time.png" alt="세차장 예약 시각을 선택하는 화면" width="100%" />
+      <br /><sub>② 예약 시각 선택</sub>
     </td>
-  </tr>
-  <tr>
-    <td width="50%" align="center" valign="top">
-      <img src="docs/assets/readme/user/reservation/02_schedule_selection.png" alt="예약 시간과 이용 시간 선택 화면" width="100%" />
-      <br /><sub>③ 예약 시간 · 이용 시간 선택</sub>
-    </td>
-    <td width="50%" align="center" valign="top">
-      <img src="docs/assets/readme/user/reservation/04_reservation_complete.png" alt="예약 완료 결과 화면" width="100%" />
-      <br /><sub>④ 예약 완료 확인</sub>
+    <td width="33.33%" align="center" valign="top">
+      <img src="docs/assets/readme/03_bay_selection.png" alt="예약할 세차 베이를 선택하는 화면" width="100%" />
+      <br /><sub>③ 베이 선택</sub>
     </td>
   </tr>
 </table>
