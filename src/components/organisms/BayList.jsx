@@ -2,7 +2,7 @@ import BayItem from "../molecules/BayItem";
 
 const BayList = ({ bays, openingHours, selectedDate, onClick }) => {
   return (
-    <div className="grid gap-4">
+    <div className="reservation-bay-list grid gap-3">
       {bays.map((item) => (
         <BayItem
           key={item.bayId}

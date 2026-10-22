@@ -1,7 +1,6 @@
 import { useState } from "react";
 
-const getType = (isChecked) =>
-  isChecked ? "ui-chip-active" : "border-primary bg-white text-gray-900";
+const getType = (isChecked) => (isChecked ? "ui-chip-active" : "ui-chip-idle");
 
 export const Badge = ({ id, label, onClick, className }) => {
   const [isChecked, setIsChecked] = useState(false);

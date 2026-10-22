@@ -41,27 +41,26 @@ const StoreInfo = ({ weekhour, weekendhour, tel, address }) => {
   };
 
   return (
-    <section className="w-full max-w-full min-w-0 overflow-hidden bg-white border-gray-200 border-y">
+    <section className="store-info-section w-full max-w-full min-w-0 overflow-hidden bg-white border-gray-200 border-y">
       <h2 className="px-4 pt-3 text-base font-bold">매장정보</h2>
       <dl className="px-4 divide-y divide-gray-100">
-        <div className="flex items-center gap-3 py-3">
+        <div className="flex items-center gap-3 py-2 md:py-3">
           <InfoIcon type="time" />
-          <div className="flex items-center justify-between w-full min-w-0 gap-2 overflow-hidden text-base font-medium text-gray-800 whitespace-nowrap">
-            <div className="flex items-center gap-1.5">
+          <div className="store-hours-grid">
+            <div className="flex min-w-0 flex-col items-start gap-0.5">
               <dt>평일</dt>
               <dd>{weekhour}</dd>
             </div>
-            <span className="w-px h-4 bg-gray-200" aria-hidden="true" />
-            <div className="flex items-center gap-1.5">
+            <div className="flex min-w-0 flex-col items-start gap-0.5">
               <dt>주말</dt>
               <dd>{weekendhour}</dd>
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-4 py-3">
+        <div className="flex items-center gap-4 py-2 md:py-3">
           <InfoIcon type="tel" />
           <div className="min-w-0">
-            <dt className="sr-only">전화</dt>
+            <dt className="mb-0.5 text-xs font-medium text-gray-500">전화</dt>
             <dd>
               <a
                 href={`tel:${tel}`}
@@ -73,11 +72,11 @@ const StoreInfo = ({ weekhour, weekendhour, tel, address }) => {
             </dd>
           </div>
         </div>
-        <div className="flex items-center gap-4 py-3">
+        <div className="flex items-center gap-4 py-2 md:py-3">
           <InfoIcon type="map" />
           <div className="min-w-0">
-            <dt className="sr-only">주소</dt>
-            <dd className="text-base leading-6 text-gray-800 break-keep">
+            <dt className="mb-0.5 text-xs font-medium text-gray-500">주소</dt>
+            <dd className="break-keep text-sm leading-5 text-gray-800 md:text-base md:leading-6">
               {address}
             </dd>
           </div>

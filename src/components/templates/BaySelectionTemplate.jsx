@@ -37,13 +37,13 @@ const BaySelectionTemplate = ({ carwashId }) => {
   };
 
   return (
-    <div className="p-4 grid gap-4">
+    <div className="reservation-bay-page mx-auto grid gap-3 p-4 md:max-w-4xl md:gap-6">
       <h1 className="text-2xl font-extrabold text-gray-900">
         {name}: 베이 선택
       </h1>
       <OperatingHoursCard openingHours={detailData} />
       {bayListData.length > 0 ? (
-        <div className="grid gap-4">
+        <div className="reservation-bay-content grid gap-3">
           <div>
             <h2 className="text-lg font-extrabold text-gray-900">
               예약할 베이를 선택해 주세요
@@ -54,7 +54,10 @@ const BaySelectionTemplate = ({ carwashId }) => {
           </div>
           <section className="grid gap-2">
             <h2 className="font-bold text-gray-900">날짜 선택</h2>
-            <DatePicker handleButtonClick={setSelectedDate} />
+            <DatePicker
+              className="reservation-bay-date-picker"
+              handleButtonClick={setSelectedDate}
+            />
           </section>
           <div
             className="flex items-center gap-5 text-sm text-gray-700"
