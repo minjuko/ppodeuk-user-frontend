@@ -10,15 +10,12 @@ const KeyPointInfo = ({ selectedPoints }) => {
   };
 
   return (
-    <section className="px-4 py-4 bg-white border-gray-200 border-y">
+    <section className="keypoint-info-section border-y border-gray-200 bg-white px-4 py-3 md:px-5 md:py-4">
       <h2 className="mb-3 text-base font-bold">키포인트</h2>
-      <ul
-        className="flex flex-wrap max-w-full min-w-0 gap-2.5"
-        aria-label="세차장 주요 편의시설"
-      >
+      <ul className="keypoint-chip-row" aria-label="세차장 주요 편의시설">
         {selectedPoints.map((point) => (
           <li
-            className="ui-chip ui-chip-md border-primary bg-white text-gray-900"
+            className="ui-chip ui-chip-soft ui-chip-md shrink-0 text-gray-900 md:h-10 md:px-5 md:text-base"
             key={point}
           >
             {keypointToText[point]}

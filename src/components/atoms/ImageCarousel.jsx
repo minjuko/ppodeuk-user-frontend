@@ -36,13 +36,13 @@ const ImageCarousel = ({ images }) => {
       <Image
         src={image.url}
         alt={image.alt}
-        className="object-cover w-full h-48"
+        className="object-cover w-full h-48 md:h-64"
       />
     </div>
   ));
 
   return (
-    <div className="relative flex items-center justify-center w-full max-w-full overflow-hidden">
+    <div className="relative -mx-4 -mt-4 flex w-[calc(100%+2rem)] items-center justify-center overflow-hidden">
       <Carousel
         className="w-full max-w-full"
         showArrows={hasMultipleImages}

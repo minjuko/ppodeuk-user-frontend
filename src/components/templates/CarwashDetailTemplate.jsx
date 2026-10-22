@@ -44,48 +44,53 @@ const CarwashDetailTemplate = ({ carwashId }) => {
         ];
 
   return (
-    <div className="relative w-full max-w-full mb-16 overflow-x-hidden overflow-y-auto">
-      <StatusBar />
-      <div className="w-full max-w-full min-w-0">
-        <ImageCarousel images={images} />
-        <div className="w-full max-w-full min-w-0 p-3 pb-0 bg-gray-50">
-          <div className="grid min-w-0 gap-3">
-            <section
-              className="flex items-start justify-between min-w-0 gap-4 py-1"
-              aria-labelledby="carwash-name"
-            >
-              <div className="min-w-0">
-                <h1 id="carwash-name" className="text-2xl font-bold truncate">
-                  {detailData.name}
-                </h1>
-                <Star
-                  starCount={detailData.rate.toFixed(1)}
-                  reviewCount={detailData.reviewCnt}
-                />
-              </div>
-              <div className="px-3 py-2 text-center border rounded-xl bg-sky-50 border-sky-100 shrink-0">
-                <div className="text-3xl font-extrabold leading-none text-primary">
-                  {detailData.bayCnt}
+    <div className="min-h-screen bg-white md:bg-slate-50 md:px-4 md:py-4">
+      <div className="relative mx-auto w-full max-w-3xl overflow-x-hidden overflow-y-auto p-4 pb-16 md:max-w-[560px] md:rounded-2xl md:border md:border-slate-200 md:bg-white md:shadow-xl md:shadow-slate-900/10">
+        <StatusBar />
+        <div className="w-full max-w-full min-w-0">
+          <ImageCarousel images={images} />
+          <div className="w-full max-w-full min-w-0 bg-gray-50 py-3 pb-0 md:py-5">
+            <div className="grid min-w-0 gap-2 md:gap-4">
+              <section
+                className="flex items-start justify-between min-w-0 gap-4 py-1"
+                aria-labelledby="carwash-name"
+              >
+                <div className="min-w-0">
+                  <h1
+                    id="carwash-name"
+                    className="truncate text-2xl font-bold md:text-3xl"
+                  >
+                    {detailData.name}
+                  </h1>
+                  <Star
+                    starCount={detailData.rate.toFixed(1)}
+                    reviewCount={detailData.reviewCnt}
+                  />
                 </div>
-                <h2 className="mt-1 text-xs font-bold text-gray-700">
-                  예약베이
-                </h2>
-              </div>
-            </section>
-            <StoreInfo
-              weekhour={weekdayOpeningHours}
-              weekendhour={weekendOpeningHours}
-              tel={detailData.tel}
-              address={detailData.locationDTO.address}
-            />
-            <KeyPointInfo selectedPoints={detailData.keywordIdList} />
+                <div className="shrink-0 rounded-xl border border-sky-100 bg-sky-50 px-3 py-2 text-center md:px-4 md:py-3">
+                  <div className="text-3xl font-extrabold leading-none text-primary md:text-4xl">
+                    {detailData.bayCnt}
+                  </div>
+                  <h2 className="mt-1 text-xs font-bold text-gray-700 md:text-sm">
+                    예약베이
+                  </h2>
+                </div>
+              </section>
+              <StoreInfo
+                weekhour={weekdayOpeningHours}
+                weekendhour={weekendOpeningHours}
+                tel={detailData.tel}
+                address={detailData.locationDTO.address}
+              />
+              <KeyPointInfo selectedPoints={detailData.keywordIdList} />
+            </div>
           </div>
+          <Tab introduction={detailData.description} carwashId={carwashId} />
         </div>
-        <Tab introduction={detailData.description} carwashId={carwashId} />
       </div>
       <Button
         variant="long"
-        className="fixed bottom-0 left-0 right-0"
+        className="flow-primary-action carwash-detail-primary fixed bottom-0 left-0 right-0"
         onClick={() => navigate(`/bayselection/${carwashId}`)}
       >
         예약하러 가기
