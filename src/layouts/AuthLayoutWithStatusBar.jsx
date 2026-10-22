@@ -47,7 +47,7 @@ const AuthLayoutWithStatusBar = () => {
   return (
     <>
       <StatusBar />
-      <main className="my-14">
+      <main className="flow-page-shell app-page-shell mx-auto my-14 w-full max-w-md p-4 pb-24 md:my-0 md:min-h-screen md:max-w-[560px] md:border-x md:border-slate-200 md:bg-white md:px-4 md:pb-28 md:pt-20 md:shadow-sm">
         <Outlet />
       </main>
     </>

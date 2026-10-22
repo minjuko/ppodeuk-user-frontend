@@ -7,6 +7,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import Close from "/close.svg";
+import AppTopBar from "../atoms/AppTopBar";
 
 const PATTERNS = {
   username: /^(?=.*[a-z0-9가-힣])[a-z0-9가-힣]{2,20}$/,
@@ -143,15 +144,17 @@ const SignupForm = () => {
   };
 
   return (
-    <div className="relative flex flex-col justify-center min-h-screen p-4 py-20">
-      <Button
-        className="absolute left-4 top-4"
-        onClick={() => {
-          navigate("/");
-        }}
-      >
-        <img src={Close} alt="닫기 버튼" />
-      </Button>
+    <div className="auth-page-frame relative mx-auto flex min-h-screen w-full max-w-md flex-col justify-center border-x border-transparent bg-white p-4 py-20 md:max-w-[560px] md:border-slate-200 md:px-14 md:shadow-sm">
+      <AppTopBar fixed>
+        <Button
+          onClick={() => {
+            navigate("/");
+          }}
+          aria-label="닫기"
+        >
+          <img src={Close} alt="" />
+        </Button>
+      </AppTopBar>
       <div className="grid gap-16">
         <h1 className="text-2xl font-bold text-center">회원가입</h1>
         <form

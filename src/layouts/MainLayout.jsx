@@ -1,4 +1,4 @@
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { GNB } from "../components/atoms/GNB";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
@@ -7,7 +7,9 @@ import { unwrapResult } from "@reduxjs/toolkit";
 
 export const MainLayout = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useDispatch();
+  const isReservationPage = location.pathname === "/reservation";
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -24,7 +26,13 @@ export const MainLayout = () => {
 
   return (
     <>
-      <main className="w-full max-w-md p-4 mx-auto mb-20">
+      <main
+        className={
+          isReservationPage
+            ? "reservation-page-root"
+            : "app-page-shell mx-auto w-full max-w-md p-4 pb-24 md:min-h-screen md:max-w-[560px] md:border-x md:border-slate-200 md:bg-white md:px-4 md:pb-24 md:pt-4 md:shadow-sm"
+        }
+      >
         <Outlet />
       </main>
       <GNB />
