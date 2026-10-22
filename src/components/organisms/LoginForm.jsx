@@ -8,8 +8,10 @@ import { loginThunk } from "../../store/authSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import PropTypes from "prop-types";
 import Close from "/close.svg";
+import AppTopBar from "../atoms/AppTopBar";
 import { showDemoUi } from "../../demo/mode";
 import { DEMO_CREDENTIALS } from "../../mocks/demoData";
+import { FiHome, FiLock } from "react-icons/fi";
 
 const PORTFOLIO_CREDENTIALS = DEMO_CREDENTIALS;
 
@@ -89,15 +91,35 @@ const LoginForm = () => {
   }, [email, password]);
 
   return (
-    <div className="relative flex flex-col justify-center h-screen p-4">
-      <Button
-        className="absolute left-4 top-4"
-        onClick={() => {
-          navigate("/");
-        }}
-      >
-        <img src={Close} alt="닫기 버튼" />
-      </Button>
+    <div className="auth-page-frame relative mx-auto flex min-h-screen w-full max-w-md flex-col justify-center border-x border-transparent bg-white p-4 md:max-w-[560px] md:border-slate-200 md:px-14 md:shadow-sm">
+      <AppTopBar fixed>
+        {location.state?.authRequired ? (
+          <Button
+            className="flex h-9 items-center gap-1.5 rounded-lg px-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            onClick={() => navigate("/", { replace: true })}
+            aria-label="홈으로 이동"
+          >
+            <FiHome aria-hidden="true" size={17} />
+            <span>홈</span>
+          </Button>
+        ) : (
+          <Button onClick={() => navigate("/")} aria-label="닫기">
+            <img src={Close} alt="" />
+          </Button>
+        )}
+      </AppTopBar>
+      {location.state?.authRequired && (
+        <div
+          className="fixed left-1/2 top-16 z-[60] flex w-[calc(100%-2rem)] max-w-md -translate-x-1/2 items-center gap-3 rounded-xl border border-rose-300 bg-rose-50 px-4 py-3 text-sm font-semibold text-slate-800 shadow-lg shadow-rose-900/10 md:top-20"
+          role="alert"
+          aria-live="assertive"
+        >
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-rose-100 text-rose-600">
+            <FiLock aria-hidden="true" size={17} />
+          </span>
+          <span className="leading-5">{authNotice}</span>
+        </div>
+      )}
       <div className="grid gap-16">
         <h1 className="text-2xl font-bold text-center">로그인</h1>
         <form
@@ -105,14 +127,6 @@ const LoginForm = () => {
           className="flex flex-col gap-4"
           onSubmit={handleSubmit(onSubmit)}
         >
-          {location.state?.authRequired && (
-            <div
-              className="p-3 text-sm text-center border border-yellow-300 rounded-lg bg-yellow-50"
-              role="alert"
-            >
-              {authNotice}
-            </div>
-          )}
           <TextInput
             type="email"
             placeholder="이메일"

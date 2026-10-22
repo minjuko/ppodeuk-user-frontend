@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../store/authSlice";
 import { resetStore } from "../../store/action";
-import LogoIcon from "/bdbd_icon.svg";
+import AppTopBar from "../atoms/AppTopBar";
 import Loader from "../atoms/Loader";
 import {
   DEMO_LOCATION,
@@ -64,12 +64,8 @@ const HomeTemplate = () => {
   const recentList = recent?.data?.data?.response?.recentReservationList || [];
 
   return (
-    <div className="relative grid gap-5">
-      <nav className="items-center h-10 bg-white flex-between">
-        <div className="flex items-center gap-2">
-          <img src={LogoIcon} className="w-5 h-6" alt="뽀득뽀득 아이콘" />
-          <img src="/bdbd.svg" className="w-24 h-auto" alt="뽀득뽀득" />
-        </div>
+    <div className="home-content relative grid gap-5 md:grid-cols-1 md:gap-5">
+      <AppTopBar className="col-span-full bg-white">
         <div className="contents">
           <img src="/bdbd.svg" className="hidden" alt="뽀득뽀득 로고" />
           {isLoggedIn ? (
@@ -92,8 +88,8 @@ const HomeTemplate = () => {
             </Button>
           )}
         </div>
-      </nav>
-      <h1 className="text-2xl font-bold break-keep">
+      </AppTopBar>
+      <h1 className="col-span-full text-2xl font-bold break-keep md:text-2xl">
         {userName ? (
           `${userName}님 안녕하세요!`
         ) : (
@@ -103,7 +99,7 @@ const HomeTemplate = () => {
           </>
         )}
       </h1>
-      <section className="gap-3 flex-between">
+      <section className="col-span-full gap-3 flex-between md:justify-start">
         <Link
           to="/reservation"
           className="relative flex items-start w-full h-[72px] p-3 overflow-hidden text-left bg-white border border-gray-300 shadow-xl break-keep rounded-xl"
@@ -127,7 +123,13 @@ const HomeTemplate = () => {
           />
         </Link>
       </section>
-      <section className="grid gap-3">
+      <section
+        className={`grid content-start self-start gap-3 ${
+          isLoggedIn
+            ? "md:col-span-1"
+            : "md:col-span-2 md:mx-auto md:w-full md:max-w-2xl"
+        }`}
+      >
         <h2 className="text-xl font-semibold">이런 세차장 어때요?</h2>
         {recommended.isPending && (
           <Loader
@@ -153,7 +155,7 @@ const HomeTemplate = () => {
         )}
       </section>
       {isLoggedIn && (
-        <section className="grid gap-3">
+        <section className="grid content-start self-start gap-3 md:col-span-1">
           <h2 className="text-xl font-semibold">최근 이용 내역</h2>
           {recent.isPending ? (
             <Loader
