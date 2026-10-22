@@ -4,36 +4,35 @@ const displayEndTime = (time) => (time === "00:00" ? "24:00" : time);
 
 const OperatingHoursCard = ({ openingHours }) => (
   <section
-    className="flex items-center gap-3 p-3 bg-sky-50 border border-sky-200 rounded-lg"
+    className="flex items-center gap-4 rounded-xl border border-slate-200 bg-white p-3"
     aria-labelledby="operating-hours-title"
   >
-    <div className="flex items-center justify-center w-10 h-10 bg-white border border-sky-100 rounded-lg shrink-0">
+    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-slate-50">
       <img src={TimeImage} alt="" className="w-6 h-6" />
     </div>
     <div className="grid min-w-0 gap-1.5">
       <h2
         id="operating-hours-title"
-        className="text-sm font-bold text-gray-900"
+        className="text-sm font-bold text-slate-800"
       >
         영업시간
       </h2>
-      <div className="flex items-center gap-2 text-xs whitespace-nowrap">
-        <p className="flex items-center gap-1">
-          <span className="font-bold text-sky-700">평일</span>
-          <span className="font-medium text-gray-700">
-            {openingHours.weekday.start}~
+      <dl className="grid min-w-0 grid-cols-2 gap-3">
+        <div className="flex min-w-0 flex-col items-start gap-0.5">
+          <dt className="text-xs font-medium text-slate-500">평일</dt>
+          <dd className="whitespace-nowrap text-sm font-semibold text-slate-800">
+            {openingHours.weekday.start}–
             {displayEndTime(openingHours.weekday.end)}
-          </span>
-        </p>
-        <span className="w-px h-3 bg-sky-200" aria-hidden="true" />
-        <p className="flex items-center gap-1">
-          <span className="font-bold text-sky-700">주말</span>
-          <span className="font-medium text-gray-700">
-            {openingHours.weekend.start}~
+          </dd>
+        </div>
+        <div className="flex min-w-0 flex-col items-start gap-0.5">
+          <dt className="text-xs font-medium text-slate-500">주말</dt>
+          <dd className="whitespace-nowrap text-sm font-semibold text-slate-800">
+            {openingHours.weekend.start}–
             {displayEndTime(openingHours.weekend.end)}
-          </span>
-        </p>
-      </div>
+          </dd>
+        </div>
+      </dl>
     </div>
   </section>
 );

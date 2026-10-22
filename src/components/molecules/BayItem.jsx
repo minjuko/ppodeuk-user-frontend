@@ -62,7 +62,7 @@ const BayItem = ({
 
   return (
     <div
-      className="p-4 overflow-x-auto bg-white border border-gray-400 rounded-lg cursor-pointer transition duration-150 hover:border-primary hover:bg-sky-50 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 active:bg-sky-100"
+      className="reservation-bay-card p-3 overflow-x-auto bg-white border border-gray-400 rounded-lg cursor-pointer transition duration-150 hover:border-primary hover:bg-sky-50 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 active:bg-sky-100"
       onClick={() => onClick(bayId)}
       onKeyDown={(event) => {
         if (event.key === "Enter" || event.key === " ") onClick(bayId);

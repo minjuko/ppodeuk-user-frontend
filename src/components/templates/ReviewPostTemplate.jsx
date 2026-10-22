@@ -117,7 +117,7 @@ const ReviewPostTemplate = () => {
   };
 
   return (
-    <div className="relative flex flex-col justify-center h-screen p-4">
+    <div className="relative flex flex-col justify-center h-screen">
       <Button
         className="absolute left-4 top-4"
         onClick={() => {
@@ -157,7 +157,7 @@ const ReviewPostTemplate = () => {
           variant="long"
           onClick={handleSubmit}
           disabled={mutation.isPending}
-          className="fixed bottom-0 left-0"
+          className="flow-primary-action fixed bottom-0 left-0"
         >
           {mutation.isPending ? (
             <span role="status" aria-live="polite">

@@ -37,7 +37,7 @@ const PaymentResultTemplate = () => {
         </p>
         <Button
           variant="long"
-          className="fixed bottom-0 left-0"
+          className="flow-primary-action fixed bottom-0 left-0"
           onClick={() => navigate("/history")}
         >
           예약 내역 확인
@@ -67,7 +67,7 @@ const PaymentResultTemplate = () => {
 
   return (
     <div>
-      <div className="relative p-4">
+      <div className="relative">
         <h1 className="py-8 text-2xl font-bold text-center">
           결제가 완료되었습니다
         </h1>
@@ -89,7 +89,7 @@ const PaymentResultTemplate = () => {
       </div>
       <Button
         variant="long"
-        className="fixed bottom-0 left-0"
+        className="flow-primary-action fixed bottom-0 left-0"
         onClick={() => navigate("/")}
       >
         홈으로

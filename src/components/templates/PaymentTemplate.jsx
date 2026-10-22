@@ -126,7 +126,7 @@ const PaymentTemplate = () => {
         <h1 className="text-2xl font-bold">결제할 예약 정보가 없습니다.</h1>
         <Button
           variant="long"
-          className="fixed bottom-0 left-0"
+          className="flow-primary-action fixed bottom-0 left-0"
           onClick={() => navigate("/reservation")}
         >
           예약 다시 시작
@@ -169,7 +169,7 @@ const PaymentTemplate = () => {
   );
   return (
     <div>
-      <div className="grid gap-6 p-4">
+      <div className="mx-auto grid gap-6 md:max-w-2xl md:gap-8 md:pt-8">
         <h1 className="text-2xl font-bold">결제하기</h1>
         <div className="p-4 bg-gray-100 rounded-xl grid-4">
           <div>
@@ -188,7 +188,7 @@ const PaymentTemplate = () => {
         </div>
       </div>
       <Button
-        className="fixed bottom-0 w-full p-4 text-center bg-kakao"
+        className="flow-primary-action fixed bottom-0 w-full p-4 text-center bg-kakao"
         onClick={handlePayment}
         disabled={isCalculatingPrice || isPreparingPayment || !canPay}
       >

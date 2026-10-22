@@ -76,7 +76,7 @@ const TimePicker = ({
         </button>
       </div>
       <div className="flex flex-wrap gap-2">
-        <div className="grid w-full grid-cols-4 gap-2">
+        <div className="schedule-time-slots grid w-full gap-1.5 sm:gap-2">
           {currentHours.map((time) => (
             <button
               key={time}
@@ -87,7 +87,7 @@ const TimePicker = ({
                 isPastSlot(selectedDate, time, getDemoDate())
               }
               aria-pressed={selectedTime === time}
-              className={`px-2 py-3 font-medium border border-gray-300 rounded-lg transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
+              className={`min-h-11 px-1 py-2 text-sm font-medium border border-gray-300 rounded-lg transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary sm:px-2 sm:py-3 ${
                 selectedTime === time
                   ? "border-primary bg-primary text-white hover:brightness-95"
                   : "bg-white text-gray-600 hover:border-primary hover:bg-sky-50 hover:text-gray-900"
