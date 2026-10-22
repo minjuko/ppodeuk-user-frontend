@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import { getDemoDate } from "../../utils/demoDate";
 
-const DatePicker = ({ handleButtonClick, selectedDate: controlledDate }) => {
+const DatePicker = ({
+  handleButtonClick,
+  selectedDate: controlledDate,
+  className = "",
+}) => {
   const [selectedDate, setSelectedDate] = useState(
     controlledDate || getDemoDate(),
   );
@@ -22,7 +26,9 @@ const DatePicker = ({ handleButtonClick, selectedDate: controlledDate }) => {
   });
 
   return (
-    <div className="p-3 bg-white border border-gray-300 rounded-lg shadow-sm">
+    <div
+      className={`p-3 bg-white border border-gray-300 rounded-lg shadow-sm ${className}`}
+    >
       <div className="grid grid-cols-7 gap-1">
         {weekDates.map((date) => {
           const isSelected =

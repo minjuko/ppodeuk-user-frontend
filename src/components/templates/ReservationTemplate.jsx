@@ -77,21 +77,21 @@ const ReservationTemplate = () => {
     .sort((a, b) => Number(a.distance) - Number(b.distance));
 
   return (
-    <div className="w-screen">
+    <div className="reservation-map-page relative h-screen w-screen md:mx-auto md:h-[100dvh] md:w-full md:max-w-[560px] md:overflow-hidden">
       <KakaoMap
         currentloc={location}
         mapdata={carwashList?.data?.response}
-        className="fixed inset-0 z-0 w-screen h-screen"
+        className="fixed inset-0 z-0 h-screen w-screen md:absolute md:h-full md:w-full"
       />
 
-      <DualBottomsheet className="fixed left-0 z-10">
-        <Bottomsheet className="z-20 flex flex-col h-full gap-4 p-4">
+      <DualBottomsheet className="reservation-sheet fixed left-0 z-10">
+        <Bottomsheet className="reservation-sheet-content z-20 flex h-full flex-col gap-2 p-4">
           <div className="relative">
             <TextInput
               type="text"
               id="search-bar"
               placeholder="검색할 세차장 이름을 입력하세요"
-              className="w-full p-4 pr-11 border-gray-300"
+              className="reservation-search-input w-full px-4 pr-11 border-gray-300"
               onChange={handleSearchChange}
               value={searchTerm}
             />
@@ -100,7 +100,13 @@ const ReservationTemplate = () => {
               aria-hidden="true"
             />
           </div>
-          <div className="flex gap-2 pb-2 overflow-x-auto scrollbar-hide">
+          <div
+            className="reservation-filters"
+            role="group"
+            aria-label="세차장 키포인트 필터"
+            onPointerDownCapture={(event) => event.stopPropagation()}
+            onTouchStartCapture={(event) => event.stopPropagation()}
+          >
             <Badge
               key="8"
               label="하부세차"
@@ -160,11 +166,7 @@ const ReservationTemplate = () => {
           </div>
 
           <div
-            className="carwash-list-scrollbar grid flex-1 min-h-0 gap-3 overflow-y-auto overscroll-contain pb-16 touch-pan-y"
-            style={{
-              height: "calc(100dvh - var(--sheet-offset) - 190px)",
-              flex: "none",
-            }}
+            className="reservation-list carwash-list-scrollbar grid content-start flex-1 min-h-0 gap-3 overflow-y-auto overscroll-contain pb-16 touch-pan-y"
             onPointerDown={(event) => event.stopPropagation()}
             onTouchStart={(event) => event.stopPropagation()}
           >

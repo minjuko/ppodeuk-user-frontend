@@ -3,7 +3,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { reservationsCurrentstatus } from "../../apis/reservations";
 import { Button } from "../atoms/Button";
 import { useNavigate } from "react-router-dom";
-import LogoIcon from "/bdbd_icon.svg";
+import AppTopBar from "../atoms/AppTopBar";
 
 const ReservationHistoryTemplate = () => {
   const { data } = useSuspenseQuery({
@@ -21,18 +21,13 @@ const ReservationHistoryTemplate = () => {
     data?.data?.response?.completeReservationList || [];
 
   return (
-    <div className="min-h-screen pb-20 bg-white">
-      <nav className="items-center h-10 bg-white flex-between">
-        <div className="flex items-center gap-2">
-          <img src={LogoIcon} className="w-5 h-6" alt="뽀득뽀득 아이콘" />
-          <img src="/bdbd.svg" className="w-24 h-auto" alt="뽀득뽀득" />
-        </div>
-      </nav>
-      <header className="px-4 py-3 bg-white border-b border-gray-200">
+    <div className="w-full md:mx-auto md:max-w-4xl">
+      <AppTopBar className="bg-white md:hidden" />
+      <header className="pt-5 bg-white">
         <h1 className="text-2xl font-bold">예약 내역</h1>
       </header>
 
-      <main className="grid gap-6 px-4 py-5">
+      <main className="grid gap-6 pt-5">
         <section className="grid gap-3" aria-labelledby="current-reservations">
           <div className="flex items-center justify-between">
             <h2 id="current-reservations" className="text-lg font-semibold">

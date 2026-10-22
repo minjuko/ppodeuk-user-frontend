@@ -98,7 +98,7 @@ const PaymentWaitingTemplate = () => {
         </p>
         <Button
           variant="long"
-          className="fixed bottom-0 left-0"
+          className="flow-primary-action fixed bottom-0 left-0"
           onClick={() => {
             dispatch(clearPayment());
             navigate("/payment");
@@ -115,7 +115,7 @@ const PaymentWaitingTemplate = () => {
       <h1 className="mx-4 text-3xl font-semibold">결제 진행 중</h1>
       <Button
         variant="long"
-        className="fixed bottom-0 left-0"
+        className="flow-primary-action fixed bottom-0 left-0"
         onClick={handlePayment}
         disabled={isApproving}
       >

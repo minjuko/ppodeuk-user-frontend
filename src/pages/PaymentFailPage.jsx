@@ -13,12 +13,12 @@ const PaymentFailPage = () => {
   }, [dispatch]);
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen px-4">
+    <div className="flex flex-col items-center justify-center h-screen">
       <div className="mb-8 text-3xl font-semibold">결제 실패</div>
       <div className="">결제 실패입니다. 잠시 후 다시 시도해주세요.</div>
       <Button
         variant="long"
-        className="fixed bottom-0 left-0"
+        className="flow-primary-action fixed bottom-0 left-0"
         onClick={() => navigate("/")}
       >
         홈으로 돌아가기
