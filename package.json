@@ -13,12 +13,15 @@
     "host": "vite --host localhost --port 5173 --strictPort",
     "build": "vite build",
     "build:demo:local": "vite build --mode demo --outDir dist-demo",
+    "build:e2e": "vite build --mode e2e --outDir dist-e2e",
     "test": "vitest run",
+    "test:e2e": "playwright test --config=playwright.config.js",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview --host localhost --port 4173 --strictPort",
     "preview:demo": "vite preview --mode demo --outDir dist-demo --host localhost --port 4173 --strictPort",
+    "preview:e2e": "vite preview --mode e2e --outDir dist-e2e --host localhost --port 4173 --strictPort",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
@@ -43,6 +46,7 @@
     "redux-persist": "^6.0.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.64.1",
     "@storybook/addon-essentials": "^7.4.5",
     "@storybook/addon-interactions": "^7.4.5",
     "@storybook/addon-links": "^7.4.5",

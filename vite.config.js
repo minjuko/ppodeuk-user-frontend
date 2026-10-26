@@ -22,16 +22,16 @@ const demoServiceWorker = (enabled) => ({
 
 export default defineConfig(({ mode }) => ({
   define: {
-    __DEMO_BUILD__: JSON.stringify(mode === "demo"),
+    __DEMO_BUILD__: JSON.stringify(mode === "demo" || mode === "e2e"),
   },
   test: {
     environment: "jsdom",
     setupFiles: "./src/test/setup.js",
   },
   plugins: [
-    demoServiceWorker(mode === "demo"),
+    demoServiceWorker(mode === "demo" || mode === "e2e"),
     VitePWA({
-      disable: mode === "demo",
+      disable: mode === "demo" || mode === "e2e",
       includeAssets: ["/favicon.ico", "/apple-touch-icon.png"],
       registerType: "autoUpdate",
       injectRegister: "auto",

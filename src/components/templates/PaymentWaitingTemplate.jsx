@@ -30,14 +30,14 @@ const PaymentWaitingTemplate = () => {
   const carwashId = useSelector(selectReservationCarwashId);
   const reservations = useSelector(selectReservationRange);
   const tid = useSelector(selectPaymentTid);
-  const hasCallbackState = Boolean(
+  const hasReservationContext = Boolean(
     pgToken &&
-      tid &&
       carwashId &&
       bayId &&
       reservations?.startTime &&
       reservations?.endTime,
   );
+  const hasCallbackState = Boolean(hasReservationContext && tid);
 
   useEffect(() => {
     if (!hasCallbackState) dispatch(clearPayment());
@@ -97,7 +97,7 @@ const PaymentWaitingTemplate = () => {
     approveMutate(approvepostData);
   };
 
-  if (!hasCallbackState) {
+  if (!hasReservationContext || (!hasCallbackState && !isModalOpen)) {
     return (
       <div className="flex flex-col items-center justify-center h-screen px-4 text-center">
         <h1 className="text-2xl font-bold">
@@ -127,7 +127,7 @@ const PaymentWaitingTemplate = () => {
         variant="long"
         className="flow-primary-action fixed bottom-0 left-0"
         onClick={handlePayment}
-        disabled={isApproving}
+        disabled={isApproving || !hasCallbackState}
       >
         {isApproving ? (
           <span role="status" aria-live="polite">

@@ -244,6 +244,20 @@ export const handlers = [
   rest.post("*/api/user/payment/ready", async (req, res, ctx) => {
     const unauthorized = requireDemoAuth(req, res, ctx);
     if (unauthorized) return unauthorized;
+    if (
+      import.meta.env.MODE === "e2e" &&
+      req.headers.get("x-ppodeuk-e2e-scenario") === "ready-malformed"
+    ) {
+      return res(
+        ctx.json(
+          ok({
+            tid: "",
+            next_redirect_pc_url: "https://pay.example.invalid/redirect",
+            next_redirect_mobile_url: "https://pay.example.invalid/redirect",
+          }),
+        ),
+      );
+    }
     state.pendingPayment = await req.json();
     const callback = `${window.location.origin}/paymentwaiting?pg_token=portfolio-demo-approved`;
     return res(
@@ -259,6 +273,15 @@ export const handlers = [
   rest.post("*/api/user/payment/approve", async (req, res, ctx) => {
     const unauthorized = requireDemoAuth(req, res, ctx);
     if (unauthorized) return unauthorized;
+    if (
+      import.meta.env.MODE === "e2e" &&
+      req.headers.get("x-ppodeuk-e2e-scenario") === "approve-fail"
+    ) {
+      return res(
+        ctx.status(503),
+        ctx.json(fail("DEMO_PAYMENT_FAILURE", "Simulated approval failure")),
+      );
+    }
     const body = await req.json();
     if (
       body?.payApprovalRequestDTO?.tid !== "portfolio-demo-tid" ||
