@@ -132,10 +132,7 @@ const HomeTemplate = () => {
       >
         <h2 className="text-xl font-semibold">이런 세차장 어때요?</h2>
         {recommended.isPending && (
-          <Loader
-            variant="inline"
-            label="추천 세차장을 불러오는 중입니다."
-          />
+          <Loader variant="inline" label="추천 세차장을 불러오는 중입니다." />
         )}
         {recommended.isError && (
           <p className="text-sm text-gray-500">
