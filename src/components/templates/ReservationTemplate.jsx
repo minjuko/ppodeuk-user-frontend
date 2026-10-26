@@ -11,6 +11,7 @@ import { useDispatch } from "react-redux";
 import { resetStore } from "../../store/action";
 import { DEMO_LOCATION, isDemoMode } from "../../demo/mode";
 import { FiSearch } from "react-icons/fi";
+import { parseReservationRouteId } from "../../utils/reservationRoute";
 
 const ReservationTemplate = () => {
   const dispatch = useDispatch();
@@ -73,6 +74,7 @@ const ReservationTemplate = () => {
   };
 
   const filteredCarwashList = [...(carwashList?.data?.response || [])]
+    .filter((item) => parseReservationRouteId(item?.id) !== null)
     .filter((item) => !searchTerm || item?.name.includes(searchTerm))
     .sort((a, b) => Number(a.distance) - Number(b.distance));
 

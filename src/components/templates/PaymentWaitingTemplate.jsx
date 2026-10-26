@@ -9,6 +9,12 @@ import { getErrorDetail } from "../../layouts/errorswitch";
 import { clearPayment, resetStore } from "../../store/action";
 import { useDispatch } from "react-redux";
 import { isPaymentApprovalResponse } from "../../apis/paymentTypes";
+import {
+  selectPaymentTid,
+  selectReservationBayId,
+  selectReservationCarwashId,
+  selectReservationRange,
+} from "../../store/reservationSelectors";
 
 const PaymentWaitingTemplate = () => {
   const navigate = useNavigate();
@@ -20,14 +26,10 @@ const PaymentWaitingTemplate = () => {
   const queryParams = new URLSearchParams(location.search);
   const pgToken = queryParams.get("pg_token");
 
-  const bayId = useSelector((state) => state.reservationProcess.selectedBayId);
-  const carwashId = useSelector(
-    (state) => state.reservationProcess.selectedCarwashId,
-  );
-  const reservations = useSelector(
-    (state) => state.reservationProcess.reservations,
-  );
-  const tid = useSelector((state) => state.reservationProcess.tid);
+  const bayId = useSelector(selectReservationBayId);
+  const carwashId = useSelector(selectReservationCarwashId);
+  const reservations = useSelector(selectReservationRange);
+  const tid = useSelector(selectPaymentTid);
   const hasCallbackState = Boolean(
     pgToken &&
       tid &&

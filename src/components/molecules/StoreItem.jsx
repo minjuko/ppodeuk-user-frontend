@@ -3,6 +3,8 @@ import UserStar from "../atoms/UserStar";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Image from "../atoms/Image";
+import { setCarwashId } from "../../store/action";
+import { parseReservationRouteId } from "../../utils/reservationRoute";
 
 const StoreItem = ({
   carwashId,
@@ -16,8 +18,10 @@ const StoreItem = ({
   const navigate = useNavigate();
 
   const handleClick = () => {
-    dispatch({ type: "SET_CARWASH_ID", payload: carwashId });
-    navigate(`/carwashdetail/${carwashId}`);
+    const parsedCarwashId = parseReservationRouteId(carwashId);
+    if (parsedCarwashId === null) return;
+    dispatch(setCarwashId(parsedCarwashId));
+    navigate(`/carwashdetail/${parsedCarwashId}`);
   };
 
   const imageUrl = imgsrc

@@ -13,6 +13,11 @@ import KakaoPayIcon from "/kakaopay.png";
 import { getErrorDetail } from "../../layouts/errorswitch";
 import { clearPayment, saveTid } from "../../store/action";
 import {
+  selectReservationBayId,
+  selectReservationCarwashId,
+  selectReservationRange,
+} from "../../store/reservationSelectors";
+import {
   isPaymentCalculationResponse,
   isPaymentReadyResponse,
 } from "../../apis/paymentTypes";
@@ -21,14 +26,10 @@ const PaymentTemplate = () => {
   const [paymentData, setPaymentData] = useState({ price: undefined });
   const [redirectLink, setRedirectLink] = useState(null);
   const [failmodalContent, setFailmodalContent] = useState("");
-  const reservations = useSelector(
-    (state) => state.reservationProcess.reservations,
-  );
-  const carwashId = useSelector(
-    (state) => state.reservationProcess.selectedCarwashId,
-  );
+  const reservations = useSelector(selectReservationRange);
+  const carwashId = useSelector(selectReservationCarwashId);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const bayId = useSelector((state) => state.reservationProcess.selectedBayId);
+  const bayId = useSelector(selectReservationBayId);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const hasReservation = Boolean(
