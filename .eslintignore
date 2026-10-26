@@ -1,0 +1,6 @@
+/dist/
+/dist-demo/
+/dist-e2e/
+/storybook-static/
+/coverage/
+/test-results/

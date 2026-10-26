@@ -27,5 +27,11 @@ jobs:
         run: npm run build
       - name: Build local demo
         run: npm run build:demo:local
+      - name: Build browser test demo
+        run: npm run build:e2e
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Run browser integration tests
+        run: npm run test:e2e
       - name: Audit production dependencies
         run: npm audit --omit=dev
