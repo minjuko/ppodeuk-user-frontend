@@ -46,9 +46,7 @@ describe("home recommended carwash", () => {
     expect(queryState.options.queries[1].enabled).toBe(false);
     expect(screen.queryByTestId("recommended-card")).not.toBeInTheDocument();
     expect(
-      screen.getByText(
-        "추천 세차장을 불러오는 중입니다.",
-      ),
+      screen.getByText("추천 세차장을 불러오는 중입니다."),
     ).toBeInTheDocument();
   });
 
