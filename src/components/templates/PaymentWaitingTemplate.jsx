@@ -8,6 +8,7 @@ import CustomModal from "../atoms/CustomModal";
 import { getErrorDetail } from "../../layouts/errorswitch";
 import { clearPayment, resetStore } from "../../store/action";
 import { useDispatch } from "react-redux";
+import { isPaymentApprovalResponse } from "../../apis/paymentTypes";
 
 const PaymentWaitingTemplate = () => {
   const navigate = useNavigate();
@@ -43,9 +44,16 @@ const PaymentWaitingTemplate = () => {
   const { mutate: approveMutate, isPending: isApproving } = useMutation({
     mutationFn: (data) => pgapprove(data),
     onSuccess: (data) => {
+      const reservationData = data?.data?.response ?? data?.data;
+      if (!isPaymentApprovalResponse(reservationData)) {
+        dispatch(clearPayment());
+        setFailmodalContent(getErrorDetail(new Error()));
+        setIsModalOpen(true);
+        return;
+      }
       dispatch(resetStore());
       navigate("/paymentresult", {
-        state: { reservationData: data?.data?.response ?? data?.data },
+        state: { reservationData },
       });
     },
     onError: (error) => {

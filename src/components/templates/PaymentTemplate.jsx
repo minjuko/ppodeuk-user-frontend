@@ -12,6 +12,10 @@ import { isMobile } from "react-device-detect";
 import KakaoPayIcon from "/kakaopay.png";
 import { getErrorDetail } from "../../layouts/errorswitch";
 import { clearPayment, saveTid } from "../../store/action";
+import {
+  isPaymentCalculationResponse,
+  isPaymentReadyResponse,
+} from "../../apis/paymentTypes";
 
 const PaymentTemplate = () => {
   const [paymentData, setPaymentData] = useState({ price: undefined });
@@ -35,6 +39,12 @@ const PaymentTemplate = () => {
     useMutation({
       mutationFn: (data) => calculatePayment(bayId, data),
       onSuccess: (data) => {
+        if (!isPaymentCalculationResponse(data?.data?.response)) {
+          setPaymentData({ price: undefined });
+          setFailmodalContent(getErrorDetail(new Error()));
+          setIsModalOpen(true);
+          return;
+        }
         setPaymentData({ price: data.data.response.price });
       },
       onError: (error) => {
@@ -47,7 +57,14 @@ const PaymentTemplate = () => {
   const { mutate: payMutate, isPending: isPreparingPayment } = useMutation({
     mutationFn: (data) => pgpayment(data),
     onSuccess: (data) => {
-      const response = data?.data?.response;
+      const candidate = data?.data?.response;
+      if (!isPaymentReadyResponse(candidate)) {
+        dispatch(clearPayment());
+        setFailmodalContent(getErrorDetail(new Error()));
+        setIsModalOpen(true);
+        return;
+      }
+      const response = candidate;
       const nextRedirectUrl = isMobile
         ? response?.next_redirect_mobile_url
         : response?.next_redirect_pc_url;
