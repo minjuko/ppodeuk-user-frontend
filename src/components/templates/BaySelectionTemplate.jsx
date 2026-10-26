@@ -2,16 +2,27 @@ import OperatingHoursCard from "../atoms/OperatingHoursCard";
 import BayList from "../organisms/BayList";
 import { carwashesBays, carwashesInfo } from "../../apis/carwashes";
 import { useSuspenseQueries } from "@tanstack/react-query";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Warning from "/warning.svg";
 import DatePicker from "../molecules/DatePicker";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getDemoDate } from "../../utils/demoDate";
+import { setBayId, setCarwashId } from "../../store/action";
+import {
+  selectReservationBayId,
+  selectReservationCarwashId,
+} from "../../store/reservationSelectors";
+import {
+  isValidReservationDate,
+  parseReservationRouteId,
+} from "../../utils/reservationRoute";
 
 const BaySelectionTemplate = ({ carwashId }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const selectedCarwashId = useSelector(selectReservationCarwashId);
+  const selectedBayId = useSelector(selectReservationBayId);
   const [selectedDate, setSelectedDate] = useState(() => getDemoDate());
   const [carwashInfoData, baysData] = useSuspenseQueries({
     queries: [
@@ -27,11 +38,45 @@ const BaySelectionTemplate = ({ carwashId }) => {
   });
   const detailData = carwashInfoData.data.data.response.optime;
   const name = carwashInfoData.data.data.response.name;
-  const bayListData = baysData.data.data.response.bayList || [];
+  const responseBayList = baysData.data.data.response.bayList;
+  const bayListData = Array.isArray(responseBayList)
+    ? responseBayList.filter(
+        (bay) => parseReservationRouteId(bay?.bayId) !== null,
+      )
+    : [];
+  const hasSelectedBay = bayListData.some(
+    (bay) =>
+      parseReservationRouteId(bay.bayId) ===
+      parseReservationRouteId(selectedBayId),
+  );
+  useEffect(() => {
+    const validCarwashId = parseReservationRouteId(carwashId);
+    const carwashChanged =
+      validCarwashId !== null &&
+      parseReservationRouteId(selectedCarwashId) !== validCarwashId;
+    if (carwashChanged) {
+      dispatch(setCarwashId(validCarwashId));
+      return;
+    }
+    if (validCarwashId !== null && selectedBayId !== null && !hasSelectedBay) {
+      dispatch(setCarwashId(validCarwashId));
+    }
+  }, [carwashId, dispatch, selectedCarwashId, selectedBayId, hasSelectedBay]);
 
-  const handleBayClick = (bayId) => {
-    dispatch({ type: "SET_BAY_ID", payload: bayId });
-    navigate(`/schedule/${carwashId}/${bayId}`, {
+  const handleBayClick = (candidateBayId) => {
+    const selectedBayId = parseReservationRouteId(candidateBayId);
+    const bayExists = bayListData.some(
+      (bay) => parseReservationRouteId(bay.bayId) === selectedBayId,
+    );
+    if (
+      selectedBayId === null ||
+      !bayExists ||
+      !isValidReservationDate(selectedDate)
+    ) {
+      return;
+    }
+    dispatch(setBayId(selectedBayId));
+    navigate(`/schedule/${carwashId}/${selectedBayId}`, {
       state: { selectedDate: selectedDate.toISOString() },
     });
   };
@@ -56,6 +101,7 @@ const BaySelectionTemplate = ({ carwashId }) => {
             <h2 className="font-bold text-gray-900">날짜 선택</h2>
             <DatePicker
               className="reservation-bay-date-picker"
+              selectedDate={selectedDate}
               handleButtonClick={setSelectedDate}
             />
           </section>

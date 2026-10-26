@@ -6,27 +6,53 @@ import DatePicker from "../molecules/DatePicker";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "../atoms/Button";
 import { useSuspenseQueries } from "@tanstack/react-query";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { saveReservation, setBayId, setCarwashId } from "../../store/action";
 import { carwashesInfo, carwashesBays } from "../../apis/carwashes";
 import {
   buildReservationPayload,
+  getAvailableDurations,
+  getOpeningPeriodForDate,
   normalizeOpeningHours,
   parseLocalDateTime,
+  RESERVATION_DURATIONS,
+  timeToMinutes,
 } from "../../utils/reservationTime";
 import { getDemoDate } from "../../utils/demoDate";
 import { useToast } from "../feedback/ToastProvider";
+import {
+  selectReservationBayId,
+  selectReservationCarwashId,
+} from "../../store/reservationSelectors";
+import {
+  isValidReservationDate,
+  parseReservationRouteDate,
+  parseReservationRouteId,
+} from "../../utils/reservationRoute";
+
+const isSelectableTime = (value) => {
+  if (typeof value !== "string" || !/^\d{2}:\d{2}$/.test(value)) return false;
+  try {
+    return timeToMinutes(value) < 24 * 60;
+  } catch {
+    return false;
+  }
+};
 
 const ScheduleTemplate = ({ carwashId, bayId }) => {
   const location = useLocation();
   const [date, setDate] = useState(() => {
     const selectedDate = location.state?.selectedDate;
-    return selectedDate ? new Date(selectedDate) : getDemoDate();
+    return selectedDate === undefined
+      ? getDemoDate()
+      : parseReservationRouteDate(selectedDate);
   });
   const [startTime, setStartTime] = useState();
   const [duration, setDuration] = useState();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const selectedCarwashId = useSelector(selectReservationCarwashId);
+  const selectedBayId = useSelector(selectReservationBayId);
   const { showToast } = useToast();
 
   const [washinfo, bayinfo] = useSuspenseQueries({
@@ -43,7 +69,7 @@ const ScheduleTemplate = ({ carwashId, bayId }) => {
   });
 
   const handleSubmit = () => {
-    if (!startTime || !duration) {
+    if (!reservationPayload) {
       showToast({ message: "시작 시간과 사용 시간을 선택해 주세요." });
       return;
     }
@@ -60,9 +86,15 @@ const ScheduleTemplate = ({ carwashId, bayId }) => {
     [washinfo?.data?.data?.response?.optime],
   );
 
-  const bayInfo = bayinfo?.data?.data?.response.bayList.find(
-    (bay) => bay.bayId === parseInt(bayId),
-  );
+  const parsedCarwashId = parseReservationRouteId(carwashId);
+  const parsedBayId = parseReservationRouteId(bayId);
+  const availableBays = bayinfo?.data?.data?.response?.bayList;
+  const bayInfo = Array.isArray(availableBays)
+    ? availableBays.find(
+        (bay) => parseReservationRouteId(bay?.bayId) === parsedBayId,
+      )
+    : null;
+  const hasBayInfo = Boolean(bayInfo);
 
   const handleStartTimeChange = (time) => {
     setStartTime(time);
@@ -80,16 +112,98 @@ const ScheduleTemplate = ({ carwashId, bayId }) => {
   };
 
   useEffect(() => {
-    dispatch(setCarwashId(Number(carwashId)));
-    dispatch(setBayId(Number(bayId)));
+    const carwashChanged =
+      parsedCarwashId !== null &&
+      parseReservationRouteId(selectedCarwashId) !== parsedCarwashId;
+    const bayChanged =
+      parsedBayId !== null &&
+      parseReservationRouteId(selectedBayId) !== parsedBayId;
+    if (carwashChanged) dispatch(setCarwashId(parsedCarwashId));
+    if (
+      parsedCarwashId !== null &&
+      parsedBayId !== null &&
+      hasBayInfo &&
+      (carwashChanged || bayChanged)
+    ) {
+      dispatch(setBayId(parsedBayId));
+    } else if (
+      parsedCarwashId !== null &&
+      parsedBayId !== null &&
+      !hasBayInfo &&
+      !carwashChanged &&
+      selectedBayId !== null
+    ) {
+      dispatch(setCarwashId(parsedCarwashId));
+    }
     setStartTime(null);
     setDuration(null);
-  }, [carwashId, bayId, dispatch]);
+  }, [
+    parsedCarwashId,
+    parsedBayId,
+    hasBayInfo,
+    selectedCarwashId,
+    selectedBayId,
+    dispatch,
+  ]);
 
-  const reservationPayload =
-    startTime && duration
-      ? buildReservationPayload(bayInfo.bayId, date, startTime, duration)
-      : null;
+  const validChoice = Boolean(
+    isValidReservationDate(date) &&
+      parsedCarwashId !== null &&
+      parsedBayId !== null &&
+      bayInfo &&
+      parseReservationRouteId(bayInfo.bayId) === parsedBayId &&
+      isSelectableTime(startTime) &&
+      RESERVATION_DURATIONS.includes(duration) &&
+      getAvailableDurations({
+        selectedDate: date,
+        startTime,
+        openingPeriod: getOpeningPeriodForDate(openingHours, date),
+        bookedTimeList: Array.isArray(bayInfo.bayBookedTimeList)
+          ? bayInfo.bayBookedTimeList
+          : [],
+      }).includes(duration),
+  );
+  const reservationPayload = validChoice
+    ? buildReservationPayload(parsedBayId, date, startTime, duration)
+    : null;
+
+  if (!isValidReservationDate(date)) {
+    return (
+      <div className="grid min-h-screen place-content-center gap-4 p-6 text-center">
+        <p role="alert">
+          예약 날짜 정보가 올바르지 않습니다. 날짜를 다시 선택해 주세요.
+        </p>
+        <Button
+          onClick={() =>
+            parsedCarwashId === null
+              ? navigate("/reservation")
+              : navigate(`/bayselection/${parsedCarwashId}`)
+          }
+        >
+          날짜 다시 선택
+        </Button>
+      </div>
+    );
+  }
+
+  if (!bayInfo || parsedCarwashId === null || parsedBayId === null) {
+    return (
+      <div className="grid min-h-screen place-content-center gap-4 p-6 text-center">
+        <p role="alert">
+          선택한 베이 정보를 찾을 수 없습니다. 다시 선택해 주세요.
+        </p>
+        <Button
+          onClick={() =>
+            parsedCarwashId === null
+              ? navigate("/reservation")
+              : navigate(`/bayselection/${parsedCarwashId}`)
+          }
+        >
+          베이 다시 선택
+        </Button>
+      </div>
+    );
+  }
   const computedEnd = reservationPayload
     ? {
         date: parseLocalDateTime(reservationPayload.endTime),
