@@ -1,6 +1,8 @@
 # 배포·운영 안내
 
-## 현재 구성
+## 기존 배포 구성과 현재 확인 상태
+
+아래 표는 저장소에 남아 있는 배포 구성 기록입니다. 현재 서비스 연결·도메인 소유·배포 여부는 이 문서 수정 시점에 다시 확인하지 않았습니다.
 
 | 구성요소 | 서비스 | 반영 방식 |
 |---|---|---|
@@ -10,7 +12,7 @@
 | 지도 | Kakao Maps JavaScript SDK | 브라우저에서 실행 |
 | 결제 | KakaoPay 연동 코드 | 운영 결제 E2E 미검증 |
 
-2026-10-19 확인 당시 Railway 프로젝트 `agile-ambition`은 Hobby 플랜이었고 Backend·MySQL Serverless가 꺼져 있었으며 둘 다 Online이었습니다. 데이터베이스 volume은 그대로 연결돼 있었습니다. 이 값은 시점에 따라 바뀔 수 있으므로 재배포 후 Railway 서비스 화면에서 상태와 설정을 다시 확인합니다.
+마지막 기록(2026-10-19) 당시 Railway 프로젝트 `agile-ambition`은 Hobby 플랜이었고 Backend·MySQL Serverless가 꺼져 있었으며 둘 다 Online이었습니다. 데이터베이스 volume은 그대로 연결돼 있었습니다. 이 관측은 현재 서비스 상태나 실제 접근 가능 여부를 보장하지 않습니다. 운영 또는 배포 상태를 설명하기 전에 Railway 및 Vercel에서 다시 확인하고 확인 시점을 기록합니다.
 
 ## 배포 확인 순서
 
@@ -41,7 +43,7 @@ GET /api/open/carwashes/recommended?latitude=37.5665&longitude=126.9780
 
 ## 환경변수와 비밀값
 
-- Vercel에는 `VITE_API_BASE_URL` 등 production 프론트 설정을 등록합니다. 환경변수의 이름과 값이 바뀌면 해당 환경에 새 배포가 필요합니다.
+- Vercel에는 `VITE_API_BASE_URL` 등 production 프론트 설정을 등록합니다. `VITE_` 접두 변수는 브라우저 번들에서 공개될 수 있으므로 secret을 지정하지 말고, demo 환경변수는 production에 주입되지 않도록 분리합니다. Kakao Maps JavaScript key는 secret이 아니지만 허용 origin 제한을 운영 콘솔에서 설정해야 합니다. 환경변수의 이름과 값이 바뀌면 해당 환경에 새 배포가 필요합니다.
 - Railway Backend에는 DB 연결 및 인증·외부 연동 환경변수를 등록합니다. DB 비밀번호, JWT secret, Kakao/AWS 키를 Markdown, Git, 출력 로그에 저장하지 않습니다.
 - MySQL 접속값은 Railway private service 연결 설정을 따릅니다. DB를 초기화하는 seed나 migration은 production 대상으로 임의 실행하지 않습니다.
 
