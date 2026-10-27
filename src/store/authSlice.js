@@ -13,9 +13,12 @@ export const loginThunk = createAsyncThunk(
     try {
       const response = await login(credentials);
       const token = response.headers?.authorization;
-      if (!token) return rejectWithValue(DEFAULT_AUTH_ERROR);
+      if (typeof token !== "string" || !token.trim()) {
+        localStorage.removeItem("token");
+        return rejectWithValue({ ...DEFAULT_AUTH_ERROR, clearAuth: true });
+      }
 
-      localStorage.setItem("token", token);
+      localStorage.setItem("token", token.trim());
       return response.data;
     } catch (error) {
       return rejectWithValue(getAuthError(error));
@@ -30,6 +33,9 @@ export const getUserInfoThunk = createAsyncThunk(
       const response = await UserInfo();
       return response.data;
     } catch (error) {
+      if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+      }
       return rejectWithValue({
         ...getAuthError(error),
         status: error?.response?.status,
@@ -67,7 +73,10 @@ const authSlice = createSlice({
       }),
       builder.addCase(loginThunk.rejected, (state, action) => {
         state.isLoading = false;
-        state.isLoggedIn = false;
+        if (action.payload?.clearAuth) {
+          state.isLoggedIn = false;
+          state.userName = "";
+        }
         state.error = action.payload?.error || DEFAULT_AUTH_ERROR.error;
       }),
       builder.addCase(getUserInfoThunk.pending, (state) => {
@@ -81,8 +90,10 @@ const authSlice = createSlice({
       }),
       builder.addCase(getUserInfoThunk.rejected, (state, action) => {
         state.isLoading = false;
-        state.isLoggedIn = false;
-        state.userName = "";
+        if (action.payload?.status === 401) {
+          state.isLoggedIn = false;
+          state.userName = "";
+        }
         state.error = action.payload?.error || DEFAULT_AUTH_ERROR.error;
       });
   },

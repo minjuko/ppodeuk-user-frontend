@@ -14,6 +14,7 @@ import { DEMO_CREDENTIALS } from "../../mocks/demoData";
 import { FiHome, FiLock } from "react-icons/fi";
 
 const PORTFOLIO_CREDENTIALS = DEMO_CREDENTIALS;
+const showDemoCredentials = __DEMO_BUILD__ && showDemoUi;
 
 const ValidationMessage = ({ message }) => (
   <small
@@ -165,7 +166,7 @@ const LoginForm = () => {
             >
               로그인
             </Button>
-            {showDemoUi && (
+            {showDemoCredentials && (
               <div className="flex items-center justify-between gap-3 p-3 text-sm border border-sky-200 rounded-lg bg-sky-50">
                 <div className="min-w-0">
                   <p className="font-semibold text-sky-700">

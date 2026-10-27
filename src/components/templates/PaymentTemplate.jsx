@@ -20,6 +20,7 @@ import {
 import {
   isPaymentCalculationResponse,
   isPaymentReadyResponse,
+  resolvePaymentRedirectUrl,
 } from "../../apis/paymentTypes";
 
 const PaymentTemplate = () => {
@@ -69,8 +70,12 @@ const PaymentTemplate = () => {
       const nextRedirectUrl = isMobile
         ? response?.next_redirect_mobile_url
         : response?.next_redirect_pc_url;
+      const redirectUrl = resolvePaymentRedirectUrl(
+        nextRedirectUrl,
+        window.location.origin,
+      );
 
-      if (!response?.tid || !nextRedirectUrl) {
+      if (!response?.tid || !redirectUrl) {
         dispatch(clearPayment());
         setFailmodalContent("결제 준비 응답이 올바르지 않습니다.");
         setIsModalOpen(true);
@@ -81,7 +86,7 @@ const PaymentTemplate = () => {
 
       // KakaoPay의 next_redirect_*_url은 외부 결제 브릿지 URL입니다.
       // origin을 현재 프론트로 바꾸면 KakaoPay 인증 화면에 진입할 수 없습니다.
-      setRedirectLink(nextRedirectUrl);
+      setRedirectLink(redirectUrl.href);
     },
     onError: (error) => {
       dispatch(clearPayment());
@@ -91,16 +96,27 @@ const PaymentTemplate = () => {
   });
   useEffect(() => {
     if (redirectLink) {
-      const redirectUrl = new URL(redirectLink, window.location.origin);
+      const redirectUrl = resolvePaymentRedirectUrl(
+        redirectLink,
+        window.location.origin,
+      );
+      if (!redirectUrl) {
+        dispatch(clearPayment());
+        setFailmodalContent(getErrorDetail(new Error()));
+        setIsModalOpen(true);
+        return;
+      }
 
       if (redirectUrl.origin === window.location.origin) {
-        navigate(`${redirectUrl.pathname}${redirectUrl.search}`);
+        navigate(
+          `${redirectUrl.pathname}${redirectUrl.search}${redirectUrl.hash}`,
+        );
         return;
       }
 
       window.location.href = redirectUrl.href;
     }
-  }, [navigate, redirectLink]);
+  }, [dispatch, navigate, redirectLink]);
 
   const handleConfirm = () => {
     setIsModalOpen(false);
@@ -177,8 +193,8 @@ const PaymentTemplate = () => {
     reservations.startTime,
     reservations.endTime,
   );
-  const paymentAmount = paymentData?.price ? paymentData.price : "계산 중...";
-  const canPay = Number.isFinite(paymentData?.price);
+  const paymentAmount = paymentData?.price ?? "계산 중...";
+  const canPay = isPaymentCalculationResponse(paymentData);
 
   const modalContent = (
     <div className="flex flex-col gap-2">

@@ -3,6 +3,7 @@ import {
   isPaymentApprovalResponse,
   isPaymentCalculationResponse,
   isPaymentReadyResponse,
+  resolvePaymentRedirectUrl,
 } from "./paymentTypes";
 
 describe("payment response guards", () => {
@@ -17,6 +18,33 @@ describe("payment response guards", () => {
     expect(isPaymentReadyResponse({ tid: "" })).toBe(false);
     expect(isPaymentReadyResponse({ next_redirect_pc_url: "https://pay.example" })).toBe(false);
   });
+
+  it.each([
+    "javascript:alert(1)",
+    "data:text/html,attack",
+    "//outside.example/pay",
+    "http://outside.example/pay",
+    "https://user:password@pay.example/ready",
+    "https://[invalid",
+  ])("rejects unsafe or malformed payment redirect URLs: %s", (url) => {
+    expect(resolvePaymentRedirectUrl(url, "https://app.example")).toBeNull();
+  });
+
+  it("preserves same-origin relative and secure external payment redirects", () => {
+    expect(
+      resolvePaymentRedirectUrl("/callback?step=1", "https://app.example")?.href,
+    ).toBe("https://app.example/callback?step=1");
+    expect(
+      resolvePaymentRedirectUrl("https://pay.example/ready", "https://app.example")?.href,
+    ).toBe("https://pay.example/ready");
+  });
+
+  it.each([-1, 1.5, Number.MAX_SAFE_INTEGER + 1])(
+    "rejects an invalid payment amount: %s",
+    (price) => {
+      expect(isPaymentCalculationResponse({ price })).toBe(false);
+    },
+  );
 
   it("checks the fields consumed by the payment result screen", () => {
     const valid = {
