@@ -96,7 +96,7 @@ const LoginForm = () => {
       <AppTopBar fixed>
         {location.state?.authRequired ? (
           <Button
-            className="flex h-9 items-center gap-1.5 rounded-lg px-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            className="flex h-11 items-center gap-1.5 rounded-lg px-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             onClick={() => navigate("/", { replace: true })}
             aria-label="홈으로 이동"
           >
@@ -130,6 +130,7 @@ const LoginForm = () => {
         >
           <TextInput
             type="email"
+            aria-label="이메일"
             placeholder="이메일"
             {...register("email", {
               required: "이메일은 필수 입력입니다.",
@@ -142,6 +143,7 @@ const LoginForm = () => {
           <ValidationMessage message={errors.email?.message} />
           <TextInput
             type="password"
+            aria-label="비밀번호"
             placeholder="비밀번호"
             {...register("password", {
               required: "비밀번호는 필수 입력입니다.",
@@ -187,7 +189,6 @@ const LoginForm = () => {
                       password: PORTFOLIO_CREDENTIALS.password,
                     });
                   }}
-                  aria-label="테스트 계정 정보 입력"
                 >
                   테스트 계정 사용
                 </Button>

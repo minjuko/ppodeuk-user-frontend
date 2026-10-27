@@ -30,10 +30,13 @@ const StoreItem = ({
 
   return (
     <div
-      className="relative flex items-center gap-2.5 p-2.5 bg-white border border-gray-300 rounded-xl"
+      className="relative flex items-center gap-2.5 p-2.5 bg-white border border-gray-300 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
       onClick={handleClick}
       onKeyDown={(event) => {
-        if (event.key === "Enter" || event.key === " ") handleClick();
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          handleClick();
+        }
       }}
       role="button"
       tabIndex={0}
@@ -50,7 +53,7 @@ const StoreItem = ({
         <div className="w-4/5 overflow-hidden font-semibold leading-5 text-ellipsis whitespace-nowrap">
           {storename}
         </div>
-        <strong className="text-base font-extrabold leading-5 text-primary">
+        <strong className="text-base font-extrabold leading-5 text-sky-700">
           {priceinfo.toLocaleString()}원
           <span className="font-bold text-gray-600"> / 30분</span>
         </strong>

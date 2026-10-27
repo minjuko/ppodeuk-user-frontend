@@ -8,7 +8,7 @@ const ArrowButton = ({ direction, onClick, label }) => (
     type="button"
     onClick={onClick}
     aria-label={label}
-    className={`absolute top-1/2 z-10 flex items-center justify-center w-7 h-7 -translate-y-1/2 text-white bg-gray-900/45 shadow-sm rounded-full transition hover:bg-gray-900/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white ${
+    className={`absolute top-1/2 z-10 flex h-11 w-11 items-center justify-center -translate-y-1/2 text-white bg-gray-900/45 shadow-sm rounded-full transition hover:bg-gray-900/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white ${
       direction === "previous" ? "left-3" : "right-3"
     }`}
   >
@@ -71,6 +71,24 @@ const ImageCarousel = ({ images }) => {
             />
           )
         }
+        renderIndicator={(onClick, isSelected, index) => (
+          <li key={index}>
+            <button
+              type="button"
+              aria-label={`이미지 ${index + 1} 보기`}
+              aria-pressed={isSelected}
+              onClick={onClick}
+              className="flex h-11 w-11 items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            >
+              <span
+                aria-hidden="true"
+                className={`h-2.5 w-2.5 rounded-full ${
+                  isSelected ? "bg-primary" : "bg-slate-300"
+                }`}
+              />
+            </button>
+          </li>
+        )}
       >
         {renderSlides}
       </Carousel>

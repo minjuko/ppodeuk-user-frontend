@@ -17,7 +17,7 @@ const StatusBar = () => {
         type="button"
         onClick={() => navigate(-1)}
         aria-label="뒤로가기"
-        className="flex h-9 w-9 items-center justify-center rounded-full border border-white/70 bg-white/75 shadow-sm backdrop-blur-sm transition hover:bg-white/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+        className="flex h-11 w-11 items-center justify-center rounded-full border border-white/70 bg-white/75 shadow-sm backdrop-blur-sm transition hover:bg-white/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
       >
         <img src={BackImg} alt="" className="h-5 w-5" />
       </button>

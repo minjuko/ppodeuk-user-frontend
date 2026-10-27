@@ -110,7 +110,7 @@ const ReservationItem = ({
               </Button>
             )}
             {buttontype === "review" && reviewed && (
-              <span className="inline-flex items-center h-9 px-3 text-xs font-bold text-gray-500 bg-gray-100 rounded-lg whitespace-nowrap">
+              <span className="inline-flex items-center h-9 px-3 text-xs font-bold text-gray-700 bg-gray-100 rounded-lg whitespace-nowrap">
                 작성 완료
               </span>
             )}

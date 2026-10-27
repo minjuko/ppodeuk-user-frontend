@@ -259,6 +259,11 @@
   min-height: 100dvh;
 }
 
+.reservation-sheet {
+  top: 0;
+  bottom: auto;
+}
+
 .flow-primary-action {
   padding-bottom: max(1rem, env(safe-area-inset-bottom));
 }
