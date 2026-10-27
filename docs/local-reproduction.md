@@ -23,7 +23,7 @@ Backend `application-local.yml`은 아래 환경변수를 사용합니다. 실�
 
 기존 DB에 접속하는 것만으로는 데이터를 초기화하지 않습니다. `ppodeuk-backend/scripts/seed-local.sql`은 자동 실행되지 않으며, 고정 ID의 데모 레코드와 해당 seed 범위의 예약을 교체할 수 있습니다. 기존 예약을 보존해야 하면 seed를 실행하지 마세요.
 
-seed 전용 데모 계정은 `test-user@example.com` / `test1234!`입니다. 이 공개 테스트 자격증명을 운영·공유 서비스에서 사용하지 마세요. 실 DB 비밀번호, JWT, Kakao/AWS key를 프론트 `.env`나 Git에 넣지 마세요.
+아래 계정은 저장소의 로컬 seed/mock fixture용 공개 데모 자격정보이며 실제 사용자 계정이나 운영 자격정보가 아닙니다. 운영·공유 서비스에서 사용하지 마세요. seed 전용 데모 계정은 `test-user@example.com` / `test1234!`입니다. 이 공개 테스트 자격증명을 운영·공유 서비스에서 사용하지 마세요. 실 DB 비밀번호, JWT, Kakao/AWS 서버 비밀키를 프론트 `.env`나 Git에 넣지 마세요. `VITE_` 변수와 Kakao Maps JavaScript key는 브라우저에 공개될 수 있는 값입니다.
 
 ## 실행 순서
 
@@ -68,7 +68,7 @@ Backend 없이 화면 흐름을 확인할 때는 별도 터미널에서 실행�
 npm run dev:mock
 ```
 
-Mock 데모 계정은 위의 공개 테스트 계정입니다. 데모 결제는 실제 결제가 아니며, 메모리 seed는 새로고침하면 초기화됩니다. 데모 프로덕션 산출물이 필요하면 `npm run build:demo:local` 후 `npm run preview:demo`를 사용합니다(기본 `http://localhost:4173`).
+Mock 데모 계정은 로컬 seed/mock fixture용 공개 테스트 계정입니다. 운영 계정이나 운영 자격정보가 아닙니다. 데모 결제는 실제 결제가 아니며, 메모리 seed는 새로고침하면 초기화됩니다. 데모 프로덕션 산출물이 필요하면 `npm run build:demo:local` 후 `npm run preview:demo`를 사용합니다(기본 `http://localhost:4173`).
 
 ## 검증된 로컬 smoke 범위
 
@@ -78,4 +78,4 @@ Mock 데모 계정은 위의 공개 테스트 계정입니다. 데모 결제는 
 → USER 예약 내역 반영
 ```
 
-이 경로에서 프론트엔드와 로컬 MariaDB를 연결한 모의 결제 승인까지 브라우저로 확인했습니다. 테스트 예약 1건이 기존 로컬 DB에 남아 있을 수 있습니다. 운영 결제, KakaoPay E2E, OWNER 전체 흐름, AWS/S3 통합은 검증 범위가 아닙니다.
+이 경로는 과거 로컬 통합 smoke 기록입니다. 현재 PP10에서 재실행한 Playwright E2E는 E2E 모드 빌드와 MSW fixture를 사용하므로 실제 backend/MariaDB smoke와 구분합니다. 과거 로컬 DB에는 테스트 예약 데이터가 남아 있을 수 있습니다. 운영 결제, KakaoPay E2E, OWNER 전체 흐름, AWS/S3 통합은 검증 범위가 아닙니다.

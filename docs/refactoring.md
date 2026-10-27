@@ -35,18 +35,20 @@
 2. callback에서 `pg_token`과 이동 전 예약 상태를 확인합니다.
 3. 잘못된 직접 접근이나 필수 callback 값 누락 시 approve를 진행하지 않습니다.
 4. 승인 요청 중에는 중복 완료 동작을 막습니다.
-5. 실패 뒤 재시도는 새 요청으로 처리하며, 이전 callback을 성공으로 오인하지 않습니다.
+5. 실패 뒤에는 TID를 지우고 예약 선택값은 남깁니다. 재시도 시 새 ready를 거쳐야 하며, 이전 callback을 성공으로 오인하지 않습니다.
 6. 승인 응답과 예약 완료 화면에 필요한 예약 정보를 확인한 뒤 공유 상태를 초기화합니다.
 7. 예약 변경 후 관련 React Query 캐시를 무효화합니다.
 
-운영 KakaoPay E2E 및 외부 결제 성공 후 DB 저장 실패의 보상 처리는 검증하지 않았습니다.
+TID는 Redux Persist가 저장하는 `root` 상태에 들어갑니다. callback의 `pg_token`은 query string으로 전달되고, 브라우저 히스토리·관측 로그 노출 정책은 운영 환경에서 확인해야 합니다. UI 승인 중복 클릭 방어는 서버 멱등성을 보장하지 않습니다. 운영 KakaoPay E2E, 외부 결제 성공 후 DB 저장 실패 보상, 승인 응답 유실 뒤 서버 재처리는 검증하지 않았습니다.
 
 ## 인증·피드백
 
-보호 경로 인증 확인에서 401이면 만료 토큰을 제거하고 로그인 사유를 안내합니다. 5xx 또는 네트워크 오류는 인증 만료로 단정하지 않고 토큰을 보존해 서버 오류로 안내합니다. 토큰 갱신 API 계약은 확인되지 않아 자동 갱신은 구현하지 않았습니다.
+`MainLayout`, `AuthLayout`, `AuthLayoutWithStatusBar`는 401이면 `getUserInfoThunk`가 token과 인증 상태를 정리하고 `authExpired` 안내로 이동합니다. 5xx·네트워크 오류는 token과 기존 사용자 상태를 보존하고 `authCheckFailed` 안내로 로그인 화면에 이동합니다. 로그인 인증 실패는 기존 token과 사용자 상태를 보존하며, 응답 토큰 누락은 실패로 처리합니다. 토큰 갱신 API 계약은 확인되지 않아 자동 갱신하지 않았습니다. `src/layouts/MainLayout.test.jsx`의 실제 레이아웃+Redux thunk 테스트에서 token 없음, 정상 응답, 401, 503, 다른 5xx, 네트워크 오류를 확인합니다.
+
+- 인증 저장소는 `localStorage`이므로 XSS 시 토큰을 읽을 수 있습니다. HttpOnly cookie 전환과 토큰 갱신은 백엔드 쿠키·CSRF·refresh 계약 확인이 필요합니다.
 
 되돌리기 어려운 예약 취소와 다음 선택이 필요한 결제 오류 복구는 공통 `CustomModal`을 사용하고 제목·내용·버튼 문구를 상황별로 지정합니다. 단순 완료나 재시도 피드백은 토스트, 로그인 사유와 입력 오류는 화면 안 안내를 사용합니다.
 
 ## 검증
 
-README에 기록된 현재 검증 결과는 프론트엔드 테스트 28개 파일·111건 통과, ESLint 오류·경고 0, 운영 및 로컬 Mock 빌드 통과입니다. 예약 시간 테스트 24건은 전체 테스트 중 일부입니다. 실제 운영 결제 흐름과 서버 DB 동시성은 이 검증 결과에 포함되지 않습니다.
+2026-10-27 확인 기준 README의 현재 결과는 Vitest 39개 파일·165건, Playwright Chromium 11건, PP10 인증 커밋의 GitHub Actions #79가 성공했습니다. [실행 결과](https://github.com/minjuko/ppodeuk-user-frontend/actions/runs/40477404549) Playwright는 MSW fixture를 사용하며 실제 백엔드·PG E2E가 아닙니다. Production dependency audit은 0건, 전체 개발 의존성 audit은 63건이며 상세 목록은 [PP10 감사](pp10-repository-audit.md)에 있습니다. 실제 운영 결제, 서버 멱등성, DB 동시성은 이 검증 결과에 포함되지 않습니다.
