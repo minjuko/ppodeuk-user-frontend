@@ -74,9 +74,59 @@ const confirmPayment = async (page) => {
   await page.locator(".flow-primary-action").click();
 };
 
+const getContrastRatio = (foreground, background) => {
+  const luminance = (color) => {
+    const [red, green, blue] = color.match(/[\d.]+/g).map(Number);
+    const linearize = (channel) => {
+      const normalized = channel / 255;
+      return normalized <= 0.04045
+        ? normalized / 12.92
+        : ((normalized + 0.055) / 1.055) ** 2.4;
+    };
+    return (
+      0.2126 * linearize(red) +
+      0.7152 * linearize(green) +
+      0.0722 * linearize(blue)
+    );
+  };
+  const values = [luminance(foreground), luminance(background)].sort(
+    (first, second) => second - first,
+  );
+  return (values[0] + 0.05) / (values[1] + 0.05);
+};
+
 const getAxeViolations = async (page, screenName) => {
   const results = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
+    .analyze();
+  return results.violations.flatMap(({ id, impact, description, nodes }) =>
+    nodes.map(({ target, failureSummary }) => ({
+      id,
+      impact,
+      description,
+      screenName,
+      target,
+      failureSummary: failureSummary?.split("\n").slice(0, 2).join(" "),
+    })),
+  );
+};
+
+const settleTransitions = async (page) => {
+  await page.evaluate(async () => {
+    const runningTransitions = document
+      .getAnimations({ subtree: true })
+      .filter((animation) => animation.playState === "running");
+    await Promise.allSettled(
+      runningTransitions.map((animation) => animation.finished),
+    );
+  });
+};
+
+const getSchedulePickerAxeViolations = async (page, screenName) => {
+  await settleTransitions(page);
+  const results = await new AxeBuilder({ page })
+    .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
+    .include([".schedule-time-slots", ".schedule-duration-options"])
     .analyze();
   return results.violations.flatMap(({ id, impact, description, nodes }) =>
     nodes.map(({ target, failureSummary }) => ({
@@ -397,8 +447,129 @@ test("E2E-11: 예약·결제 주요 화면의 WCAG A/AA axe 검사가 통과한�
     ...(await getAxeViolations(page, "bay selection and date picker")),
   );
 
-  await page.getByRole("button", { name: "11:00", exact: true }).click();
-  await page.locator(".schedule-duration-options button").nth(1).click();
+  const timeButton = page.getByRole("button", { name: "11:00", exact: true });
+  const durationButton = page
+    .locator(".schedule-duration-options button")
+    .nth(1);
+  const disabledDurationButton = page
+    .locator(".schedule-duration-options button:disabled")
+    .first();
+  await expect(timeButton).toHaveAttribute("aria-pressed", "false");
+  await expect(disabledDurationButton).toBeDisabled();
+  violations.push(
+    ...(await getSchedulePickerAxeViolations(
+      page,
+      "schedule initial and disabled",
+    )),
+  );
+
+  await timeButton.click();
+  await expect(timeButton).toHaveAttribute("aria-pressed", "true");
+  await settleTransitions(page);
+  const selectedTimeStyle = await timeButton.evaluate((button) => {
+    const style = getComputedStyle(button);
+    return {
+      text: button.textContent.trim(),
+      disabled: button.disabled,
+      ariaPressed: button.getAttribute("aria-pressed"),
+      className: button.className,
+      color: style.color,
+      backgroundColor: style.backgroundColor,
+      opacity: style.opacity,
+      parentOpacity: getComputedStyle(button.parentElement).opacity,
+      transition: style.transition,
+    };
+  });
+  expect(selectedTimeStyle.disabled).toBe(false);
+  expect(selectedTimeStyle.ariaPressed).toBe("true");
+  expect(selectedTimeStyle.color).toBe("rgb(255, 255, 255)");
+  expect(selectedTimeStyle.backgroundColor).toBe("rgb(0, 104, 176)");
+  expect(selectedTimeStyle.opacity).toBe("1");
+  expect(
+    getContrastRatio(
+      selectedTimeStyle.color,
+      selectedTimeStyle.backgroundColor,
+    ),
+  ).toBeGreaterThanOrEqual(4.5);
+  violations.push(
+    ...(await getSchedulePickerAxeViolations(page, "schedule time selected")),
+  );
+
+  await durationButton.click();
+  await expect(durationButton).toHaveAttribute("aria-pressed", "true");
+  const disabledDurationStyle = await disabledDurationButton.evaluate(
+    (button) => {
+      const style = getComputedStyle(button);
+      return {
+        color: style.color,
+        backgroundColor: style.backgroundColor,
+        opacity: style.opacity,
+        parentOpacity: getComputedStyle(button.parentElement).opacity,
+      };
+    },
+  );
+  expect(disabledDurationStyle.opacity).toBe("1");
+  expect(disabledDurationStyle.parentOpacity).toBe("1");
+  expect(disabledDurationStyle.color).toBe("rgb(55, 65, 81)");
+  expect(disabledDurationStyle.backgroundColor).toBe("rgb(243, 244, 246)");
+  expect(
+    getContrastRatio(
+      disabledDurationStyle.color,
+      disabledDurationStyle.backgroundColor,
+    ),
+  ).toBeGreaterThanOrEqual(4.5);
+  await settleTransitions(page);
+  const selectedDurationStyle = await durationButton.evaluate((button) => {
+    const style = getComputedStyle(button);
+    return {
+      text: button.textContent.trim(),
+      disabled: button.disabled,
+      ariaPressed: button.getAttribute("aria-pressed"),
+      className: button.className,
+      color: style.color,
+      backgroundColor: style.backgroundColor,
+      opacity: style.opacity,
+      parentOpacity: getComputedStyle(button.parentElement).opacity,
+      transition: style.transition,
+    };
+  });
+  expect(selectedDurationStyle.disabled).toBe(false);
+  expect(selectedDurationStyle.ariaPressed).toBe("true");
+  expect(selectedDurationStyle.color).toBe("rgb(255, 255, 255)");
+  expect(selectedDurationStyle.backgroundColor).toBe("rgb(0, 104, 176)");
+  expect(selectedDurationStyle.opacity).toBe("1");
+  expect(
+    getContrastRatio(
+      selectedDurationStyle.color,
+      selectedDurationStyle.backgroundColor,
+    ),
+  ).toBeGreaterThanOrEqual(4.5);
+  violations.push(
+    ...(await getSchedulePickerAxeViolations(
+      page,
+      "schedule duration selected",
+    )),
+  );
+
+  const nextDate = page
+    .locator(".reservation-schedule-date-picker button")
+    .nth(1);
+  await nextDate.click();
+  await expect(nextDate).toHaveAttribute("aria-pressed", "true");
+  await expect(timeButton).toHaveAttribute("aria-pressed", "false");
+  await expect(durationButton).toHaveAttribute("aria-pressed", "false");
+  violations.push(
+    ...(await getSchedulePickerAxeViolations(
+      page,
+      "schedule after date change",
+    )),
+  );
+
+  await timeButton.click();
+  await expect(timeButton).toHaveAttribute("aria-pressed", "true");
+  await durationButton.click();
+  await expect(durationButton).toHaveAttribute("aria-pressed", "true");
+  await settleTransitions(page);
   violations.push(...(await getAxeViolations(page, "schedule selection")));
   await page.locator(".flow-primary-action").click();
   await expect(page).toHaveURL(/\/payment$/);
