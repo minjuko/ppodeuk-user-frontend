@@ -65,6 +65,33 @@ export interface ApiEnvelope<T> {
 
 export type Identifier = string | number;
 
+/** Resolve a payment redirect while rejecting executable and insecure URLs. */
+export const resolvePaymentRedirectUrl = (
+  candidate: unknown,
+  appOrigin: string,
+): URL | null => {
+  if (typeof candidate !== "string" || !candidate.trim()) return null;
+
+  const value = candidate.trim();
+  if (value.startsWith("//")) return null;
+
+  try {
+    const appUrl = new URL(appOrigin);
+    const redirectUrl = new URL(value, appUrl);
+    const isSecure = redirectUrl.protocol === "https:";
+    const isSameOriginHttp =
+      redirectUrl.protocol === "http:" && redirectUrl.origin === appUrl.origin;
+
+    if ((!isSecure && !isSameOriginHttp) || redirectUrl.username || redirectUrl.password) {
+      return null;
+    }
+
+    return redirectUrl;
+  } catch {
+    return null;
+  }
+};
+
 export const isPaymentCalculationResponse = (
   value: unknown,
 ): value is PaymentCalculationResponse =>
@@ -72,7 +99,8 @@ export const isPaymentCalculationResponse = (
   value !== null &&
   "price" in value &&
   typeof value.price === "number" &&
-  Number.isFinite(value.price);
+  Number.isSafeInteger(value.price) &&
+  value.price >= 0;
 
 export const isPaymentReadyResponse = (
   value: unknown,

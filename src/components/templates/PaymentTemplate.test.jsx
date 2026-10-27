@@ -76,7 +76,7 @@ describe("PaymentTemplate payment preparation", () => {
     state.reservationProcess = validReservationProcess();
     Object.defineProperty(window, "location", {
       configurable: true,
-      value: { href: "http://localhost:3000/" },
+      value: { href: "http://localhost:3000/", origin: "http://localhost:3000" },
     });
     state.mobile = false;
     state.ready = {
@@ -124,6 +124,21 @@ describe("PaymentTemplate payment preparation", () => {
     expect(screen.getByRole("alert")).toBeInTheDocument();
   });
 
+  it.each([
+    "javascript:alert(1)",
+    "data:text/html,attack",
+    "http://pay.example/checkout",
+    "https://[invalid",
+  ])("rejects an unsafe or malformed payment redirect: %s", async (url) => {
+    state.ready = { tid: "tid-1", next_redirect_pc_url: url };
+    renderPayment();
+    fireEvent.click((await screen.findAllByRole("button"))[0]);
+
+    await waitFor(() => expect(screen.getByRole("alert")).toBeInTheDocument());
+    expect(window.location.href).toBe("http://localhost:3000/");
+    expect(dispatch).toHaveBeenCalledWith({ type: CLEAR_PAYMENT });
+    expect(dispatch).not.toHaveBeenCalledWith({ type: SAVE_TID, payload: "tid-1" });
+  });
   it("does not start price calculation or payment without a reservation range", () => {
     state.reservationProcess = {
       selectedCarwashId: 1,
