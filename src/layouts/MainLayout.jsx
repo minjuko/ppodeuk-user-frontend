@@ -17,12 +17,21 @@ export const MainLayout = () => {
     if (token) {
       dispatch(getUserInfoThunk())
         .then(unwrapResult)
-        .catch(() => {
-          localStorage.removeItem("token");
-          navigate("/login");
+        .catch((error) => {
+          const isUnauthorized =
+            error?.status === 401 || error?.response?.status === 401;
+          navigate("/login", {
+            replace: true,
+            state: {
+              authRequired: true,
+              authExpired: isUnauthorized,
+              authCheckFailed: !isUnauthorized,
+              from: `${location.pathname}${location.search}${location.hash}`,
+            },
+          });
         });
     }
-  }, [dispatch, navigate]);
+  }, [dispatch, location.hash, location.pathname, location.search, navigate]);
 
   return (
     <>
