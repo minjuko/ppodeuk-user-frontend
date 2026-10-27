@@ -55,6 +55,7 @@ const TimePicker = ({
         <button
           onClick={() => setIsMorningSelected(true)}
           type="button"
+          aria-pressed={isMorningSelected}
           className={`w-1/2 py-2 font-semibold rounded-md transition ${
             isMorningSelected
               ? "bg-white text-primary shadow-sm"
@@ -66,6 +67,7 @@ const TimePicker = ({
         <button
           onClick={() => setIsMorningSelected(false)}
           type="button"
+          aria-pressed={!isMorningSelected}
           className={`w-1/2 py-2 font-semibold rounded-md transition ${
             !isMorningSelected
               ? "bg-white text-primary shadow-sm"

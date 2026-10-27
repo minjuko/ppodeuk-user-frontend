@@ -43,10 +43,10 @@ const StoreInfo = ({ weekhour, weekendhour, tel, address }) => {
   return (
     <section className="store-info-section w-full max-w-full min-w-0 overflow-hidden bg-white border-gray-200 border-y">
       <h2 className="px-4 pt-3 text-base font-bold">매장정보</h2>
-      <dl className="px-4 divide-y divide-gray-100">
+      <div className="px-4 divide-y divide-gray-100">
         <div className="flex items-center gap-3 py-2 md:py-3">
           <InfoIcon type="time" />
-          <div className="store-hours-grid">
+          <dl className="store-hours-grid">
             <div className="flex min-w-0 flex-col items-start gap-0.5">
               <dt>평일</dt>
               <dd>{weekhour}</dd>
@@ -55,11 +55,11 @@ const StoreInfo = ({ weekhour, weekendhour, tel, address }) => {
               <dt>주말</dt>
               <dd>{weekendhour}</dd>
             </div>
-          </div>
+          </dl>
         </div>
         <div className="flex items-center gap-4 py-2 md:py-3">
           <InfoIcon type="tel" />
-          <div className="min-w-0">
+          <dl className="min-w-0">
             <dt className="mb-0.5 text-xs font-medium text-gray-500">전화</dt>
             <dd>
               <a
@@ -70,18 +70,18 @@ const StoreInfo = ({ weekhour, weekendhour, tel, address }) => {
                 {telFormatter(tel)}
               </a>
             </dd>
-          </div>
+          </dl>
         </div>
         <div className="flex items-center gap-4 py-2 md:py-3">
           <InfoIcon type="map" />
-          <div className="min-w-0">
+          <dl className="min-w-0">
             <dt className="mb-0.5 text-xs font-medium text-gray-500">주소</dt>
             <dd className="break-keep text-sm leading-5 text-gray-800 md:text-base md:leading-6">
               {address}
             </dd>
-          </div>
+          </dl>
         </div>
-      </dl>
+      </div>
     </section>
   );
 };

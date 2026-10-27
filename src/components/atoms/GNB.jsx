@@ -50,7 +50,7 @@ export const GNB = () => {
                 <div
                   className={
                     currentPage === menu.path
-                      ? "text-xs text-sky-500"
+                      ? "text-xs text-sky-700"
                       : "text-xs"
                   }
                 >
@@ -75,7 +75,7 @@ export const GNB = () => {
               <Link
                 className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium ${
                   currentPage === menu.path
-                    ? "bg-sky-50 text-sky-600"
+                    ? "bg-sky-50 text-sky-700"
                     : "text-slate-600 hover:bg-slate-50"
                 }`}
                 key={menu.path}

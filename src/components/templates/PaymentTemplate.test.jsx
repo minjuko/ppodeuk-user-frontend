@@ -11,6 +11,7 @@ const state = vi.hoisted(() => ({
   mobile: false,
   mutations: 0,
   mutationCalls: 0,
+  pending: [],
   mutates: [],
   ready: {},
   reservationProcess: {
@@ -51,7 +52,10 @@ vi.mock("@tanstack/react-query", () => ({
         ? options.onSuccess?.({ data: { response: { price: 1000 } } })
         : options.onSuccess?.({ data: { response: state.ready } });
     };
-    return { mutate: state.mutates[index], isPending: false };
+    return {
+      mutate: state.mutates[index],
+      isPending: Boolean(state.pending[index]),
+    };
   },
 }));
 
@@ -72,6 +76,7 @@ describe("PaymentTemplate payment preparation", () => {
     navigate.mockClear();
     state.mutations = 0;
     state.mutationCalls = 0;
+    state.pending = [];
     state.mutates = [];
     state.reservationProcess = validReservationProcess();
     Object.defineProperty(window, "location", {
@@ -148,5 +153,14 @@ describe("PaymentTemplate payment preparation", () => {
     renderPayment();
     expect(screen.getByRole("heading")).toBeInTheDocument();
     expect(state.mutationCalls).toBe(0);
+  });
+
+  it("disables payment and announces progress while payment preparation is pending", async () => {
+    state.pending = [false, true];
+    renderPayment();
+
+    const status = await screen.findByRole("status");
+    expect(status).toHaveTextContent("결제 준비 중");
+    expect(screen.getByRole("button")).toBeDisabled();
   });
 });

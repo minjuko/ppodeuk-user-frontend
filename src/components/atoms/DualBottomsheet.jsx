@@ -1,4 +1,11 @@
-import { useEffect, useState } from "react";
+import {
+  cloneElement,
+  isValidElement,
+  useEffect,
+  useRef,
+  useState,
+  useId,
+} from "react";
 import { useSpring, animated, config } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
 
@@ -16,6 +23,8 @@ const DualBottomsheet = ({ className, children }) => {
   const [viewportHeight, setViewportHeight] = useState(
     () => window.innerHeight,
   );
+  const dragControlId = useId();
+  const suppressClickRef = useRef(false);
   const collapsedY = getCollapsedY(viewportHeight);
 
   const [{ y }, set] = useSpring(() => ({
@@ -43,17 +52,22 @@ const DualBottomsheet = ({ className, children }) => {
       if (first) {
         set({ y: yOffset });
       } else if (last) {
-        const closeThreshold = EXPANDED_Y + 5;
-        const openThreshold = collapsedY - 5;
+        const startY = expanded ? EXPANDED_Y : collapsedY;
+        const dragDistance = yOffset - startY;
+        const threshold = Math.min(
+          80,
+          Math.max(16, (collapsedY - EXPANDED_Y) * 0.35),
+        );
+        const shouldExpand = !expanded && dragDistance <= -threshold;
+        const shouldCollapse = expanded && dragDistance >= threshold;
+        const nextExpanded = shouldExpand || (expanded && !shouldCollapse);
 
-        if (expanded == true && yOffset > closeThreshold) {
-          set({ y: collapsedY, config: { duration: 250 } });
-          setExpanded(false);
-        }
-        if (expanded == false && yOffset < openThreshold) {
-          set({ y: EXPANDED_Y, config: { duration: 250 } });
-          setExpanded(true);
-        }
+        if (Math.abs(dragDistance) > 5) suppressClickRef.current = true;
+        set({
+          y: nextExpanded ? EXPANDED_Y : collapsedY,
+          config: { duration: 250 },
+        });
+        setExpanded(nextExpanded);
       } else {
         set({ y: yOffset, immediate: down, config: { duration: 0 } });
       }
@@ -65,16 +79,39 @@ const DualBottomsheet = ({ className, children }) => {
     },
   );
 
+  const dragHandle = (
+    <button
+      {...bind()}
+      type="button"
+      aria-label={expanded ? "세차장 목록 접기" : "세차장 목록 펼치기"}
+      aria-expanded={expanded}
+      aria-controls={dragControlId}
+      onClick={(event) => {
+        if (suppressClickRef.current && event.detail > 0) {
+          suppressClickRef.current = false;
+          return;
+        }
+        suppressClickRef.current = false;
+        setExpanded((current) => !current);
+      }}
+      className="flex h-11 w-14 shrink-0 touch-none cursor-grab items-center justify-center self-center rounded-lg active:cursor-grabbing focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+    >
+      <span aria-hidden="true" className="h-1 w-8 rounded-full bg-slate-400" />
+    </button>
+  );
+  const sheetContent = isValidElement(children)
+    ? cloneElement(children, { dragHandle, id: dragControlId })
+    : children;
+
   return (
     <animated.div
-      className={`h-screen min-h-0 overflow-hidden ${className}`}
+      className={`h-screen w-full min-h-0 overflow-hidden ${className}`}
       style={{
         y,
         height: y.to((value) => `calc(100dvh - ${value}px)`),
       }}
-      {...bind()}
     >
-      {children}
+      {sheetContent}
     </animated.div>
   );
 };

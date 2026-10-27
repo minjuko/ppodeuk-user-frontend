@@ -92,6 +92,7 @@ const ReservationTemplate = () => {
             <TextInput
               type="text"
               id="search-bar"
+              aria-label="세차장 이름 검색"
               placeholder="검색할 세차장 이름을 입력하세요"
               className="reservation-search-input w-full px-4 pr-11 border-gray-300"
               onChange={handleSearchChange}

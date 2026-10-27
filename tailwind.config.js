@@ -6,7 +6,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: "#0098FF",
+        primary: "#0068B0",
         kakao: "#FCEC4F",
       },
       // 여기에 애니메이션과 keyframes 설정을 추가합니다.

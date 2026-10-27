@@ -215,14 +215,14 @@ const PaymentTemplate = () => {
               </div>
             </div>
           </div>
-          <div className="flex justify-between text-lg font-semibold text-red-500">
+          <div className="flex justify-between text-lg font-semibold text-red-700">
             <div>최종 결제 금액</div>
             <div>{paymentAmount.toLocaleString()}원</div>
           </div>
         </div>
       </div>
       <Button
-        className="flow-primary-action fixed bottom-0 w-full p-4 text-center bg-kakao"
+        className="flow-primary-action fixed bottom-0 left-0 w-full p-4 text-center bg-kakao"
         onClick={handlePayment}
         disabled={isCalculatingPrice || isPreparingPayment || !canPay}
       >

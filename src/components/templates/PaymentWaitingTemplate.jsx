@@ -1,5 +1,5 @@
 import { Button } from "../atoms/Button";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
@@ -21,6 +21,7 @@ const PaymentWaitingTemplate = () => {
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [failmodalContent, setFailmodalContent] = useState("");
+  const shouldRestoreFocusRef = useRef(false);
 
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -42,6 +43,15 @@ const PaymentWaitingTemplate = () => {
   useEffect(() => {
     if (!hasCallbackState) dispatch(clearPayment());
   }, [dispatch, hasCallbackState]);
+
+  useEffect(() => {
+    if (!isModalOpen && !hasCallbackState && shouldRestoreFocusRef.current) {
+      shouldRestoreFocusRef.current = false;
+      requestAnimationFrame(() =>
+        document.getElementById("payment-return-button")?.focus(),
+      );
+    }
+  }, [hasCallbackState, isModalOpen]);
 
   const { mutate: approveMutate, isPending: isApproving } = useMutation({
     mutationFn: (data) => pgapprove(data),
@@ -109,6 +119,7 @@ const PaymentWaitingTemplate = () => {
         <Button
           variant="long"
           className="flow-primary-action fixed bottom-0 left-0"
+          id="payment-return-button"
           onClick={() => {
             dispatch(clearPayment());
             navigate("/payment");
@@ -139,7 +150,10 @@ const PaymentWaitingTemplate = () => {
       </Button>
       <CustomModal
         isOpen={isModalOpen}
-        onRequestClose={() => setIsModalOpen(false)}
+        onRequestClose={() => {
+          shouldRestoreFocusRef.current = true;
+          setIsModalOpen(false);
+        }}
         onConfirm={handleConfirm}
         title="오류발생"
         content={modalContent}
