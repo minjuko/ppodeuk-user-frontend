@@ -1,6 +1,6 @@
 # 뽀득뽀득 — USER 프론트엔드
 
-셀프세차장 탐색부터 베이 선택, 예약 시간 지정, 결제 결과 확인까지 이어지는 모바일 중심 웹 서비스입니다. 카카오 테크 캠퍼스 1기 팀 프로젝트로 시작했고, 이 저장소에는 당시 팀 구현과 2026년 개인 개선이 함께 있습니다.
+셀프세차장 탐색부터 베이 선택, 예약 시간 지정, 결제 결과 확인까지 이어지는 모바일 중심 웹 서비스입니다. 카카오 테크 캠퍼스 1기 팀 프로젝트로 시작했고, 이 저장소에는 팀 프로젝트 구현과 개인 개선 내용을 함께 담고 있습니다.
 
 [![CI](https://github.com/minjuko/ppodeuk-user-frontend/actions/workflows/ci.yml/badge.svg)](https://github.com/minjuko/ppodeuk-user-frontend/actions/workflows/ci.yml)
 
