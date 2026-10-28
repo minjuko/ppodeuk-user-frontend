@@ -9,11 +9,11 @@
 | 구분 | 내용 |
 |---|---|
 | 팀 프로젝트 | 2023.09.14–2023.11.17 · 프론트엔드 3명, 백엔드 3명 |
-| 팀 당시 담당 | 사용자 예약 흐름, API 연동, 세차장 상세·리뷰·지도 UI 일부 |
-| 개인 개선 | 2026년 예약 상태·시간 규칙, 인증·결제 오류 경계, 테스트·CI, 반응형·접근성, 재현 문서 보완 |
+| 담당 역할 | 사용자 예약 흐름, API 연동, 세차장 상세·리뷰·지도 UI 일부 |
+| 개인 개선 | 예약 상태·시간 규칙, 인증·결제 오류 경계, 테스트·CI, 반응형·접근성, 재현 문서 보완 |
 | 팀 성과 | 카카오 테크 캠퍼스 1기 신규 서비스 개발 프로젝트 대상 |
 
-팀 백엔드와 사업자용 서비스는 별도 저장소의 구현입니다. 세부 기여와 검증 경계는 [시스템 구조](docs/architecture.md)와 [PP10 Repository 감사](docs/pp10-repository-audit.md)를 참고하세요.
+팀 백엔드와 사업자용 서비스는 별도 저장소의 구현입니다. 세부 구조와 검증 범위는 [관련 문서](docs/architecture.md)를 참고하세요.
 
 ## 주요 기능 및 화면
 
@@ -30,7 +30,7 @@
 
 ## 기술 스택
 
-- **화면:** React 18, JavaScript, Vite, Tailwind CSS, React Router
+- **화면:** React 18, JavaScript, Vite, Tailwind CSS, React Router 7
 - **상태와 API:** Redux Toolkit, Redux Persist, TanStack Query, Axios, REST API
 - **인증·지도:** 서버 발급 Bearer 토큰, Kakao Maps JavaScript SDK
 - **검증:** Vitest, Testing Library, Playwright, axe-core, MSW, ESLint, TypeScript 검사
@@ -41,10 +41,9 @@
 - **예약 의존 상태:** 세차장·베이·날짜·시각이 바뀔 때 무효가 된 하위 선택과 결제 TID를 초기화합니다. URL의 식별자와 저장된 예약 상태도 동기화합니다.
 - **예약 시간:** 영업시간, 현재 시각, 기존 예약을 바탕으로 예약 슬롯을 계산합니다. 예약 구간은 `[시작, 종료)`로 비교해 겹침은 막고 바로 이어지는 예약은 허용합니다.
 - **결제 경계:** 가격 응답의 기본 형식, 결제 준비의 TID, redirect URL, callback 값, 승인 응답을 확인합니다. 승인 요청 중 UI 중복 입력을 막고 승인 실패 시 예약 선택은 보존합니다.
-- **인증·오류:** 서버 발급 Authorization 값을 전달하며 401이면 token과 인증 상태를 정리하고, 5xx·네트워크 오류는 token을 보존해 재확인 안내로 보냅니다. 토큰 저장 방식의 보안 한계는 감사 문서에 기록했습니다.
+- **인증·오류:** 서버 발급 Authorization 값을 전달하며 401이면 token과 인증 상태를 정리하고, 5xx·네트워크 오류는 token을 보존해 재확인 안내로 보냅니다. 
 - **모바일·접근성:** 검색 목록 바텀시트는 터치 핸들과 키보드 버튼으로 열고 닫습니다. Playwright에서 대표 viewport, 주요 흐름과 axe WCAG 2.1 A/AA 자동 검사를 확인합니다.
 
-프론트엔드 검증은 서버의 가격 재계산, 예약 동시성, 결제 승인 멱등성, PG 운영 허용 URL 정책을 대신하지 않습니다. 인증·결제와 UI 테스트 한계는 [감사 기록](docs/pp10-repository-audit.md)에 정리했습니다.
 
 ## 실행 방법
 
@@ -71,11 +70,8 @@ MSW 데모 계정·fixture와 데모 결제는 로컬 확인용이며 실제 예
 npm run lint
 npm run typecheck
 npm test -- --reporter=dot
-npm run build:e2e
 npm run test:e2e
 npm run build
-node scripts/verify-production-bundle.mjs
-npm audit --omit=dev
 ```
 
 ## 테스트 및 검증
@@ -85,13 +81,12 @@ npm audit --omit=dev
 | Vitest | **39개 파일, 165개 테스트 통과** |
 | Playwright | **Chromium 11개 테스트 통과** |
 | axe-core | 예약·결제 주요 화면의 WCAG 2.1 A/AA 규칙 자동 검사 통과 |
-| GitHub Actions | 최종 PP10 **#80 성공** — [CI 실행 내역](https://github.com/minjuko/ppodeuk-user-frontend/actions/workflows/ci.yml) |
+| GitHub Actions | **#80 성공** — [CI 실행 내역](https://github.com/minjuko/ppodeuk-user-frontend/actions/workflows/ci.yml) |
 | Production dependency audit | **취약점 0건** (`npm audit --omit=dev`) |
-| 전체 dependency audit | **63건 잔존** — 개발 의존성 트리; 상세 목록은 [PP10 감사](docs/pp10-repository-audit.md) |
 
-Playwright E2E는 빌드된 프론트엔드와 MSW fixture를 사용하는 브라우저 테스트입니다. 실제 운영 백엔드나 KakaoPay에 요청하지 않으며, 운영 PG 승인·백엔드 통합 E2E 결과로 해석하면 안 됩니다. axe 자동 검사 통과도 실제 기기 및 스크린리더 전수 검증을 뜻하지 않습니다.
+Playwright는 MSW fixture 기반이며 실제 백엔드·PG 승인과 실기기 접근성을 검증한 결과는 아닙니다.
 
-이미지 용량은 106,998B에서 66,413B로 37.9% 감소했습니다. 과거 로컬 Lighthouse 측정에서는 Performance 88→91, LCP 3,578→3,331ms였으며 현재 운영 성능을 보장하지 않습니다.
+이미지 용량은 37.9% 감소했고, 과거 로컬 Lighthouse 측정에서 Performance 88→91, LCP 3,578→3,331ms를 기록했습니다. 운영 성능 측정은 아닙니다.
 
 ## 관련 문서
 
