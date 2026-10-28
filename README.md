@@ -46,21 +46,6 @@
 
 프론트엔드 검증은 서버의 가격 재계산, 예약 동시성, 결제 승인 멱등성, PG 운영 허용 URL 정책을 대신하지 않습니다. 인증·결제와 UI 테스트 한계는 [감사 기록](docs/pp10-repository-audit.md)에 정리했습니다.
 
-## 테스트 및 검증
-
-| 확인 항목 | 결과 |
-|---|---|
-| Vitest | **39개 파일, 165개 테스트 통과** |
-| Playwright | **Chromium 11개 테스트 통과** |
-| axe-core | 예약·결제 주요 화면의 WCAG 2.1 A/AA 규칙 자동 검사 통과 |
-| GitHub Actions | 최종 PP10 **#80 성공** — [CI 실행 내역](https://github.com/minjuko/ppodeuk-user-frontend/actions/workflows/ci.yml) |
-| Production dependency audit | **취약점 0건** (`npm audit --omit=dev`) |
-| 전체 dependency audit | **63건 잔존** — 개발 의존성 트리; 상세 목록은 [PP10 감사](docs/pp10-repository-audit.md) |
-
-Playwright E2E는 빌드된 프론트엔드와 MSW fixture를 사용하는 브라우저 테스트입니다. 실제 운영 백엔드나 KakaoPay에 요청하지 않으며, 운영 PG 승인·백엔드 통합 E2E 결과로 해석하면 안 됩니다. axe 자동 검사 통과도 실제 기기 및 스크린리더 전수 검증을 뜻하지 않습니다.
-
-이미지 용량은 106,998B에서 66,413B로 37.9% 감소했습니다. 과거 로컬 Lighthouse 측정에서는 Performance 88→91, LCP 3,578→3,331ms였으며 현재 운영 성능을 보장하지 않습니다.
-
 ## 실행 방법
 
 Node.js 22.20.x와 npm 10.9.x를 사용합니다.
@@ -92,6 +77,21 @@ npm run build
 node scripts/verify-production-bundle.mjs
 npm audit --omit=dev
 ```
+
+## 테스트 및 검증
+
+| 확인 항목 | 결과 |
+|---|---|
+| Vitest | **39개 파일, 165개 테스트 통과** |
+| Playwright | **Chromium 11개 테스트 통과** |
+| axe-core | 예약·결제 주요 화면의 WCAG 2.1 A/AA 규칙 자동 검사 통과 |
+| GitHub Actions | 최종 PP10 **#80 성공** — [CI 실행 내역](https://github.com/minjuko/ppodeuk-user-frontend/actions/workflows/ci.yml) |
+| Production dependency audit | **취약점 0건** (`npm audit --omit=dev`) |
+| 전체 dependency audit | **63건 잔존** — 개발 의존성 트리; 상세 목록은 [PP10 감사](docs/pp10-repository-audit.md) |
+
+Playwright E2E는 빌드된 프론트엔드와 MSW fixture를 사용하는 브라우저 테스트입니다. 실제 운영 백엔드나 KakaoPay에 요청하지 않으며, 운영 PG 승인·백엔드 통합 E2E 결과로 해석하면 안 됩니다. axe 자동 검사 통과도 실제 기기 및 스크린리더 전수 검증을 뜻하지 않습니다.
+
+이미지 용량은 106,998B에서 66,413B로 37.9% 감소했습니다. 과거 로컬 Lighthouse 측정에서는 Performance 88→91, LCP 3,578→3,331ms였으며 현재 운영 성능을 보장하지 않습니다.
 
 ## 관련 문서
 
