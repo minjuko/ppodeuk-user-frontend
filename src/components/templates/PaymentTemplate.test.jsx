@@ -155,6 +155,19 @@ describe("PaymentTemplate payment preparation", () => {
     expect(state.mutationCalls).toBe(0);
   });
 
+  it("shows the end date when the reservation ends on the next day", () => {
+    state.reservationProcess = {
+      ...validReservationProcess(),
+      reservations: {
+        startTime: "2026-08-11T23:30",
+        endTime: "2026-08-12T00:30",
+      },
+    };
+
+    renderPayment();
+
+    expect(screen.getByText(/2026-08-12/)).toBeInTheDocument();
+  });
   it("disables payment and announces progress while payment preparation is pending", async () => {
     state.pending = [false, true];
     renderPayment();
