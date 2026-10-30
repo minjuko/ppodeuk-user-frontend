@@ -228,7 +228,7 @@ export const getAvailableDurations = ({
   return durations.filter(
     (duration) =>
       startMinutes >= period.startMinutes &&
-      startMinutes + duration <= period.endMinutes &&
+      (period.is24Hours || startMinutes + duration <= period.endMinutes) &&
       !isReservationOverlapping(
         selectedDate,
         startTime,
