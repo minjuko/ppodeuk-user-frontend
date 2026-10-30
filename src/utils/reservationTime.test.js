@@ -131,6 +131,17 @@ describe("선택 가능한 duration", () => {
     ).toEqual([60]);
   });
 
+  it("24시간 영업에서 23:00 + 90분을 다음 날 00:30 종료로 허용한다", () => {
+    expect(
+      getAvailableDurations({
+        selectedDate: date,
+        startTime: "23:00",
+        openingPeriod: { start: "00:00", end: "00:00" },
+        durations: [90],
+      }),
+    ).toEqual([90]);
+  });
+
   it("24시간 영업에서도 익일 예약과 겹치면 거부한다", () => {
     expect(
       getAvailableDurations({
@@ -140,6 +151,20 @@ describe("선택 가능한 duration", () => {
         durations: [60],
         bookedTimeList: [
           { startTime: "2026-08-12T00:00", endTime: "2026-08-12T01:00" },
+        ],
+      }),
+    ).toEqual([]);
+  });
+
+  it("전날에서 이어진 예약이 익일 00:00 시작을 막는다", () => {
+    expect(
+      getAvailableDurations({
+        selectedDate: localDate(2026, 7, 12),
+        startTime: "00:00",
+        openingPeriod: { start: "00:00", end: "00:00" },
+        durations: [30],
+        bookedTimeList: [
+          { startTime: "2026-08-11T23:30", endTime: "2026-08-12T00:30" },
         ],
       }),
     ).toEqual([]);

@@ -175,8 +175,12 @@ const PaymentTemplate = () => {
     return { datePart, timePart };
   };
 
-  const formatDateEnd = (dateString) => {
-    return dayjs(dateString).format("HH시 mm분");
+  const formatDateEnd = (startDateString, endDateString) => {
+    const endDate = dayjs(endDateString);
+    const endTime = endDate.format("HH시 mm분");
+    return endDate.isSame(dayjs(startDateString), "day")
+      ? endTime
+      : `${endTime} (${endDate.format("YYYY-MM-DD")})`;
   };
 
   const calculateDuration = (start, end) => {
@@ -187,7 +191,10 @@ const PaymentTemplate = () => {
   };
 
   const { datePart, timePart } = formatDateStart(reservations.startTime);
-  const endTimeFormatted = formatDateEnd(reservations.endTime);
+  const endTimeFormatted = formatDateEnd(
+    reservations.startTime,
+    reservations.endTime,
+  );
 
   const duration = calculateDuration(
     reservations.startTime,
