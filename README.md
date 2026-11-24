@@ -86,7 +86,7 @@ npm run build
 | Vitest | **39개 파일, 165개 테스트 통과** |
 | Playwright | **Chromium 11개 테스트 통과** |
 | axe-core | 예약·결제 주요 화면의 WCAG 2.1 A/AA 규칙 자동 검사 통과 |
-| GitHub Actions | **#80 성공** — [CI 실행 내역](https://github.com/minjuko/ppodeuk-user-frontend/actions/workflows/ci.yml) |
+| GitHub Actions | **#80 성공** — [CI #80 실행 결과](https://github.com/minjuko/ppodeuk-user-frontend/actions/runs/40477822033) |
 | Production dependency audit | **취약점 0건** (`npm audit --omit=dev`) |
 
 Playwright는 MSW fixture 기반이며 실제 백엔드·PG 승인과 실기기 접근성을 검증한 결과는 아닙니다.
